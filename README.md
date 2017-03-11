@@ -7,12 +7,19 @@ A basic chemistry simulator.
 
 ## Currently includes
 - Basic functionality:
+
 -- Calculate mass of molecules
+
 -- Generate (sometimes incorrect) names of molecules
+
+-- Check if reactions are valid
 
 
 ## Currently working on
 - Reactions:
+
 -- Precipitation reactions
+
 -- Acid/Base reactions
+
 -- Redox reactions
