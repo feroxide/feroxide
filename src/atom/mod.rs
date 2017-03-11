@@ -8,10 +8,3 @@ pub struct Atom {
     pub name: &'static str,
     pub is_diatomic: bool
 }
-
-
-impl Atom {
-    pub fn data(&self) -> String {
-        return format!("{}({}), {}, {} u, {}", self.symbol, self.name, self.number, self.mass, self.is_diatomic);
-    }
-}

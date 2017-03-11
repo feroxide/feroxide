@@ -5,8 +5,9 @@ use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct Reaction<'lifetime> {
-    pub lefthandside: &'lifetime ReactionSide<'lifetime>,
-    pub righthandside: &'lifetime ReactionSide<'lifetime>
+    pub lhs: &'lifetime ReactionSide<'lifetime>,
+    pub rhs: &'lifetime ReactionSide<'lifetime>,
+    pub is_equilibrium: bool
 }
 
 #[derive(Debug)]
@@ -23,10 +24,55 @@ pub struct ReactionCompound<'lifetime> {
 
 impl<'lifetime> Reaction<'lifetime> {
     pub fn check_sides_equal(&self) -> bool {
-        let lhs_total = self.lefthandside.total_atoms();
-        let rhs_total = self.righthandside.total_atoms();
+        self.lhs.total_atoms() == self.rhs.total_atoms()
+    }
 
-        lhs_total == rhs_total
+    pub fn to_string(&self) -> String {
+        let mut string = String::new();
+
+        string += &self.lhs.to_string();
+
+        if self.is_equilibrium {
+            string += " ←→ ";
+        } else {
+            string += " → ";
+        }
+
+        string += &self.rhs.to_string();
+
+        return string;
+    }
+
+    pub fn equalise(&self) -> bool {
+        let total_left = self.lhs.total_atoms();
+        let total_right = self.rhs.total_atoms();
+
+        if total_left == total_right {
+            return true;
+        }
+
+        for (atom_number, l_amount) in total_left {
+            let r_amount: u8;
+
+            match total_right.get(&atom_number) {
+                Some(x) => { r_amount = x.to_owned() },
+                None => { r_amount = 0 }
+            }
+
+            if r_amount == 0 {
+                panic!("It's impossible to make this reaction work: {}", self.to_string());
+            }
+
+            if l_amount != r_amount {
+                let difference = l_amount - r_amount;
+
+                if difference > 0 {
+
+                }
+            }
+        }
+
+        return true;
     }
 }
 
@@ -51,5 +97,34 @@ impl<'lifetime> ReactionSide<'lifetime> {
         }
 
         return atoms;
+    }
+
+    pub fn to_string(&self) -> String {
+        let mut string = String::new();
+
+        let len = self.compounds.len();
+        for (i, compound) in self.compounds.iter().enumerate() {
+            string += &compound.to_string();
+
+            if i < len - 1 {
+                string += " + ";
+            }
+        }
+
+        return string;
+    }
+}
+
+impl<'lifetime> ReactionCompound<'lifetime> {
+    pub fn to_string(&self) -> String {
+        let mut string = String::new();
+
+        if self.amount > 1 {
+            string += &self.amount.to_string();
+        }
+
+        string += &self.molecule.symbol();
+
+        return string;
     }
 }

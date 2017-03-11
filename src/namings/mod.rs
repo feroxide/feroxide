@@ -122,6 +122,37 @@ pub fn subscript(n: u8) -> String {
     else if n == 9  { "₉".to_owned() }
 
     else {
-        panic!(n.to_string().to_owned() + " uncalculatable");
+        panic!(n.to_string().to_owned() + " can't be converted to subscript.");
+    }
+}
+
+pub fn superscript(n: u8) -> String {
+    if n == 0 { "⁰".to_owned() }
+    else if n == 1 { "¹".to_owned() }
+    else if n == 2 { "²".to_owned() }
+    else if n == 3 { "³".to_owned() }
+    else if n == 4 { "⁴".to_owned() }
+    else if n == 5 { "⁵".to_owned() }
+    else if n == 6 { "⁶".to_owned() }
+    else if n == 7 { "⁷".to_owned() }
+    else if n == 8 { "⁸".to_owned() }
+    else if n == 9 { "⁹".to_owned() }
+
+    else if n >= 10 {
+        return superscript(n / 10) + &superscript(n % 10);
+    }
+
+    else {
+        panic!(n.to_string().to_owned() + " can't be converted to superscript.");
+    }
+}
+
+pub fn ion_superscript(n: i8) -> String {
+    if n < 0 {
+        return superscript((-n) as u8) + & "⁻".to_owned();
+    } else if n > 0 {
+        return superscript(n as u8) + & "⁺".to_owned();
+    } else {
+        return superscript(n as u8);
     }
 }

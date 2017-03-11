@@ -1,3 +1,5 @@
+#![feature(const_fn)]
+
 mod atom;
 pub use atom::*;
 
@@ -7,9 +9,13 @@ pub use molecule::*;
 mod reaction;
 pub use reaction::*;
 
+mod ion;
+pub use ion::*;
+
 pub mod namings;
 pub mod atoms;
 pub mod molecules;
+pub mod ions;
 
 macro_rules! molecule_from_atom {
     ($atom:expr) => (
@@ -34,82 +40,7 @@ fn diatomic_check() {
 }
 
 #[test]
-fn reaction_check() {
-    use atoms::*;
-
-    let sodium_molecule = &Molecule {
-        compounds: &[ MoleculeCompound { atom: SODIUM, amount: 1 } ]
-    };
-
-    let chlorine_molecule = &Molecule {
-        compounds: &[ MoleculeCompound { atom: CHLORINE, amount: 2 } ]
-    };
-
-    let lithium_molecule = &Molecule {
-        compounds: &[ MoleculeCompound { atom: LITHIUM, amount: 1 } ]
-    };
-
-    let hydrogen_molecule = &Molecule {
-        compounds: &[ MoleculeCompound { atom: HYDROGEN, amount: 2 } ]
-    };
-
-
-    let salt_molecule = &Molecule {
-        compounds: &[
-            MoleculeCompound { atom: CHLORINE, amount: 1 },
-            MoleculeCompound { atom: SODIUM, amount: 1 }
-        ]
-    };
-
-    let good_reaction = Reaction {
-        lefthandside: &ReactionSide {
-            compounds: &[
-                ReactionCompound { amount: 2, molecule: sodium_molecule },
-                ReactionCompound { amount: 1, molecule: chlorine_molecule }
-            ]
-        },
-
-        righthandside: &ReactionSide {
-            compounds: &[  ReactionCompound { amount: 2, molecule: salt_molecule }  ]
-        }
-    };
-
-    let wrong_reaction_0 = Reaction {
-        lefthandside: &ReactionSide {
-            compounds: &[
-                ReactionCompound { amount: 9, molecule: sodium_molecule },
-                ReactionCompound { amount: 5, molecule: chlorine_molecule }
-            ]
-        },
-
-        righthandside: &ReactionSide {
-            compounds: &[  ReactionCompound { amount: 3, molecule: salt_molecule }  ]
-        }
-    };
-
-    let wrong_reaction_1 = Reaction {
-        lefthandside: &ReactionSide {
-            compounds: &[
-                ReactionCompound { amount: 1, molecule: lithium_molecule }
-            ]
-        },
-
-        righthandside: &ReactionSide {
-            compounds: &[
-                ReactionCompound { amount: 3, molecule: hydrogen_molecule }
-            ]
-        }
-    };
-
-
-    assert!(good_reaction.check_sides_equal());
-    assert!(! wrong_reaction_0.check_sides_equal());
-    assert!(! wrong_reaction_1.check_sides_equal());
-}
-
-
-#[test]
-fn atoms_database_correct() {
+fn atoms_database_check() {
     use atoms::*;
 
     assert_eq!(1, HYDROGEN.number);
@@ -123,24 +54,6 @@ fn atoms_database_correct() {
     assert!(! SULFUR.is_diatomic);
 
     assert_eq!("aluminium", atoms::ALUMINIUM.name);
-}
-
-#[test]
-fn molecule_mass_calculation() {
-    use atoms::*;
-    use molecules::*;
-
-    let sugar = Molecule {
-        compounds: &[
-            MoleculeCompound { atom: CARBON, amount: 12 },
-            MoleculeCompound { atom: HYDROGEN, amount: 22 },
-            MoleculeCompound { atom: OXYGEN, amount: 11 }
-        ]
-    };
-
-
-    assert_eq!(18.015, WATER.mass());
-    assert_eq!(342.297, sugar.mass());
 }
 
 #[test]
@@ -174,6 +87,92 @@ fn roman_namings() {
     assert_eq!("XIV", to_roman(14));
     assert_eq!("-XVI", to_roman(-16));
 }
+
+
+#[test]
+fn reaction_check() {
+    use atoms::*;
+    use molecules::*;
+
+    let good_reaction = Reaction {
+        lhs: &ReactionSide { compounds: &[
+            ReactionCompound { amount: 2, molecule: &molecule_from_atom!(SODIUM) },
+            ReactionCompound { amount: 1, molecule: &molecule_from_atom!(CHLORINE) }
+        ]},
+
+        rhs: &ReactionSide { compounds: &[
+            ReactionCompound { amount: 2, molecule: TABLE_SALT }
+        ]},
+
+        is_equilibrium: false
+    };
+
+
+    let wrong_reaction_0 = Reaction {
+        lhs: &ReactionSide { compounds: &[
+            ReactionCompound { amount: 9, molecule: &molecule_from_atom!(SODIUM) },
+            ReactionCompound { amount: 5, molecule: &molecule_from_atom!(CHLORINE) }
+        ]},
+
+        rhs: &ReactionSide { compounds: &[
+            ReactionCompound { amount: 3, molecule: TABLE_SALT }
+        ]},
+
+        is_equilibrium: false
+    };
+
+
+    let wrong_reaction_1 = Reaction {
+        lhs: &ReactionSide { compounds: &[
+            ReactionCompound { amount: 1, molecule: &molecule_from_atom!(LITHIUM) }
+        ]},
+
+        rhs: &ReactionSide { compounds: &[
+            ReactionCompound { amount: 3, molecule: &molecule_from_atom!(HYDROGEN) }
+        ]},
+
+        is_equilibrium: false
+    };
+
+    let equilibrium_reaction = Reaction {
+        lhs: &ReactionSide { compounds: &[
+            ReactionCompound { amount: 1, molecule: &molecule_from_atom!(HYDROGEN) }
+        ]},
+
+        rhs: &ReactionSide { compounds: &[
+            ReactionCompound {
+                amount: 2,
+                molecule: &Molecule { compounds: &[
+                    MoleculeCompound {
+                        atom: HYDROGEN,
+                        amount: 1
+                    }
+                ]}
+            }
+        ]},
+
+        is_equilibrium: true
+    };
+
+
+    assert!(good_reaction.check_sides_equal());
+    assert!(! wrong_reaction_0.check_sides_equal());
+    assert!(! wrong_reaction_1.check_sides_equal());
+
+    assert_eq!("2Na + Cl₂ → 2NaCl", good_reaction.to_string());
+    assert_eq!("H₂ ←→ 2H", equilibrium_reaction.to_string());
+}
+
+#[test]
+fn molecule_mass_calculation() {
+    use molecules::*;
+
+    assert_eq!(18.015, WATER.mass());
+    assert_eq!(58.43977, TABLE_SALT.mass());
+    assert_eq!(342.297, SUGAR.mass());
+}
+
+
 
 #[test]
 #[should_panic]

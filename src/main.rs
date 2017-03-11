@@ -1,9 +1,9 @@
 extern crate feroxide;
 
-use feroxide::{ Molecule, MoleculeCompound, Reaction, ReactionSide, ReactionCompound };
-
+use feroxide::*;
 use feroxide::atoms::*;
 use feroxide::molecules::*;
+use feroxide::ions::*;
 
 macro_rules! molecule_from_atom {
     ($atom:expr) => (
@@ -12,23 +12,36 @@ macro_rules! molecule_from_atom {
 }
 
 fn main() {
-    println!("Hydrogen: {}", HYDROGEN.data());
+    println!("Hydrogen: {:?}", HYDROGEN);
+    println!("Table salt: {:?}", TABLE_SALT);
+    println!("Table salt mass: {:?}", TABLE_SALT.mass());
+
     println!("{} is called \"{}\" and has mass {}", WATER.symbol(), WATER.name(), WATER.mass());
 
+    react();
+
+    println!("sulphate: {}", SULPHATE.symbol());
+}
+
+
+fn react() {
+    // 2Na + Cl2 --> 2NaCl
     let reaction = Reaction {
-        lefthandside: &ReactionSide { compounds: &[
+        lhs: &ReactionSide { compounds: &[
             ReactionCompound { amount: 2, molecule: &molecule_from_atom!(SODIUM) },
             ReactionCompound { amount: 1, molecule: &molecule_from_atom!(CHLORINE) }
         ]},
 
-        righthandside: &ReactionSide { compounds: &[
+        rhs: &ReactionSide { compounds: &[
             ReactionCompound { amount: 2, molecule: TABLE_SALT }
-        ]}
+        ]},
+
+        is_equilibrium: false
     };
 
     if reaction.check_sides_equal() {
-        println!("Reaction is valid");
+        println!("Reaction {} is valid", reaction.to_string());
     } else {
-        println!("Reaction is invalid");
+        println!("Reaction {} is invalid", reaction.to_string());
     }
 }

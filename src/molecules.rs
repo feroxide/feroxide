@@ -14,3 +14,11 @@ pub const TABLE_SALT: &'static Molecule<'static> = &Molecule {
         MoleculeCompound { atom: CHLORINE, amount: 1 }
     ]
 };
+
+pub const SUGAR: &'static Molecule<'static> = &Molecule {
+    compounds: &[
+        MoleculeCompound { atom: CARBON, amount: 12 },
+        MoleculeCompound { atom: HYDROGEN, amount: 22 },
+        MoleculeCompound { atom: OXYGEN, amount: 11 }
+    ]
+};

@@ -1,16 +1,18 @@
 use atom::Atom;
 use namings;
 
+
+#[derive(Debug)]
+pub struct Molecule<'lifetime> {
+    pub compounds: &'lifetime [MoleculeCompound<'lifetime>]
+}
+
 #[derive(Debug)]
 pub struct MoleculeCompound<'lifetime> {
     pub atom: &'lifetime Atom,
     pub amount: u8
 }
 
-#[derive(Debug)]
-pub struct Molecule<'lifetime> {
-    pub compounds: &'lifetime [MoleculeCompound<'lifetime>]
-}
 
 macro_rules! molecule_from_atom {
     ($atom:expr) => (
@@ -18,29 +20,6 @@ macro_rules! molecule_from_atom {
     )
 }
 
-impl<'lifetime> MoleculeCompound<'lifetime> {
-    pub fn from_atom(atom: &'lifetime Atom) -> MoleculeCompound<'lifetime> {
-        let amount = if atom.is_diatomic { 2 } else { 1 };
-
-        MoleculeCompound { atom: atom, amount: amount }
-    }
-
-    pub fn symbol(&self) -> String {
-        let mut symbol = String::new();
-
-        symbol += self.atom.symbol;
-
-        if self.amount > 1 {
-            symbol += & namings::subscript(self.amount);
-        }
-
-        return symbol;
-    }
-
-    pub fn mass(&self) -> f32 {
-        return (self.amount as f32) * self.atom.mass;
-    }
-}
 
 impl<'lifetime> Molecule<'lifetime> {
     pub fn symbol(&self) -> String {
@@ -75,5 +54,29 @@ impl<'lifetime> Molecule<'lifetime> {
         }
 
         return mass;
+    }
+}
+
+impl<'lifetime> MoleculeCompound<'lifetime> {
+    pub fn from_atom(atom: &'lifetime Atom) -> MoleculeCompound<'lifetime> {
+        let amount = if atom.is_diatomic { 2 } else { 1 };
+
+        MoleculeCompound { atom: atom, amount: amount }
+    }
+
+    pub fn symbol(&self) -> String {
+        let mut symbol = String::new();
+
+        symbol += self.atom.symbol;
+
+        if self.amount > 1 {
+            symbol += & namings::subscript(self.amount);
+        }
+
+        return symbol;
+    }
+
+    pub fn mass(&self) -> f32 {
+        return (self.amount as f32) * self.atom.mass;
     }
 }
