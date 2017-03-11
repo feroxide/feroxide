@@ -1,17 +1,30 @@
 use atom::Atom;
 use namings;
 
+#[derive(Debug)]
 pub struct MoleculeCompound<'lifetime> {
     pub atom: &'lifetime Atom,
     pub amount: u8
 }
 
+#[derive(Debug)]
 pub struct Molecule<'lifetime> {
-    pub compounds: &'lifetime Vec< MoleculeCompound<'lifetime> >,
+    pub compounds: &'lifetime [MoleculeCompound<'lifetime>]
 }
 
+macro_rules! molecule_from_atom {
+    ($atom:expr) => (
+        Molecule { compounds: &[ MoleculeCompound::from_atom($atom) ] }
+    )
+}
 
 impl<'lifetime> MoleculeCompound<'lifetime> {
+    pub fn from_atom(atom: &'lifetime Atom) -> MoleculeCompound<'lifetime> {
+        let amount = if atom.is_diatomic { 2 } else { 1 };
+
+        MoleculeCompound { atom: atom, amount: amount }
+    }
+
     pub fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -28,7 +41,6 @@ impl<'lifetime> MoleculeCompound<'lifetime> {
         return (self.amount as f32) * self.atom.mass;
     }
 }
-
 
 impl<'lifetime> Molecule<'lifetime> {
     pub fn symbol(&self) -> String {
