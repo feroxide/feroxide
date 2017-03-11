@@ -26,7 +26,7 @@ fn basic_number_to_greek(n: u8, tenplus: bool) -> String {
 
 
     else {
-        n.to_string().to_owned() + " unknown @basic"
+        panic!(n.to_string().to_owned() + " uncalculatable");
     }
 }
 
@@ -64,12 +64,14 @@ pub fn number_to_greek(n: u8) -> String {
         if n == factor_ten*10 {
             return basic_number_to_greek(factor_ten, true) + "conta";
         } else {
-            return basic_number_to_greek(n - factor_ten*10, true) + &basic_number_to_greek(factor_ten, true) + "conta";
+            return
+                basic_number_to_greek(n - factor_ten*10, true) +
+                &basic_number_to_greek(factor_ten, true) + "conta";
         }
     }
 
     else {
-        n.to_string().to_owned() + " unknown @pub"
+        panic!(n.to_string().to_owned() + " uncalculatable");
     }
 }
 
@@ -98,7 +100,7 @@ pub fn number_to_roman(n: i8) -> String {
     else if n == 16 { "XVI".to_owned() }
 
     else {
-        "?".to_owned()
+        panic!(n.to_string().to_owned() + " uncalculatable");
     }
 }
 
@@ -120,6 +122,6 @@ pub fn subscript(n: u8) -> String {
     else if n == 9  { "₉".to_owned() }
 
     else {
-        "?".to_owned()
+        panic!(n.to_string().to_owned() + " uncalculatable");
     }
 }
