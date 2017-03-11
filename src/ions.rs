@@ -2,7 +2,7 @@ use ion::*;
 use molecule::*;
 use atoms::*;
 
-pub fn calculate_charge(compounds: &[IonCompound]) -> i8 {
+pub fn calculate_charge(compounds: &'static [IonCompound<'static>]) -> i8 {
     let mut total_charge: i8 = 0;
 
     for compound in compounds {
@@ -12,7 +12,7 @@ pub fn calculate_charge(compounds: &[IonCompound]) -> i8 {
     return total_charge;
 }
 
-const SULPHATE_COMPOUNDS: &[IonCompound] = &[
+const SULPHATE_COMPOUNDS: &'static [IonCompound<'static>] = &[
     IonCompound {
         molecule: Molecule { compounds: &[
             MoleculeCompound {

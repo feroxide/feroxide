@@ -1,5 +1,3 @@
-#![feature(const_fn)]
-
 mod atom;
 pub use atom::*;
 
