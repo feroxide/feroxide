@@ -11,6 +11,27 @@ pub mod namings;
 pub mod atoms;
 pub mod molecules;
 
+macro_rules! molecule_from_atom {
+    ($atom:expr) => (
+        Molecule { compounds: &[ MoleculeCompound::from_atom($atom) ] }
+    )
+}
+
+
+#[test]
+fn diatomic_check() {
+    use atoms::*;
+
+    assert_eq!(2, MoleculeCompound::from_atom(HYDROGEN).amount);
+    assert_eq!(2, MoleculeCompound::from_atom(NITROGEN).amount);
+    assert_eq!(2, MoleculeCompound::from_atom(OXYGEN).amount);
+    assert_eq!(2, MoleculeCompound::from_atom(FLUORINE).amount);
+    assert_eq!(2, MoleculeCompound::from_atom(CHLORINE).amount);
+    assert_eq!(2, MoleculeCompound::from_atom(BROMINE).amount);
+    assert_eq!(2, MoleculeCompound::from_atom(IODINE).amount);
+    assert_eq!(1, MoleculeCompound::from_atom(CARBON).amount);
+    assert_eq!(1, MoleculeCompound::from_atom(LITHIUM).amount);
+}
 
 #[test]
 fn reaction_check() {
