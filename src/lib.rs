@@ -166,7 +166,7 @@ fn molecule_mass_calculation() {
     use molecules::*;
 
     assert_eq!(18.015, WATER.mass());
-    assert_eq!(58.43977, TABLE_SALT.mass());
+    assert_eq!(58.439774, TABLE_SALT.mass());
     assert_eq!(342.297, SUGAR.mass());
 }
 

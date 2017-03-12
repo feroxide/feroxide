@@ -1,0 +1,1 @@
+pub const LITHIUM: &'static Atom = &Atom { number: 3, mass: 6.94, symbol: "Li", name: "lithium", is_diatomic: false };

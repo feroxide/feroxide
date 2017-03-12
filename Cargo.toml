@@ -2,5 +2,11 @@
 name = "feroxide"
 version = "0.1.0"
 authors = ["C-Bouthoorn <cbouthoorn19@gmail.com>"]
+build = "src/build.rs"
 
 [dependencies]
+
+[build-dependencies]
+toml = "0.3.1"
+serde = "0.9.11"
+serde_derive = "0.9.11"
