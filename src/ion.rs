@@ -21,7 +21,7 @@ pub trait IonDataMapCharge {
     fn get_charge(&self) -> Option<&IonCharge>;
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub struct Ion<'lifetime> {
     pub molecule: &'lifetime Molecule<'lifetime>,
     pub data: Option<IonDataMap>

@@ -1,37 +1,95 @@
 extern crate feroxide;
 
 use feroxide::*;
-use feroxide::data_atoms::*;
 use feroxide::data_molecules::*;
-use feroxide::data_ions::*;
-use feroxide::data_electron::*;
+use feroxide::data_atoms::*;
+
 
 fn main() {
-    println!("Hydrogen: {:?}", HYDROGEN);
-    println!("Sugar: {}", SUGAR.symbol());
-    println!("Sugar mass: {}", SUGAR.mass());
-    println!("Sulphate: {}", SULPHATE.name());
-
-    println!("{} is called \"{}\" and has mass {}", WATER.symbol(), WATER.name(), WATER.mass());
-
-    let o4 = Ion {
-        molecule: &Molecule { compounds: &[
-            MoleculeCompound { atom: OXYGEN, amount: 4 }
-        ]},
-        data: Some(IonDataMap::charge(-2))
+    // You can create digital molecules with ease
+    let carbondioxide = &Molecule {
+        compounds: &[
+            MoleculeCompound { atom: CARBON, amount: 1 },
+            MoleculeCompound { atom: OXYGEN, amount: 2 }
+        ]
     };
 
-    println!("{}  {}", o4.symbol(), o4.name());
+    // Generate a name
+    let _name = carbondioxide.name();
 
-    println!("sulphate: {} {}", SULPHATE.symbol(), SULPHATE.name());
+    // ... or symbol
+    let symbol = carbondioxide.symbol();
 
-    let ironiii = Ion {
-        molecule: &molecule_from_atom!(IRON),
-        data: Some(IonDataMap::charge(3))
+    // You can calculate the mass per mole
+    let mass_per_mole = carbondioxide.mass();
+
+    // Multiply that with your amount of moles
+    let weight = mass_per_mole * 10.0;
+
+    // To get your data
+    println!("10 moles of {} weigh {} gram(s).", symbol, weight);
+
+
+    // Make some more molecules which we'll use later
+    let carbonic_acid = &Molecule {
+        compounds: & [
+            MoleculeCompound { atom: HYDROGEN, amount: 2 },
+            MoleculeCompound { atom: CARBON, amount: 1 },
+            MoleculeCompound { atom: OXYGEN, amount: 3 }
+        ]
     };
 
-    println!("iron3: {} {}", ironiii.symbol(), ironiii.name());
 
-    println!("The {} ({}) has a charge of {}",
-        ELECTRON.name(), ELECTRON.symbol(), ELECTRON.get_charge().unwrap());
+    // You could also throw some molecules together in a container with a bit of energy
+    let container = Container {
+        contents: &[
+            &ReactionCompound {
+                element: carbondioxide,
+                amount: 1000 // moles
+            },
+
+            &ReactionCompound {
+                element: WATER,
+                amount: 1000 // moles
+            }
+        ],
+
+        available_energy: 100_000f64 // in Joules
+    };
+
+    // Then specify a reaction that will occur
+    // H2O + CO2 --> H2CO3
+    let reaction = &Reaction {
+        lhs: &ReactionSide {
+            compounds: &[
+                &ReactionCompound { element: WATER, amount: 1 },
+                &ReactionCompound { element: carbondioxide, amount: 1 }
+            ]
+        },
+
+        rhs: &ReactionSide {
+            compounds: &[
+                &ReactionCompound { element: carbonic_acid, amount: 1 }
+            ]
+        },
+
+        is_equilibrium: false
+    };
+
+    // Make sure the reaction is valid
+    assert!(reaction.is_valid());
+
+    // Print the reaction in names
+    println!("{}", reaction.name());
+
+    // Print the reaction in symbols
+    println!("{}", reaction.symbol());
+
+    // Print the energy cost
+    println!("Energy cost: {}", reaction.energy_cost());
+
+    // Run the reaction on container
+    // container.react(reaction);
+
+    println!("Energy left: {:?}", container.available_energy);
 }

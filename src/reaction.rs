@@ -1,7 +1,6 @@
 use properties::*;
 use element::*;
 
-use namings::*;
 use types::*;
 
 use std::collections::HashMap;
@@ -15,22 +14,30 @@ pub struct Reaction<'lifetime, T: 'lifetime> where T: Element {
 
 #[derive(Debug)]
 pub struct ReactionSide<'lifetime, T: 'lifetime> where T: Element {
-    pub compounds: &'lifetime [ ReactionCompound<'lifetime, T> ]
+    pub compounds: &'lifetime [ &'lifetime ReactionCompound<'lifetime, T> ]
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq)]
 pub struct ReactionCompound<'lifetime, T: 'lifetime> where T: Element {
     pub element: &'lifetime T,
-    pub amount: u8
+    pub amount: u16
 }
+
+
+impl<'lifetime, T> PartialEq for ReactionCompound<'lifetime, T> where T: Element {
+    fn eq(&self, rhs: &ReactionCompound<T>) -> bool {
+        self.element == rhs.element
+    }
+}
+
 
 
 impl<'lifetime, T> Reaction<'lifetime, T> where T: Element {
-    pub fn check_sides_equal(&self) -> bool {
+    pub fn is_valid(&self) -> bool {
         self.lhs.total_atoms() == self.rhs.total_atoms() && self.lhs.total_charge() == self.lhs.total_charge()
     }
 
-    pub fn delta_energy(&self) -> Energy {
+    pub fn energy_cost(&self) -> Energy {
         self.rhs.energy() - self.lhs.energy()
     }
 
@@ -47,7 +54,7 @@ impl<'lifetime, T> Reaction<'lifetime, T> where T: Element {
         }
 
         for (atom_number, l_amount) in total_left {
-            let r_amount: u8;
+            let r_amount: u16;
 
             match total_right.get(&atom_number) {
                 Some(x) => { r_amount = x.to_owned() },
@@ -85,29 +92,29 @@ impl<'lifetime, T> ReactionSide<'lifetime, T> where T: Element  {
     }
 
     pub fn energy(&self) -> Energy {
-        extern crate rand;
-        rand::random::<f64>()
+        // NOTE: Temporary
+        500.0 - (self.compounds.len() as f64) * 100.0
     }
 
 
-    pub fn total_atoms(&self) -> HashMap<AtomNumber, u8> {
-        let mut atoms: HashMap<AtomNumber, u8> = HashMap::new();
+    pub fn total_atoms(&self) -> HashMap<AtomNumber, u16> {
+        let mut atoms: HashMap<AtomNumber, u16> = HashMap::new();
 
         for reaction_compound in self.compounds {
             if let Some(ref molecule) = reaction_compound.element.get_molecule() {
                 for molecule_compound in molecule.compounds {
                     let atom_number = molecule_compound.atom.number;
 
-                    let old_amount;
-                    if let Some(&amount) = atoms.get(&atom_number) {
-                        old_amount = amount;
+                    let mut amount;
+                    if let Some(&old_amount) = atoms.get(&atom_number) {
+                        amount = old_amount;
                     } else {
-                        old_amount = 0;
+                        amount = 0;
                     }
 
-                    let new_amount = old_amount + molecule_compound.amount * reaction_compound.amount;
+                    amount += (molecule_compound.amount as u16) * reaction_compound.amount;
 
-                    atoms.insert(atom_number, new_amount);
+                    atoms.insert(atom_number, amount);
                 }
             }
         }
@@ -115,6 +122,13 @@ impl<'lifetime, T> ReactionSide<'lifetime, T> where T: Element  {
         return atoms;
     }
 }
+
+impl<'lifetime, T> ReactionCompound<'lifetime, T> where T: Element {
+    pub fn subtract_amount(&mut self, x: u16) {
+        self.amount -= x;
+    }
+}
+
 
 impl<'lifetime, T> Properties for Reaction<'lifetime, T> where T: Element  {
     fn symbol(&self) -> String {
@@ -144,7 +158,7 @@ impl<'lifetime, T> Properties for Reaction<'lifetime, T> where T: Element  {
             name += " → ";
         }
 
-        name += &self.rhs.symbol();
+        name += &self.rhs.name();
 
         return name;
     }
@@ -213,7 +227,7 @@ impl<'lifetime, T> Properties for ReactionCompound<'lifetime, T> where T: Elemen
         let mut name = String::new();
 
         if self.amount > 1 {
-            name += &number_to_greek(self.amount);
+            name += &self.amount.to_string();
         }
 
         name += &self.element.name();

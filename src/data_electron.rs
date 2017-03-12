@@ -4,7 +4,7 @@ pub use types::*;
 pub use element::*;
 pub use properties::*;
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub struct Electron { }
 
 pub const ELECTRON: &'static Electron = &Electron {};

@@ -6,12 +6,12 @@ use properties::*;
 use namings::*;
 use types::*;
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub struct Molecule<'lifetime> {
     pub compounds: &'lifetime [MoleculeCompound<'lifetime>]
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub struct MoleculeCompound<'lifetime> {
     pub atom: &'lifetime Atom,
     pub amount: u8
