@@ -15,10 +15,47 @@ pub mod atoms;
 pub mod molecules;
 pub mod ions;
 
+#[macro_export]
 macro_rules! molecule_from_atom {
     ($atom:expr) => (
         Molecule { compounds: &[ MoleculeCompound::from_atom($atom) ] }
     )
+}
+
+#[macro_export]
+macro_rules! ion_from_molecule {
+    ($molecule:expr) => (
+        Ion { molecule: $molecule, data: Some(IonDataMap::charge(0)) }
+    )
+}
+
+#[macro_export]
+macro_rules! ion_from_atom {
+    ($atom:expr) => (
+        ion_from_molecule!(&molecule_from_atom!($atom))
+    )
+}
+
+
+#[test]
+fn ion_notation_check() {
+    use atoms::*;
+
+    // O₄²⁻  tetraoxygen(-II)
+    let o4 = Ion { molecule: &Molecule { compounds: &[
+        MoleculeCompound { atom: OXYGEN, amount: 4 }
+    ]}, data: Some(IonDataMap::charge(-2)) };
+
+
+    assert_eq!("O₄²⁻", o4.symbol());
+    assert_eq!("tetraoxygen(-II)", o4.name());
+}
+
+#[test]
+fn ion_diatomic_charge() {
+    use atoms::*;
+
+    assert_eq!(2, ion_from_atom!(OXYGEN).molecule.compounds[0].amount);
 }
 
 
@@ -35,6 +72,7 @@ fn diatomic_check() {
     assert_eq!(2, MoleculeCompound::from_atom(IODINE).amount);
     assert_eq!(1, MoleculeCompound::from_atom(CARBON).amount);
     assert_eq!(1, MoleculeCompound::from_atom(LITHIUM).amount);
+    assert_eq!(1, MoleculeCompound::from_atom(SULFUR).amount);
 }
 
 #[test]
@@ -51,6 +89,7 @@ fn atoms_database_check() {
     assert!(! CARBON.is_diatomic);
     assert!(! SULFUR.is_diatomic);
 
+    // Very important
     assert_eq!("aluminium", atoms::ALUMINIUM.name);
 }
 
@@ -94,12 +133,12 @@ fn reaction_check() {
 
     let good_reaction = Reaction {
         lhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 2, molecule: &molecule_from_atom!(SODIUM) },
-            ReactionCompound { amount: 1, molecule: &molecule_from_atom!(CHLORINE) }
+            ReactionCompound { amount: 2, ion: &ion_from_atom!(SODIUM) },
+            ReactionCompound { amount: 1, ion: &ion_from_atom!(CHLORINE) }
         ]},
 
         rhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 2, molecule: TABLE_SALT }
+            ReactionCompound { amount: 2, ion: &ion_from_molecule!(TABLE_SALT) }
         ]},
 
         is_equilibrium: false
@@ -108,12 +147,12 @@ fn reaction_check() {
 
     let wrong_reaction_0 = Reaction {
         lhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 9, molecule: &molecule_from_atom!(SODIUM) },
-            ReactionCompound { amount: 5, molecule: &molecule_from_atom!(CHLORINE) }
+            ReactionCompound { amount: 9, ion: &ion_from_atom!(SODIUM) },
+            ReactionCompound { amount: 5, ion: &ion_from_atom!(CHLORINE) }
         ]},
 
         rhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 3, molecule: TABLE_SALT }
+            ReactionCompound { amount: 3, ion: &ion_from_molecule!(TABLE_SALT) }
         ]},
 
         is_equilibrium: false
@@ -122,11 +161,11 @@ fn reaction_check() {
 
     let wrong_reaction_1 = Reaction {
         lhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 1, molecule: &molecule_from_atom!(LITHIUM) }
+            ReactionCompound { amount: 1, ion: &ion_from_atom!(LITHIUM) }
         ]},
 
         rhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 3, molecule: &molecule_from_atom!(HYDROGEN) }
+            ReactionCompound { amount: 3, ion: &ion_from_atom!(HYDROGEN) }
         ]},
 
         is_equilibrium: false
@@ -134,18 +173,21 @@ fn reaction_check() {
 
     let equilibrium_reaction = Reaction {
         lhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 1, molecule: &molecule_from_atom!(HYDROGEN) }
+            ReactionCompound { amount: 1, ion: &ion_from_atom!(HYDROGEN) }
         ]},
 
         rhs: &ReactionSide { compounds: &[
             ReactionCompound {
                 amount: 2,
-                molecule: &Molecule { compounds: &[
-                    MoleculeCompound {
-                        atom: HYDROGEN,
-                        amount: 1
-                    }
-                ]}
+                ion: &Ion {
+                    molecule: &Molecule { compounds: &[
+                        MoleculeCompound {
+                            atom: HYDROGEN,
+                            amount: 1
+                        }
+                    ]},
+                    data: Some(IonDataMap::charge(0))
+                }
             }
         ]},
 

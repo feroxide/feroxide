@@ -35,7 +35,7 @@ fn is_vowel(letter: char) -> bool {
 }
 
 fn last_char(word: &str) -> char {
-    word.chars().nth(word.len()-1).unwrap()
+    word.chars().nth(word.len() - 1).unwrap()
 }
 
 pub fn number_to_greek(n: u8) -> String {
@@ -62,11 +62,10 @@ pub fn number_to_greek(n: u8) -> String {
         let factor_ten: u8 = n / 10;
 
         if n == factor_ten*10 {
-            return basic_number_to_greek(factor_ten, true) + "conta";
+            basic_number_to_greek(factor_ten, true) + "conta"
         } else {
-            return
-                basic_number_to_greek(n - factor_ten*10, true) +
-                &basic_number_to_greek(factor_ten, true) + "conta";
+            basic_number_to_greek(n - factor_ten*10, true) +
+                &basic_number_to_greek(factor_ten, true) + "conta"
         }
     }
 
@@ -139,7 +138,7 @@ pub fn superscript(n: u8) -> String {
     else if n == 9 { "⁹".to_owned() }
 
     else if n >= 10 {
-        return superscript(n / 10) + &superscript(n % 10);
+        superscript(n / 10) + &superscript(n % 10)
     }
 
     else {
@@ -148,11 +147,17 @@ pub fn superscript(n: u8) -> String {
 }
 
 pub fn ion_superscript(n: i8) -> String {
-    if n < 0 {
-        return superscript((-n) as u8) + & "⁻".to_owned();
+    // TODO: 1+  ->  +
+
+    if n == -1 {
+        "⁻".to_owned()
+    } else if n == 1 {
+        "⁺".to_owned()
+    } else if n < 0 {
+        superscript((-n) as u8) + &"⁻".to_owned()
     } else if n > 0 {
-        return superscript(n as u8) + & "⁺".to_owned();
+        superscript(n as u8) + &"⁺".to_owned()
     } else {
-        return superscript(n as u8);
+        superscript(n as u8)
     }
 }

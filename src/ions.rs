@@ -1,39 +1,37 @@
 use ion::*;
 use molecule::*;
+use atom::*;
+
 use atoms::*;
 
-pub fn calculate_charge(compounds: &'static [IonCompound<'static>]) -> i8 {
-    let mut total_charge: i8 = 0;
-
-    for compound in compounds {
-        total_charge += (compound.amount as i8) * compound.charge;
-    }
-
-    return total_charge;
-}
-
-const SULPHATE_COMPOUNDS: &'static [IonCompound<'static>] = &[
-    IonCompound {
-        molecule: Molecule { compounds: &[
-            MoleculeCompound {
-                atom: SULFUR,
-                amount: 1
+pub const ELECTRON: &'static Ion<'static> = &Ion {
+    molecule: &Molecule { compounds: &[
+        MoleculeCompound {
+            atom: &Atom {
+                number: 0,
+                mass: 0.0,  // approx
+                group: 0, // No group
+                symbol: "e",
+                name: "electron",
+                is_diatomic: false
             },
-            MoleculeCompound {
-                atom: OXYGEN,
-                amount: 4
-            }
-        ]},
-        amount: 1,
-        charge: -2
-    }
-];
-
-/*
-const SULPHATE_CHARGE: i8 = calculate_charge(SULPHATE_COMPOUNDS);
-*/
-const SULPHATE_CHARGE: i8 = -2;
+            amount: 1
+        }
+    ]},
+    data: None
+};
 
 
 pub const SULPHATE: &'static Ion<'static> = &Ion {
-    compounds: SULPHATE_COMPOUNDS, total_charge: SULPHATE_CHARGE };
+    molecule: &Molecule { compounds: &[
+        MoleculeCompound {
+            atom: SULFUR,
+            amount: 1
+        },
+        MoleculeCompound {
+            atom: OXYGEN,
+            amount: 4
+        }
+    ]},
+    data: None
+};

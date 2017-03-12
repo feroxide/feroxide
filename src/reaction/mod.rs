@@ -1,5 +1,6 @@
 use atom::*;
-use molecule::*;
+use ion::*;
+use namings::*;
 
 use std::collections::HashMap;
 
@@ -17,33 +18,21 @@ pub struct ReactionSide<'lifetime> {
 
 #[derive(Debug)]
 pub struct ReactionCompound<'lifetime> {
-    pub molecule: &'lifetime Molecule<'lifetime>,
+    pub ion: &'lifetime Ion<'lifetime>,
     pub amount: u8
 }
 
 
 impl<'lifetime> Reaction<'lifetime> {
     pub fn check_sides_equal(&self) -> bool {
-        self.lhs.total_atoms() == self.rhs.total_atoms()
-    }
-
-    pub fn to_string(&self) -> String {
-        let mut string = String::new();
-
-        string += &self.lhs.to_string();
-
-        if self.is_equilibrium {
-            string += " ↔ ";
-        } else {
-            string += " → ";
-        }
-
-        string += &self.rhs.to_string();
-
-        return string;
+        self.lhs.total_atoms() == self.rhs.total_atoms() && self.lhs.total_charge() == self.lhs.total_charge()
     }
 
     pub fn equalise(&self) -> bool {
+        #![allow(unreachable_code)]
+        panic!("The equalise function is not yet ready.");
+
+
         let total_left = self.lhs.total_atoms();
         let total_right = self.rhs.total_atoms();
 
@@ -60,7 +49,7 @@ impl<'lifetime> Reaction<'lifetime> {
             }
 
             if r_amount == 0 {
-                panic!("It's impossible to make this reaction work: {}", self.to_string());
+                panic!("It's impossible to make this reaction work: {:?}", self);
             }
 
             if l_amount != r_amount {
@@ -77,54 +66,148 @@ impl<'lifetime> Reaction<'lifetime> {
 }
 
 impl<'lifetime> ReactionSide<'lifetime> {
+    pub fn total_charge(&self) -> i8 {
+        let mut total_charge = 0;
+
+        for compound in self.compounds {
+            if let Some(charge) = compound.ion.get_charge() {
+                total_charge += charge;
+            }
+        }
+
+        return total_charge;
+    }
+
     pub fn total_atoms(&self) -> HashMap<AtomNumber, u8> {
         let mut atoms: HashMap<AtomNumber, u8> = HashMap::new();
 
-        for compound in self.compounds {
-            for molcompound in compound.molecule.compounds {
-                let number = molcompound.atom.number;
+        for reaction_compound in self.compounds {
+            for molecule_compound in reaction_compound.ion.molecule.compounds {
+                let atom_number = molecule_compound.atom.number;
 
                 let old_amount;
-                match atoms.get(&number) {
-                    Some(&amount) => { old_amount = amount },
-                    None => { old_amount = 0 }
-                };
+                if let Some(&amount) = atoms.get(&atom_number) {
+                    old_amount = amount;
+                } else {
+                    old_amount = 0;
+                }
 
-                let new_amount = old_amount + molcompound.amount * compound.amount;
+                let new_amount = old_amount + molecule_compound.amount * reaction_compound.amount;
 
-                atoms.insert(number, new_amount);
+                atoms.insert(atom_number, new_amount);
             }
         }
 
         return atoms;
     }
+}
 
-    pub fn to_string(&self) -> String {
-        let mut string = String::new();
+impl<'lifetime> Properties for Reaction<'lifetime> {
+    fn symbol(&self) -> String {
+        let mut symbol = String::new();
 
-        let len = self.compounds.len();
-        for (i, compound) in self.compounds.iter().enumerate() {
-            string += &compound.to_string();
+        symbol += &self.lhs.symbol();
 
-            if i < len - 1 {
-                string += " + ";
-            }
+        if self.is_equilibrium {
+            symbol += " ↔ ";
+        } else {
+            symbol += " → ";
         }
 
-        return string;
+        symbol += &self.rhs.symbol();
+
+        return symbol;
+    }
+
+    fn name(&self) -> String {
+        let mut name = String::new();
+
+        name += &self.lhs.name();
+
+        if self.is_equilibrium {
+            name += " ↔ ";
+        } else {
+            name += " → ";
+        }
+
+        name += &self.rhs.symbol();
+
+        return name;
+    }
+
+    fn mass(&self) -> AtomMass {
+        panic!("Reaction does not have a mass.");
     }
 }
 
-impl<'lifetime> ReactionCompound<'lifetime> {
-    pub fn to_string(&self) -> String {
-        let mut string = String::new();
 
-        if self.amount > 1 {
-            string += &self.amount.to_string();
+impl<'lifetime> Properties for ReactionSide<'lifetime> {
+    fn symbol(&self) -> String {
+        let mut symbol = String::new();
+
+        for (i, reaction_compound) in self.compounds.iter().enumerate() {
+            if i > 0 {
+                symbol += " + ";
+            }
+
+            symbol += &reaction_compound.symbol();
         }
 
-        string += &self.molecule.symbol();
+        return symbol;
+    }
 
-        return string;
+    fn name(&self) -> String {
+        let mut name = String::new();
+
+        for (i, reaction_compound) in self.compounds.iter().enumerate() {
+            if i > 0 {
+                name += " + ";
+            }
+
+            name += &reaction_compound.name();
+        }
+
+        return name;
+    }
+
+    fn mass(&self) -> AtomMass {
+        let mut mass = 0.0;
+
+        for reaction_compound in self.compounds {
+            mass += reaction_compound.mass();
+        }
+
+        return mass;
+    }
+}
+
+
+impl<'lifetime> Properties for ReactionCompound<'lifetime> {
+    fn symbol(&self) -> String {
+        let mut symbol = String::new();
+
+        if self.amount > 1 {
+            symbol += &self.amount.to_string();
+        }
+
+        symbol += &self.ion.symbol();
+
+        return symbol;
+    }
+
+    fn name(&self) -> String {
+        let mut name = String::new();
+
+        if self.amount > 1 {
+            name += &number_to_greek(self.amount);
+        }
+
+        name += &self.ion.name();
+
+        return name;
+    }
+
+    fn mass(&self) -> AtomMass {
+        return (self.amount as AtomMass) * self.ion.mass();
     }
 }
