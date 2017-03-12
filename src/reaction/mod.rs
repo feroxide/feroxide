@@ -33,7 +33,7 @@ impl<'lifetime> Reaction<'lifetime> {
         string += &self.lhs.to_string();
 
         if self.is_equilibrium {
-            string += " ←→ ";
+            string += " ↔ ";
         } else {
             string += " → ";
         }

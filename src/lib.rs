@@ -158,7 +158,7 @@ fn reaction_check() {
     assert!(! wrong_reaction_1.check_sides_equal());
 
     assert_eq!("2Na + Cl₂ → 2NaCl", good_reaction.to_string());
-    assert_eq!("H₂ ←→ 2H", equilibrium_reaction.to_string());
+    assert_eq!("H₂ ↔ 2H", equilibrium_reaction.to_string());
 }
 
 #[test]
