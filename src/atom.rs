@@ -1,5 +1,6 @@
-pub type AtomNumber = u8;
-pub type AtomMass = f32;
+use properties::*;
+
+use types::*;
 
 #[derive(Debug)]
 pub struct Atom {
@@ -7,19 +8,9 @@ pub struct Atom {
     pub mass: AtomMass,
     pub symbol: &'static str,
     pub name: &'static str,
-    pub group: u8,
+    pub group: AtomGroup,
     pub is_diatomic: bool
 }
-
-
-pub trait Properties {
-    fn symbol(&self) -> String;
-    fn name(&self) -> String;
-    fn mass(&self) -> AtomMass;
-
-    fn to_string(&self) -> String { self.symbol() }
-}
-
 
 impl Properties for Atom {
     fn symbol(&self) -> String {

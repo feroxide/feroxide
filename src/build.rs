@@ -2,13 +2,15 @@
 extern crate serde_derive;
 extern crate toml;
 
+
+mod types;
+use types::*;
+
 use std::io::prelude::*;
 use std::fs::File;
 
 use std::collections::HashMap;
 
-mod atom;
-use atom::{ AtomNumber, AtomMass };
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Config {
@@ -20,15 +22,15 @@ struct Atom {
     pub number: AtomNumber,
     pub symbol: String,
     pub name: String,
-    pub group: u8,
+    pub group: AtomGroup,
     pub mass: AtomMass,
     pub diatomic: bool
 }
 
 
 fn main() {
-    let mut atoms_rs_file = File::create("src/atoms.rs").unwrap();
-    let mut atoms_toml_file = File::open("src/atoms.toml").unwrap();
+    let mut atoms_rs_file = File::create("src/data_atoms.rs").unwrap();
+    let mut atoms_toml_file = File::open("src/data_atoms.toml").unwrap();
 
     /*
     let mut atoms: HashMap<String, Atom> = HashMap::new();

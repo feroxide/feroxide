@@ -1,6 +1,10 @@
 use atom::*;
-use namings::*;
 
+use element::*;
+use properties::*;
+
+use namings::*;
+use types::*;
 
 #[derive(Debug)]
 pub struct Molecule<'lifetime> {
@@ -11,6 +15,13 @@ pub struct Molecule<'lifetime> {
 pub struct MoleculeCompound<'lifetime> {
     pub atom: &'lifetime Atom,
     pub amount: u8
+}
+
+
+impl<'lifetime> Element for Molecule<'lifetime> {
+    fn get_molecule(&self) -> &Molecule {
+        return self;
+    }
 }
 
 

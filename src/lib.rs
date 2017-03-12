@@ -1,19 +1,28 @@
-mod atom;
-pub use atom::*;
+mod element;
+mod properties;
+pub use element::*;
+pub use properties::*;
 
+mod atom;
 mod molecule;
+mod ion;
+
+pub use atom::*;
 pub use molecule::*;
+pub use ion::*;
 
 mod reaction;
 pub use reaction::*;
 
-mod ion;
-pub use ion::*;
+mod namings;
+pub use namings::*;
 
-pub mod namings;
-pub mod atoms;
-pub mod molecules;
-pub mod ions;
+mod types;
+pub use types::*;
+
+pub mod data_atoms;
+pub mod data_molecules;
+pub mod data_ions;
 
 #[macro_export]
 macro_rules! molecule_from_atom {
@@ -37,31 +46,48 @@ macro_rules! ion_from_atom {
 }
 
 
+// tests \\
+
+
 #[test]
 fn ion_notation_check() {
-    use atoms::*;
+    use data_atoms::*;
 
     // O₄²⁻  tetraoxygen(-II)
-    let o4 = Ion { molecule: &Molecule { compounds: &[
-        MoleculeCompound { atom: OXYGEN, amount: 4 }
-    ]}, data: Some(IonDataMap::charge(-2)) };
+    let o4 = Ion {
+        molecule: &Molecule { compounds: &[
+            MoleculeCompound { atom: OXYGEN, amount: 4 }
+        ]},
+        data: Some(IonDataMap::charge(-2))
+    };
 
 
     assert_eq!("O₄²⁻", o4.symbol());
     assert_eq!("tetraoxygen(-II)", o4.name());
 }
 
-#[test]
-fn ion_diatomic_charge() {
-    use atoms::*;
 
-    assert_eq!(2, ion_from_atom!(OXYGEN).molecule.compounds[0].amount);
+#[test]
+fn ion_charge_calculation() {
+    use data_ions::*;
+
+    assert_eq!(-2, SULPHATE.get_charge().unwrap());
+    assert_eq!(-1, HYDROXIDE.get_charge().unwrap());
+    assert_eq!(1, AMMONIUM.get_charge().unwrap());
+}
+
+#[test]
+fn electron_data() {
+    use data_ions::*;
+
+    assert_eq!(-1, ELECTRON.get_charge().unwrap());
+    assert_eq!("e⁻", ELECTRON.symbol());
 }
 
 
 #[test]
 fn diatomic_check() {
-    use atoms::*;
+    use data_atoms::*;
 
     assert_eq!(2, MoleculeCompound::from_atom(HYDROGEN).amount);
     assert_eq!(2, MoleculeCompound::from_atom(NITROGEN).amount);
@@ -77,7 +103,7 @@ fn diatomic_check() {
 
 #[test]
 fn atoms_database_check() {
-    use atoms::*;
+    use data_atoms::*;
 
     assert_eq!(1, HYDROGEN.number);
     assert_eq!("oxygen", OXYGEN.name);
@@ -90,7 +116,7 @@ fn atoms_database_check() {
     assert!(! SULFUR.is_diatomic);
 
     // Very important
-    assert_eq!("aluminium", atoms::ALUMINIUM.name);
+    assert_eq!("aluminium", ALUMINIUM.name);
 }
 
 #[test]
@@ -128,17 +154,17 @@ fn roman_namings() {
 
 #[test]
 fn reaction_check() {
-    use atoms::*;
-    use molecules::*;
+    use data_atoms::*;
+    use data_molecules::*;
 
     let good_reaction = Reaction {
         lhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 2, ion: &ion_from_atom!(SODIUM) },
-            ReactionCompound { amount: 1, ion: &ion_from_atom!(CHLORINE) }
+            ReactionCompound { amount: 1, element: &molecule_from_atom!(CARBON) },
+            ReactionCompound { amount: 1, element: &molecule_from_atom!(OXYGEN) }
         ]},
 
         rhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 2, ion: &ion_from_molecule!(TABLE_SALT) }
+            ReactionCompound { amount: 1, element: CO2 }
         ]},
 
         is_equilibrium: false
@@ -147,12 +173,12 @@ fn reaction_check() {
 
     let wrong_reaction_0 = Reaction {
         lhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 9, ion: &ion_from_atom!(SODIUM) },
-            ReactionCompound { amount: 5, ion: &ion_from_atom!(CHLORINE) }
+            ReactionCompound { amount: 9, element: &molecule_from_atom!(CARBON) },
+            ReactionCompound { amount: 5, element: &molecule_from_atom!(OXYGEN) }
         ]},
 
         rhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 3, ion: &ion_from_molecule!(TABLE_SALT) }
+            ReactionCompound { amount: 3, element: CO2 }
         ]},
 
         is_equilibrium: false
@@ -161,11 +187,11 @@ fn reaction_check() {
 
     let wrong_reaction_1 = Reaction {
         lhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 1, ion: &ion_from_atom!(LITHIUM) }
+            ReactionCompound { amount: 1, element: &molecule_from_atom!(LITHIUM) }
         ]},
 
         rhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 3, ion: &ion_from_atom!(HYDROGEN) }
+            ReactionCompound { amount: 3, element: &molecule_from_atom!(HYDROGEN) }
         ]},
 
         is_equilibrium: false
@@ -173,21 +199,18 @@ fn reaction_check() {
 
     let equilibrium_reaction = Reaction {
         lhs: &ReactionSide { compounds: &[
-            ReactionCompound { amount: 1, ion: &ion_from_atom!(HYDROGEN) }
+            ReactionCompound { amount: 1, element: &molecule_from_atom!(HYDROGEN) }
         ]},
 
         rhs: &ReactionSide { compounds: &[
             ReactionCompound {
                 amount: 2,
-                ion: &Ion {
-                    molecule: &Molecule { compounds: &[
-                        MoleculeCompound {
-                            atom: HYDROGEN,
-                            amount: 1
-                        }
-                    ]},
-                    data: Some(IonDataMap::charge(0))
-                }
+                element: &Molecule { compounds: &[
+                    MoleculeCompound {
+                        atom: HYDROGEN,
+                        amount: 1
+                    }
+                ]}
             }
         ]},
 
@@ -199,16 +222,72 @@ fn reaction_check() {
     assert!(! wrong_reaction_0.check_sides_equal());
     assert!(! wrong_reaction_1.check_sides_equal());
 
-    assert_eq!("2Na + Cl₂ → 2NaCl", good_reaction.to_string());
+    // TODO: Ammonium reactions
+
+    assert_eq!("C + O₂ → CO₂", good_reaction.to_string());
     assert_eq!("H₂ ↔ 2H", equilibrium_reaction.to_string());
 }
 
+
+#[test]
+#[should_panic]
+fn equalise() {
+    use data_atoms::*;
+    use data_molecules::*;
+
+    let water_reaction = Reaction {
+        lhs: &ReactionSide { compounds: &[
+            ReactionCompound { element: &molecule_from_atom!(HYDROGEN), amount: 0 },
+            ReactionCompound { element: &molecule_from_atom!(OXYGEN), amount: 0 }
+        ]},
+
+        rhs: &ReactionSide { compounds: &[
+            ReactionCompound { element: WATER, amount: 0 }
+        ]},
+
+        is_equilibrium: false
+    };
+
+    water_reaction.equalise();
+}
+
+
+#[test]
+fn compare_similiar_elements_only() {
+    use data_molecules::*;
+    use data_ions::*;
+
+    let _ = Reaction {
+        lhs: &ReactionSide { compounds: &[
+            ReactionCompound { element: WATER, amount: 1 }
+        ]},
+
+        rhs: &ReactionSide { compounds: &[
+            ReactionCompound { element: CO2, amount: 1 }
+        ]},
+
+        is_equilibrium: true
+    };
+
+    let _ = Reaction {
+        lhs: &ReactionSide { compounds: &[
+            ReactionCompound { element: ELECTRON, amount: 1 }
+        ]},
+
+        rhs: &ReactionSide { compounds: &[
+            ReactionCompound { element: SULPHATE, amount: 1 }
+        ]},
+
+        is_equilibrium: true
+    };
+}
+
+
 #[test]
 fn molecule_mass_calculation() {
-    use molecules::*;
+    use data_molecules::*;
 
     assert_eq!(18.015, WATER.mass());
-    assert_eq!(58.439774, TABLE_SALT.mass());
     assert_eq!(342.297, SUGAR.mass());
 }
 

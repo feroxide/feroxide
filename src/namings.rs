@@ -1,3 +1,5 @@
+use types::*;
+
 fn basic_number_to_greek(n: u8, tenplus: bool) -> String {
     if n == 0 {
         "0?".to_owned()
@@ -146,9 +148,7 @@ pub fn superscript(n: u8) -> String {
     }
 }
 
-pub fn ion_superscript(n: i8) -> String {
-    // TODO: 1+  ->  +
-
+pub fn ion_superscript(n: IonCharge) -> String {
     if n == -1 {
         "⁻".to_owned()
     } else if n == 1 {

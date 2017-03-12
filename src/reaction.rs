@@ -1,29 +1,31 @@
-use atom::*;
-use ion::*;
+use properties::*;
+use element::*;
+
 use namings::*;
+use types::*;
 
 use std::collections::HashMap;
 
 #[derive(Debug)]
-pub struct Reaction<'lifetime> {
-    pub lhs: &'lifetime ReactionSide<'lifetime>,
-    pub rhs: &'lifetime ReactionSide<'lifetime>,
+pub struct Reaction<'lifetime, T: 'lifetime> where T: Element {
+    pub lhs: &'lifetime ReactionSide<'lifetime, T>,
+    pub rhs: &'lifetime ReactionSide<'lifetime, T>,
     pub is_equilibrium: bool
 }
 
 #[derive(Debug)]
-pub struct ReactionSide<'lifetime> {
-    pub compounds: &'lifetime [ ReactionCompound<'lifetime> ]
+pub struct ReactionSide<'lifetime, T: 'lifetime> where T: Element {
+    pub compounds: &'lifetime [ ReactionCompound<'lifetime, T> ]
 }
 
 #[derive(Debug)]
-pub struct ReactionCompound<'lifetime> {
-    pub ion: &'lifetime Ion<'lifetime>,
+pub struct ReactionCompound<'lifetime, T: 'lifetime> where T: Element {
+    pub element: &'lifetime T,
     pub amount: u8
 }
 
 
-impl<'lifetime> Reaction<'lifetime> {
+impl<'lifetime, T> Reaction<'lifetime, T> where T: Element {
     pub fn check_sides_equal(&self) -> bool {
         self.lhs.total_atoms() == self.rhs.total_atoms() && self.lhs.total_charge() == self.lhs.total_charge()
     }
@@ -65,12 +67,12 @@ impl<'lifetime> Reaction<'lifetime> {
     }
 }
 
-impl<'lifetime> ReactionSide<'lifetime> {
-    pub fn total_charge(&self) -> i8 {
+impl<'lifetime, T> ReactionSide<'lifetime, T> where T: Element  {
+    pub fn total_charge(&self) -> IonCharge {
         let mut total_charge = 0;
 
         for compound in self.compounds {
-            if let Some(charge) = compound.ion.get_charge() {
+            if let Some(charge) = compound.element.get_charge() {
                 total_charge += charge;
             }
         }
@@ -82,7 +84,7 @@ impl<'lifetime> ReactionSide<'lifetime> {
         let mut atoms: HashMap<AtomNumber, u8> = HashMap::new();
 
         for reaction_compound in self.compounds {
-            for molecule_compound in reaction_compound.ion.molecule.compounds {
+            for molecule_compound in reaction_compound.element.get_molecule().compounds {
                 let atom_number = molecule_compound.atom.number;
 
                 let old_amount;
@@ -102,7 +104,7 @@ impl<'lifetime> ReactionSide<'lifetime> {
     }
 }
 
-impl<'lifetime> Properties for Reaction<'lifetime> {
+impl<'lifetime, T> Properties for Reaction<'lifetime, T> where T: Element  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -141,7 +143,7 @@ impl<'lifetime> Properties for Reaction<'lifetime> {
 }
 
 
-impl<'lifetime> Properties for ReactionSide<'lifetime> {
+impl<'lifetime, T> Properties for ReactionSide<'lifetime, T> where T: Element  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -182,7 +184,7 @@ impl<'lifetime> Properties for ReactionSide<'lifetime> {
 }
 
 
-impl<'lifetime> Properties for ReactionCompound<'lifetime> {
+impl<'lifetime, T> Properties for ReactionCompound<'lifetime, T> where T: Element  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -190,7 +192,7 @@ impl<'lifetime> Properties for ReactionCompound<'lifetime> {
             symbol += &self.amount.to_string();
         }
 
-        symbol += &self.ion.symbol();
+        symbol += &self.element.symbol();
 
         return symbol;
     }
@@ -202,12 +204,12 @@ impl<'lifetime> Properties for ReactionCompound<'lifetime> {
             name += &number_to_greek(self.amount);
         }
 
-        name += &self.ion.name();
+        name += &self.element.name();
 
         return name;
     }
 
     fn mass(&self) -> AtomMass {
-        return (self.amount as AtomMass) * self.ion.mass();
+        return (self.amount as AtomMass) * self.element.mass();
     }
 }
