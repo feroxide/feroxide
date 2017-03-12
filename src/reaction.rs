@@ -30,6 +30,10 @@ impl<'lifetime, T> Reaction<'lifetime, T> where T: Element {
         self.lhs.total_atoms() == self.rhs.total_atoms() && self.lhs.total_charge() == self.lhs.total_charge()
     }
 
+    pub fn delta_energy(&self) -> Energy {
+        self.rhs.energy() - self.lhs.energy()
+    }
+
     pub fn equalise(&self) -> bool {
         #![allow(unreachable_code)]
         panic!("The equalise function is not yet ready.");
@@ -80,23 +84,31 @@ impl<'lifetime, T> ReactionSide<'lifetime, T> where T: Element  {
         return total_charge;
     }
 
+    pub fn energy(&self) -> Energy {
+        extern crate rand;
+        rand::random::<f64>()
+    }
+
+
     pub fn total_atoms(&self) -> HashMap<AtomNumber, u8> {
         let mut atoms: HashMap<AtomNumber, u8> = HashMap::new();
 
         for reaction_compound in self.compounds {
-            for molecule_compound in reaction_compound.element.get_molecule().compounds {
-                let atom_number = molecule_compound.atom.number;
+            if let Some(ref molecule) = reaction_compound.element.get_molecule() {
+                for molecule_compound in molecule.compounds {
+                    let atom_number = molecule_compound.atom.number;
 
-                let old_amount;
-                if let Some(&amount) = atoms.get(&atom_number) {
-                    old_amount = amount;
-                } else {
-                    old_amount = 0;
+                    let old_amount;
+                    if let Some(&amount) = atoms.get(&atom_number) {
+                        old_amount = amount;
+                    } else {
+                        old_amount = 0;
+                    }
+
+                    let new_amount = old_amount + molecule_compound.amount * reaction_compound.amount;
+
+                    atoms.insert(atom_number, new_amount);
                 }
-
-                let new_amount = old_amount + molecule_compound.amount * reaction_compound.amount;
-
-                atoms.insert(atom_number, new_amount);
             }
         }
 

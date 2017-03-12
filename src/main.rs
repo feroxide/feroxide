@@ -4,6 +4,7 @@ use feroxide::*;
 use feroxide::data_atoms::*;
 use feroxide::data_molecules::*;
 use feroxide::data_ions::*;
+use feroxide::data_electron::*;
 
 fn main() {
     println!("Hydrogen: {:?}", HYDROGEN);

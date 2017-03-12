@@ -131,7 +131,7 @@ impl<'lifetime> Element for Ion<'lifetime> {
         }
     }
 
-    fn get_molecule(&self) -> &Molecule {
-        self.molecule
+    fn get_molecule(&self) -> Option<&Molecule> {
+        Some(self.molecule)
     }
 }

@@ -23,6 +23,7 @@ pub use types::*;
 pub mod data_atoms;
 pub mod data_molecules;
 pub mod data_ions;
+pub mod data_electron;
 
 #[macro_export]
 macro_rules! molecule_from_atom {
@@ -78,7 +79,7 @@ fn ion_charge_calculation() {
 
 #[test]
 fn electron_data() {
-    use data_ions::*;
+    use data_electron::*;
 
     assert_eq!(-1, ELECTRON.get_charge().unwrap());
     assert_eq!("e⁻", ELECTRON.symbol());
@@ -271,7 +272,7 @@ fn compare_similiar_elements_only() {
 
     let _ = Reaction {
         lhs: &ReactionSide { compounds: &[
-            ReactionCompound { element: ELECTRON, amount: 1 }
+            ReactionCompound { element: AMMONIUM, amount: 1 }
         ]},
 
         rhs: &ReactionSide { compounds: &[

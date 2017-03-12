@@ -19,8 +19,8 @@ pub struct MoleculeCompound<'lifetime> {
 
 
 impl<'lifetime> Element for Molecule<'lifetime> {
-    fn get_molecule(&self) -> &Molecule {
-        return self;
+    fn get_molecule(&self) -> Option<&Molecule> {
+        Some(self)
     }
 }
 
