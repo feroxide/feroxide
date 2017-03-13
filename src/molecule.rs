@@ -1,10 +1,9 @@
-use atom::*;
-
-use element::*;
-use properties::*;
-
-use namings::*;
 use types::*;
+use namings::*;
+use properties::*;
+use atom::*;
+use element::*;
+
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
 pub struct Molecule<'lifetime> {
@@ -15,13 +14,6 @@ pub struct Molecule<'lifetime> {
 pub struct MoleculeCompound {
     pub atom: Atom,
     pub amount: u8
-}
-
-
-impl<'lifetime> Element for Molecule<'lifetime> {
-    fn get_molecule(&self) -> Option<&Molecule> {
-        Some(self)
-    }
 }
 
 
@@ -69,6 +61,7 @@ impl<'lifetime> Properties for Molecule<'lifetime> {
     }
 }
 
+
 impl Properties for MoleculeCompound {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
@@ -96,5 +89,16 @@ impl Properties for MoleculeCompound {
 
     fn mass(&self) -> AtomMass {
         return (self.amount as AtomMass) * self.atom.mass;
+    }
+}
+
+
+impl<'lifetime> Element for Molecule<'lifetime> {
+    fn get_charge(&self) -> Option<IonCharge> {
+        Some(0)
+    }
+
+    fn get_molecule(&self) -> Option<&Molecule> {
+        Some(self)
     }
 }

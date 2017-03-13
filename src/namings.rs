@@ -1,5 +1,6 @@
 use types::*;
 
+
 fn basic_number_to_greek(n: u8, tenplus: bool) -> String {
     if n == 0 {
         "0?".to_owned()
@@ -32,13 +33,16 @@ fn basic_number_to_greek(n: u8, tenplus: bool) -> String {
     }
 }
 
+
 fn is_vowel(letter: char) -> bool {
     letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'u'
 }
 
+
 fn last_char(word: &str) -> char {
     word.chars().nth(word.len() - 1).unwrap()
 }
+
 
 pub fn number_to_greek(n: u8) -> String {
     if n <= 12 || n == 20 || n == 30 {

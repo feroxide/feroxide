@@ -2,6 +2,7 @@ use properties::*;
 
 use types::*;
 
+
 #[derive(Debug)]
 pub struct Atom {
     pub number: AtomNumber,
@@ -11,6 +12,7 @@ pub struct Atom {
     pub group: AtomGroup,
     pub is_diatomic: bool
 }
+
 
 impl Eq for Atom {}
 

@@ -1,9 +1,11 @@
+use types::*;
 use properties::*;
+use molecule::*;
 use element::*;
 
-use types::*;
-
 use std::collections::HashMap;
+
+
 
 #[derive(Debug, Copy, Clone)]
 pub struct Reaction<'lifetime, T: 'lifetime> where T: Element {
@@ -12,10 +14,12 @@ pub struct Reaction<'lifetime, T: 'lifetime> where T: Element {
     pub is_equilibrium: bool
 }
 
+
 #[derive(Debug, Copy, Clone)]
 pub struct ReactionSide<'lifetime, T: 'lifetime> where T: Element {
     pub compounds: &'lifetime [ ReactionCompound<T> ]
 }
+
 
 #[derive(Debug, Eq, Copy, Clone)]
 pub struct ReactionCompound<T> where T: Element {
@@ -24,17 +28,10 @@ pub struct ReactionCompound<T> where T: Element {
 }
 
 
-
-impl<T> PartialEq for ReactionCompound<T> where T: Element {
-    fn eq(&self, rhs: &ReactionCompound<T>) -> bool {
-        self.element == rhs.element
-    }
-}
-
-
 impl<'lifetime, T> Reaction<'lifetime, T> where T: Element {
     pub fn is_valid(&self) -> bool {
-        self.lhs.total_atoms() == self.rhs.total_atoms() && self.lhs.total_charge() == self.lhs.total_charge()
+        self.lhs.total_atoms() == self.rhs.total_atoms()
+        && self.lhs.total_charge() == self.lhs.total_charge()
     }
 
     pub fn energy_cost(&self) -> Energy {
@@ -129,6 +126,12 @@ impl<T> ReactionCompound<T> where T: Element {
     }
 }
 
+
+impl<T> PartialEq for ReactionCompound<T> where T: Element {
+    fn eq(&self, rhs: &ReactionCompound<T>) -> bool {
+        self.element == rhs.element
+    }
+}
 
 impl<'lifetime, T> Properties for Reaction<'lifetime, T> where T: Element  {
     fn symbol(&self) -> String {
@@ -237,5 +240,16 @@ impl<T> Properties for ReactionCompound<T> where T: Element  {
 
     fn mass(&self) -> AtomMass {
         return (self.amount as AtomMass) * self.element.mass();
+    }
+}
+
+
+impl<T> Element for ReactionCompound<T> where T: Element {
+    fn get_charge(&self) -> Option<IonCharge> {
+        self.element.get_charge()
+    }
+
+    fn get_molecule(&self) -> Option<&Molecule> {
+        self.element.get_molecule()
     }
 }

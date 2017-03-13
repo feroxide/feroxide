@@ -1,8 +1,8 @@
 extern crate feroxide;
 
 use feroxide::*;
-use feroxide::data_molecules::*;
 use feroxide::data_atoms::*;
+use feroxide::data_molecules::*;
 
 
 fn main() {

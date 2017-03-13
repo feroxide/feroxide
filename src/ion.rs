@@ -1,24 +1,18 @@
+use types::*;
+use namings::*;
+use properties::*;
+use element::*;
 use atom::*;
 use molecule::*;
 
-use element::*;
-use properties::*;
-
-use namings::*;
-use types::*;
-
 use std::collections::HashMap;
+
+pub type IonDataMap = HashMap<IonData, IonCharge>;
+
 
 #[derive(Debug, Hash, Eq, PartialEq)]
 pub enum IonData {
     CHARGE
-}
-
-pub type IonDataMap = HashMap<IonData, IonCharge>;
-
-pub trait IonDataMapCharge {
-    fn charge(_: IonCharge) -> IonDataMap;
-    fn get_charge(&self) -> Option<&IonCharge>;
 }
 
 #[derive(Debug, Eq, PartialEq)]
@@ -26,6 +20,31 @@ pub struct Ion<'lifetime> {
     pub molecule: Molecule<'lifetime>,
     pub data: Option<IonDataMap>
 }
+
+
+pub trait IonDataMapCharge {
+    fn charge(_: IonCharge) -> IonDataMap;
+    fn get_charge(&self) -> Option<&IonCharge>;
+}
+
+
+pub fn charge_of_atom(atom: &Atom) -> IonCharge {
+    let group = atom.group;
+    let number = atom.number;
+
+    if group == 0 { -1 }  // electron
+    else if group == 1 { 1 }
+    else if group == 2 { 2 }
+    else if group == 15 && number <= 15 { -3 }
+    else if group == 16 && number <= 34 { -2 }
+    else if group == 17 && number <= 53 { -1 }
+    else if group == 18 { 0 }
+
+    else {
+        panic!("No charge for atom {} known.", atom.symbol());
+    }
+}
+
 
 
 impl IonDataMapCharge for IonDataMap {
@@ -41,34 +60,24 @@ impl IonDataMapCharge for IonDataMap {
     }
 }
 
-pub fn charge_of_atom(atom: &Atom) -> IonCharge {
-    let group = atom.group;
-    let number = atom.number;
-
-    if group == 0 { -1 }  // electron
-    else if group == 1 { 1 }
-    else if group == 2 { 2 }
-    else if group == 15 && number <= 15 { -3 }
-    else if group == 16 && number <= 34 { -2 }
-    else if group == 17 && number <= 53 { -1 }
-    else if group == 18 { 0 }
-
-    else {
-        panic!("No charge for atom {}", atom.symbol());
-    }
-}
 
 impl<'lifetime> Ion<'lifetime> {
     pub fn from_molecule(molecule: Molecule<'lifetime>) -> Ion<'lifetime> {
-        Ion { molecule: molecule, data: Some(IonDataMap::charge(0)) }
+        Ion {
+            molecule: molecule,
+            data: Some(IonDataMap::charge(0))
+        }
     }
 
     pub fn calculate_charge(&self) -> IonCharge {
-
-        let mut charge: IonCharge = 0;
+        let mut charge = 0;
 
         for molecule_compound in self.molecule.compounds {
-            charge += (molecule_compound.amount as IonCharge) * charge_of_atom(& molecule_compound.atom);
+            let mol_charge =
+                (molecule_compound.amount as IonCharge)
+                * charge_of_atom(& molecule_compound.atom);
+
+            charge += mol_charge;
         }
 
         // HACK: This seems to be correct for now

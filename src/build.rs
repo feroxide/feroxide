@@ -12,12 +12,12 @@ use std::fs::File;
 use std::collections::HashMap;
 
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 struct Config {
     pub atoms: HashMap<String, Atom>
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 struct Atom {
     pub number: AtomNumber,
     pub symbol: String,
