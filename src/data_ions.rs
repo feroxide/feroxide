@@ -4,8 +4,8 @@ use molecule::*;
 use data_atoms::*;
 // use data_molecules::*;
 
-pub const HYDROXIDE: &'static Ion<'static> = &Ion {
-    molecule: &Molecule { compounds: &[
+pub const HYDROXIDE: Ion<'static> = Ion {
+    molecule: Molecule { compounds: &[
         MoleculeCompound {
             atom: OXYGEN,
             amount: 1
@@ -19,8 +19,8 @@ pub const HYDROXIDE: &'static Ion<'static> = &Ion {
 };
 
 
-pub const AMMONIUM: &'static Ion<'static> = &Ion {
-    molecule: &Molecule { compounds:&[
+pub const AMMONIUM: Ion<'static> = Ion {
+    molecule: Molecule { compounds:&[
         MoleculeCompound {
             atom: NITROGEN,
             amount: 1
@@ -33,8 +33,8 @@ pub const AMMONIUM: &'static Ion<'static> = &Ion {
     data: None
 };
 
-pub const SULPHATE: &'static Ion<'static> = &Ion {
-    molecule: &Molecule { compounds: &[
+pub const SULPHATE: Ion<'static> = Ion {
+    molecule: Molecule { compounds: &[
         MoleculeCompound {
             atom: SULFUR,
             amount: 1

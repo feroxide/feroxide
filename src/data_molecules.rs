@@ -2,28 +2,28 @@ use molecule::*;
 
 use data_atoms::*;
 
-pub const WATER: &'static Molecule<'static> = &Molecule {
+pub const WATER: Molecule<'static> = Molecule {
     compounds: &[
         MoleculeCompound { atom: HYDROGEN, amount: 2 },
         MoleculeCompound { atom: OXYGEN, amount: 1 }
     ]
 };
 
-pub const CO2: &'static Molecule<'static> = &Molecule {
+pub const CO2: Molecule<'static> = Molecule {
     compounds: &[
         MoleculeCompound { atom: CARBON, amount: 1 },
         MoleculeCompound { atom: OXYGEN, amount: 2 }
     ]
 };
 
-pub const AMMONIA: &'static Molecule<'static> = &Molecule {
+pub const AMMONIA: Molecule<'static> = Molecule {
     compounds: &[
         MoleculeCompound { atom: NITROGEN, amount: 1 },
         MoleculeCompound { atom: HYDROGEN, amount: 3 }
     ]
 };
 
-pub const SUGAR: &'static Molecule<'static> = &Molecule {
+pub const SUGAR: Molecule<'static> = Molecule {
     compounds: &[
         MoleculeCompound { atom: CARBON, amount: 12 },
         MoleculeCompound { atom: HYDROGEN, amount: 22 },

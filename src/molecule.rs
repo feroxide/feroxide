@@ -6,14 +6,14 @@ use properties::*;
 use namings::*;
 use types::*;
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Copy, Clone)]
 pub struct Molecule<'lifetime> {
-    pub compounds: &'lifetime [MoleculeCompound<'lifetime>]
+    pub compounds: &'lifetime [MoleculeCompound]
 }
 
 #[derive(Debug, Eq, PartialEq)]
-pub struct MoleculeCompound<'lifetime> {
-    pub atom: &'lifetime Atom,
+pub struct MoleculeCompound {
+    pub atom: Atom,
     pub amount: u8
 }
 
@@ -25,8 +25,8 @@ impl<'lifetime> Element for Molecule<'lifetime> {
 }
 
 
-impl<'lifetime> MoleculeCompound<'lifetime> {
-    pub fn from_atom(atom: &'lifetime Atom) -> MoleculeCompound<'lifetime> {
+impl MoleculeCompound {
+    pub fn from_atom(atom: Atom) -> MoleculeCompound {
         let amount = if atom.is_diatomic { 2 } else { 1 };
 
         MoleculeCompound { atom: atom, amount: amount }
@@ -69,7 +69,7 @@ impl<'lifetime> Properties for Molecule<'lifetime> {
     }
 }
 
-impl<'lifetime> Properties for MoleculeCompound<'lifetime> {
+impl Properties for MoleculeCompound {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 

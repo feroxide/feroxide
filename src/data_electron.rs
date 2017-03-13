@@ -7,7 +7,7 @@ pub use properties::*;
 #[derive(Debug, Eq, PartialEq)]
 pub struct Electron { }
 
-pub const ELECTRON: &'static Electron = &Electron {};
+pub const ELECTRON: Electron = Electron {};
 
 impl Element for Electron {
     fn get_molecule(&self) -> Option<&Molecule> {

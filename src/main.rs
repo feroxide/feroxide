@@ -7,7 +7,7 @@ use feroxide::data_atoms::*;
 
 fn main() {
     // You can create digital molecules with ease
-    let carbondioxide = &Molecule {
+    let carbondioxide = Molecule {
         compounds: &[
             MoleculeCompound { atom: CARBON, amount: 1 },
             MoleculeCompound { atom: OXYGEN, amount: 2 }
@@ -29,47 +29,51 @@ fn main() {
     // To get your data
     println!("10 moles of {} weigh {} gram(s).", symbol, weight);
 
+    // You could also throw some molecules together in a container with a bit of energy
 
-    // Make some more molecules which we'll use later
-    let carbonic_acid = &Molecule {
-        compounds: & [
+    let carbonic_acid = Molecule {
+        compounds: &[
             MoleculeCompound { atom: HYDROGEN, amount: 2 },
             MoleculeCompound { atom: CARBON, amount: 1 },
             MoleculeCompound { atom: OXYGEN, amount: 3 }
         ]
     };
 
-
-    // You could also throw some molecules together in a container with a bit of energy
-    let container = Container {
-        contents: &[
-            &ReactionCompound {
+    let mut container = Container {
+        contents: vec! {
+            ReactionCompound {
                 element: carbondioxide,
                 amount: 1000 // moles
             },
 
-            &ReactionCompound {
+            ReactionCompound {
                 element: WATER,
                 amount: 1000 // moles
+            },
+
+            // NOTE: Temporary
+            ReactionCompound {
+                element: carbonic_acid,
+                amount: 0 // moles
             }
-        ],
+        },
 
         available_energy: 100_000f64 // in Joules
     };
 
     // Then specify a reaction that will occur
     // H2O + CO2 --> H2CO3
-    let reaction = &Reaction {
-        lhs: &ReactionSide {
+    let reaction = Reaction {
+        lhs: ReactionSide {
             compounds: &[
-                &ReactionCompound { element: WATER, amount: 1 },
-                &ReactionCompound { element: carbondioxide, amount: 1 }
+                ReactionCompound { element: WATER, amount: 1 },
+                ReactionCompound { element: carbondioxide, amount: 1 }
             ]
         },
 
-        rhs: &ReactionSide {
+        rhs: ReactionSide {
             compounds: &[
-                &ReactionCompound { element: carbonic_acid, amount: 1 }
+                ReactionCompound { element: carbonic_acid, amount: 1 }
             ]
         },
 
@@ -89,7 +93,7 @@ fn main() {
     println!("Energy cost: {}", reaction.energy_cost());
 
     // Run the reaction on container
-    // container.react(reaction);
+    container.react(reaction);
 
     println!("Energy left: {:?}", container.available_energy);
 }

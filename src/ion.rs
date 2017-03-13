@@ -23,7 +23,7 @@ pub trait IonDataMapCharge {
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Ion<'lifetime> {
-    pub molecule: &'lifetime Molecule<'lifetime>,
+    pub molecule: Molecule<'lifetime>,
     pub data: Option<IonDataMap>
 }
 
@@ -37,7 +37,7 @@ impl IonDataMapCharge for IonDataMap {
     }
 
     fn get_charge(&self) -> Option<&IonCharge> {
-        return self.get(&IonData::CHARGE);
+        self.get(&IonData::CHARGE)
     }
 }
 
@@ -59,7 +59,7 @@ pub fn charge_of_atom(atom: &Atom) -> IonCharge {
 }
 
 impl<'lifetime> Ion<'lifetime> {
-    pub fn from_molecule(molecule: &'lifetime Molecule<'lifetime>) -> Ion<'lifetime> {
+    pub fn from_molecule(molecule: Molecule<'lifetime>) -> Ion<'lifetime> {
         Ion { molecule: molecule, data: Some(IonDataMap::charge(0)) }
     }
 
@@ -68,7 +68,7 @@ impl<'lifetime> Ion<'lifetime> {
         let mut charge: IonCharge = 0;
 
         for molecule_compound in self.molecule.compounds {
-            charge += (molecule_compound.amount as IonCharge) * charge_of_atom(molecule_compound.atom);
+            charge += (molecule_compound.amount as IonCharge) * charge_of_atom(& molecule_compound.atom);
         }
 
         // HACK: This seems to be correct for now
@@ -132,6 +132,6 @@ impl<'lifetime> Element for Ion<'lifetime> {
     }
 
     fn get_molecule(&self) -> Option<&Molecule> {
-        Some(self.molecule)
+        Some(&self.molecule)
     }
 }

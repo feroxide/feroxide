@@ -5,31 +5,31 @@ use types::*;
 
 use std::collections::HashMap;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Reaction<'lifetime, T: 'lifetime> where T: Element {
-    pub lhs: &'lifetime ReactionSide<'lifetime, T>,
-    pub rhs: &'lifetime ReactionSide<'lifetime, T>,
+    pub lhs: ReactionSide<'lifetime, T>,
+    pub rhs: ReactionSide<'lifetime, T>,
     pub is_equilibrium: bool
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct ReactionSide<'lifetime, T: 'lifetime> where T: Element {
-    pub compounds: &'lifetime [ &'lifetime ReactionCompound<'lifetime, T> ]
+    pub compounds: &'lifetime [ ReactionCompound<T> ]
 }
 
-#[derive(Debug, Eq)]
-pub struct ReactionCompound<'lifetime, T: 'lifetime> where T: Element {
-    pub element: &'lifetime T,
+#[derive(Debug, Eq, Copy, Clone)]
+pub struct ReactionCompound<T> where T: Element {
+    pub element: T,
     pub amount: u16
 }
 
 
-impl<'lifetime, T> PartialEq for ReactionCompound<'lifetime, T> where T: Element {
+
+impl<T> PartialEq for ReactionCompound<T> where T: Element {
     fn eq(&self, rhs: &ReactionCompound<T>) -> bool {
         self.element == rhs.element
     }
 }
-
 
 
 impl<'lifetime, T> Reaction<'lifetime, T> where T: Element {
@@ -123,7 +123,7 @@ impl<'lifetime, T> ReactionSide<'lifetime, T> where T: Element  {
     }
 }
 
-impl<'lifetime, T> ReactionCompound<'lifetime, T> where T: Element {
+impl<T> ReactionCompound<T> where T: Element {
     pub fn subtract_amount(&mut self, x: u16) {
         self.amount -= x;
     }
@@ -210,7 +210,7 @@ impl<'lifetime, T> Properties for ReactionSide<'lifetime, T> where T: Element  {
 }
 
 
-impl<'lifetime, T> Properties for ReactionCompound<'lifetime, T> where T: Element  {
+impl<T> Properties for ReactionCompound<T> where T: Element  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 

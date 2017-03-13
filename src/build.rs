@@ -67,7 +67,7 @@ fn main() {
         let Atom { number, symbol, name, group, mass, diatomic } = atom;
 
         let rust_atom = format!("
-pub const {capsname}: &'static Atom = &Atom {{
+pub const {capsname}: Atom = Atom {{
     number: {number}, mass: {mass:.5}, symbol: \"{symbol}\", name: \"{name}\", group: {group:?}, is_diatomic: {diatomic} }};
         ", capsname=capsname, name=name, number=number, mass=mass, symbol=symbol, group=group, diatomic=diatomic );
 
