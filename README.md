@@ -1,7 +1,7 @@
 # feroxide
 A basic chemistry simulator.
 
-## Build status
+### Build status
 [![Travis Build Status][travis-badge]][travis-page]
 
 [travis-page]: https://travis-ci.org/C-Bouthoorn/feroxide
@@ -12,6 +12,9 @@ A basic chemistry simulator.
   * Calculate mass of molecules
   * Generate (sometimes incorrect) names of molecules
   * Check if reactions are valid
+- Advanced functionality:
+  * Create containers with molecules or ions in them
+  * Apply reactions to containers
 
 
 ## Currently working on
