@@ -8,5 +8,5 @@ pub trait Properties: Debug {
     fn name(&self) -> String;
     fn mass(&self) -> AtomMass;
 
-    fn to_string(&self) -> String { self.symbol() }
+    fn stringify(&self) -> String { self.symbol() }
 }

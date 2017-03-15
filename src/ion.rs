@@ -1,19 +1,20 @@
-use types::*;
-use namings::*;
-use properties::*;
-use element::*;
 use atom::*;
+use namings::*;
 use molecule::*;
+use trait_element::*;
+use trait_properties::*;
+use types::*;
 
 use std::collections::HashMap;
-
-pub type IonDataMap = HashMap<IonData, IonCharge>;
 
 
 #[derive(Debug, Hash, Eq, PartialEq)]
 pub enum IonData {
     CHARGE
 }
+
+pub type IonDataMap = HashMap<IonData, IonCharge>;
+
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Ion<'lifetime> {
@@ -22,12 +23,7 @@ pub struct Ion<'lifetime> {
 }
 
 
-pub trait IonDataMapCharge {
-    fn charge(_: IonCharge) -> IonDataMap;
-    fn get_charge(&self) -> Option<&IonCharge>;
-}
-
-
+/// Get the charge an atom has based on its group
 pub fn charge_of_atom(atom: &Atom) -> IonCharge {
     let group = atom.group;
     let number = atom.number;
@@ -41,27 +37,13 @@ pub fn charge_of_atom(atom: &Atom) -> IonCharge {
     else if group == 18 { 0 }
 
     else {
-        panic!("No charge for atom {} known.", atom.symbol());
-    }
-}
-
-
-
-impl IonDataMapCharge for IonDataMap {
-    fn charge(charge: IonCharge) -> IonDataMap {
-        let mut map = IonDataMap::new();
-        map.insert(IonData::CHARGE, charge);
-
-        return map;
-    }
-
-    fn get_charge(&self) -> Option<&IonCharge> {
-        self.get(&IonData::CHARGE)
+        panic!("No charge for atom {} known.", atom);
     }
 }
 
 
 impl<'lifetime> Ion<'lifetime> {
+    /// Convert a Molecule into an Ion
     pub fn from_molecule(molecule: Molecule<'lifetime>) -> Ion<'lifetime> {
         Ion {
             molecule: molecule,
@@ -69,6 +51,8 @@ impl<'lifetime> Ion<'lifetime> {
         }
     }
 
+
+    /// Calculate the charge of this Ion
     pub fn calculate_charge(&self) -> IonCharge {
         let mut charge = 0;
 
@@ -88,8 +72,49 @@ impl<'lifetime> Ion<'lifetime> {
 }
 
 
+pub trait IonDataMapCharge {
+    fn charge(_: IonCharge) -> IonDataMap;
+    fn get_charge(&self) -> Option<&IonCharge>;
+}
+
+impl IonDataMapCharge for IonDataMap {
+    /// Create an IonDataMap with given charge
+    fn charge(charge: IonCharge) -> IonDataMap {
+        let mut map = IonDataMap::new();
+        map.insert(IonData::CHARGE, charge);
+
+        return map;
+    }
+
+
+    /// Get the charge from an IonDataMap
+    fn get_charge(&self) -> Option<&IonCharge> {
+        self.get(&IonData::CHARGE)
+    }
+}
+
+
+impl<'lifetime> Element for Ion<'lifetime> {
+    fn get_charge(&self) -> Option<IonCharge> {
+        if let Some(ref data) = self.data {
+            if let Some(&charge) = data.get_charge() {
+                Some(charge)
+            } else {
+                None
+            }
+        } else {
+            Some(self.calculate_charge())
+        }
+    }
+
+
+    fn get_molecule(&self) -> Option<&Molecule> {
+        Some(&self.molecule)
+    }
+}
+
+
 impl<'lifetime> Properties for Ion<'lifetime> {
-    /// Convert ion to symbol (Fe³⁺)
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -104,7 +129,7 @@ impl<'lifetime> Properties for Ion<'lifetime> {
         return symbol;
     }
 
-    /// Convert ion to name (iron(III))
+
     fn name(&self) -> String {
         let mut name = String::new();
 
@@ -121,26 +146,8 @@ impl<'lifetime> Properties for Ion<'lifetime> {
         return name;
     }
 
+
     fn mass(&self) -> AtomMass {
         self.molecule.mass()
-    }
-}
-
-impl<'lifetime> Element for Ion<'lifetime> {
-    fn get_charge(&self) -> Option<IonCharge> {
-        if let Some(ref data) = self.data {
-            if let Some(&charge) = data.get_charge() {
-                Some(charge)
-            } else {
-                None
-            }
-        } else {
-            let charge = self.calculate_charge();
-            Some(charge)
-        }
-    }
-
-    fn get_molecule(&self) -> Option<&Molecule> {
-        Some(&self.molecule)
     }
 }

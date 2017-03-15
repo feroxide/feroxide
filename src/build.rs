@@ -4,12 +4,11 @@ extern crate toml;
 
 
 mod types;
-use types::*;
+use types::{ AtomNumber, AtomGroup, AtomMass };
 
-use std::io::prelude::*;
 use std::fs::File;
-
 use std::collections::HashMap;
+use std::io::*;
 
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -28,49 +27,75 @@ struct Atom {
 }
 
 
-fn main() {
-    let mut atoms_rs_file = File::create("src/data_atoms.rs").unwrap();
-    let mut atoms_toml_file = File::open("src/data_atoms.toml").unwrap();
-
-    /*
+#[allow(dead_code)]
+/// Write an example TOML file to the data_atoms.rs file
+fn write(mut atoms_rs_file: &File) {
     let mut atoms: HashMap<String, Atom> = HashMap::new();
+
+    // Add example atom
     atoms.insert("hydrogen".to_owned(), Atom {
         number: 1,
         symbol: "H".to_owned(),
         name: "hydrogen".to_owned(),
-        group: AtomGroup::I as u8,
+        group: 1,
         mass: 1.008,
         diatomic: true
     });
 
-    let config: Config = Config {
+    // Generate config
+    let config = Config {
         atoms: atoms
     };
 
-    atoms_rs_file.write_all( toml::to_string(&config).unwrap().as_bytes() );
+    // Convert to TOML
+    let config_string = toml::to_string(&config).unwrap();
 
-    return;
-    */
+    // Write TOML to file
+    atoms_rs_file.write_all( config_string.as_bytes() ).unwrap();
+}
 
+
+#[allow(dead_code)]
+/// Reads the data_atoms.toml file, converts it to the appropriate format
+/// and writes it to the atoms.rs file
+fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {
+    // Read TOML file
     let mut atoms_toml = String::new();
     let _ = atoms_toml_file.read_to_string(&mut atoms_toml);
 
+    // Convert to config struct
     let config: Config;
     match toml::from_str(&atoms_toml) {
         Ok(x) => { config = x },
         Err(e) => { panic!("{:?}", e) }
     }
 
-    let _ = atoms_rs_file.write_all(b"use atom::Atom;");
+    // Write header to file
+    atoms_rs_file.write_all(b"use atom::Atom;").unwrap();
 
+    // Convert items from TOML file to RS syntax
     for (capsname, atom) in config.atoms {
         let Atom { number, symbol, name, group, mass, diatomic } = atom;
 
         let rust_atom = format!("
 pub const {capsname}: Atom = Atom {{
     number: {number}, mass: {mass:.5}, symbol: \"{symbol}\", name: \"{name}\", group: {group:?}, is_diatomic: {diatomic} }};
-        ", capsname=capsname, name=name, number=number, mass=mass, symbol=symbol, group=group, diatomic=diatomic );
+",
+    capsname = capsname, name = name, number = number, mass = mass,
+    symbol = symbol, group = group, diatomic = diatomic );
 
-        let _ = atoms_rs_file.write_all( rust_atom.as_bytes() );
+        // Append to file
+        atoms_rs_file.write_all( rust_atom.as_bytes() ).unwrap();
     }
+}
+
+
+fn main() {
+    let mut atoms_toml_file = File::open("src/data_atoms.toml").unwrap();
+    let mut atoms_rs_file = File::create("src/data_atoms.rs").unwrap();
+
+    // NOTE: For debugging only:
+    // write(&mut atoms_rs_file);
+
+    read_and_write(&mut atoms_toml_file, &mut atoms_rs_file);
 }

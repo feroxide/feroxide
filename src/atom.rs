@@ -1,9 +1,8 @@
-use properties::*;
-
+use trait_properties::*;
 use types::*;
 
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Atom {
     pub number: AtomNumber,
     pub mass: AtomMass,
@@ -14,9 +13,10 @@ pub struct Atom {
 }
 
 
-impl Eq for Atom {}
 
+impl Eq for Atom {}
 impl PartialEq for Atom {
+    /// Two atoms are equal when their atom numbers are equal
     fn eq(&self, rhs: &Atom) -> bool {
         self.number == rhs.number
     }

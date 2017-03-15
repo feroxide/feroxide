@@ -1,10 +1,9 @@
-use types::*;
-use properties::*;
 use molecule::*;
-use element::*;
+use trait_element::*;
+use trait_properties::*;
+use types::*;
 
 use std::collections::HashMap;
-
 
 
 #[derive(Debug, Copy, Clone)]
@@ -29,23 +28,42 @@ pub struct ReactionCompound<T> where T: Element {
 
 
 impl<'lifetime, T> Reaction<'lifetime, T> where T: Element {
+    /// Check if the reaction is valid by comparing the amount of total atoms on both sides,
+    /// and by checking if the total charge on both sides is equal
     pub fn is_valid(&self) -> bool {
         self.lhs.total_atoms() == self.rhs.total_atoms()
         && self.lhs.total_charge() == self.lhs.total_charge()
     }
 
+
+    /// Calculate the cost of this reaction
+    /// This can be negative in case of an exothermic reaction
     pub fn energy_cost(&self) -> Energy {
         self.rhs.energy() - self.lhs.energy()
     }
 
+
+    /// Get the sign of the equation ( → or ⇌ ), depending whether it is an equilibrium or not
+    pub fn reaction_sign(&self) -> &str {
+        if self.is_equilibrium {
+            " ⇌ "
+        } else {
+            " → "
+        }
+    }
+
+
+    /// Equalise the equation by changing the amount of moles necessary
+    /// NOTE: This function is still a WIP!
+    /// Returns true if it managed to equalise it, false otherwise
     pub fn equalise(&self) -> bool {
-        #![allow(unreachable_code)]
-        panic!("The equalise function is not yet ready.");
+        println!("####    The equalise function is not yet ready.");
 
 
         let total_left = self.lhs.total_atoms();
         let total_right = self.rhs.total_atoms();
 
+        // If both sides are already equal, do nothing
         if total_left == total_right {
             return true;
         }
@@ -54,19 +72,24 @@ impl<'lifetime, T> Reaction<'lifetime, T> where T: Element {
             let r_amount: u16;
 
             match total_right.get(&atom_number) {
-                Some(x) => { r_amount = x.to_owned() },
+                Some(&x) => { r_amount = x },
                 None => { r_amount = 0 }
             }
 
             if r_amount == 0 {
-                panic!("It's impossible to make this reaction work: {:?}", self);
+                println!("It's impossible to make this reaction work: {}", self);
+                return false;
             }
 
             if l_amount != r_amount {
                 let difference = l_amount - r_amount;
 
                 if difference > 0 {
-
+                    // Increase right side
+                    println!("We know what to do, but it's just not implemented yet.");
+                } else {
+                    // Increase left side
+                    println!("We know what to do, but it's just not implemented yet.");
                 }
             }
         }
@@ -75,7 +98,9 @@ impl<'lifetime, T> Reaction<'lifetime, T> where T: Element {
     }
 }
 
+
 impl<'lifetime, T> ReactionSide<'lifetime, T> where T: Element  {
+    /// Calculate the total charge of this reaction side
     pub fn total_charge(&self) -> IonCharge {
         let mut total_charge = 0;
 
@@ -88,18 +113,24 @@ impl<'lifetime, T> ReactionSide<'lifetime, T> where T: Element  {
         return total_charge;
     }
 
+
+    /// Calculate the energy this side has
     pub fn energy(&self) -> Energy {
         // NOTE: Temporary
         500.0 - (self.compounds.len() as f64) * 100.0
     }
 
 
+    /// Calculate the total amount of atoms this side contains
     pub fn total_atoms(&self) -> HashMap<AtomNumber, u16> {
         let mut atoms: HashMap<AtomNumber, u16> = HashMap::new();
 
+        // for molecule_compound in self.compounds:
         for reaction_compound in self.compounds {
             if let Some(ref molecule) = reaction_compound.element.get_molecule() {
                 for molecule_compound in molecule.compounds {
+
+
                     let atom_number = molecule_compound.atom.number;
 
                     let mut amount;
@@ -120,60 +151,47 @@ impl<'lifetime, T> ReactionSide<'lifetime, T> where T: Element  {
     }
 }
 
-impl<T> ReactionCompound<T> where T: Element {
-    pub fn subtract_amount(&mut self, x: u16) {
-        self.amount -= x;
-    }
-}
 
 impl<T> ReactionCompound<T> where T: Element {
-    pub fn to_string(&self) -> String {
-        self.element.to_string()
+    pub fn stringify(&self) -> String {
+        self.element.stringify()
     }
 }
 
 
 impl<T> PartialEq for ReactionCompound<T> where T: Element {
+    /// Two reactioncompounds are equal if their element is equal
     fn eq(&self, rhs: &ReactionCompound<T>) -> bool {
         self.element == rhs.element
     }
 }
+
 
 impl<'lifetime, T> Properties for Reaction<'lifetime, T> where T: Element  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
         symbol += &self.lhs.symbol();
-
-        if self.is_equilibrium {
-            symbol += " ↔ ";
-        } else {
-            symbol += " → ";
-        }
-
+        symbol += self.reaction_sign();
         symbol += &self.rhs.symbol();
 
         return symbol;
     }
 
+
     fn name(&self) -> String {
         let mut name = String::new();
 
         name += &self.lhs.name();
-
-        if self.is_equilibrium {
-            name += " ↔ ";
-        } else {
-            name += " → ";
-        }
-
+        name += self.reaction_sign();
         name += &self.rhs.name();
 
         return name;
     }
 
+
     fn mass(&self) -> AtomMass {
-        panic!("Reaction does not have a mass.");
+        panic!("Reactions do not have mass.");
     }
 }
 
@@ -193,6 +211,7 @@ impl<'lifetime, T> Properties for ReactionSide<'lifetime, T> where T: Element  {
         return symbol;
     }
 
+
     fn name(&self) -> String {
         let mut name = String::new();
 
@@ -206,6 +225,7 @@ impl<'lifetime, T> Properties for ReactionSide<'lifetime, T> where T: Element  {
 
         return name;
     }
+
 
     fn mass(&self) -> AtomMass {
         let mut mass = 0.0;

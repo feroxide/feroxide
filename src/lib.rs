@@ -1,27 +1,30 @@
-mod types;
-mod namings;
-mod properties;
 mod atom;
-mod element;
-mod molecule;
+mod container;
+mod electron;
 mod ion;
+mod molecule;
+mod namings;
 mod reaction;
-mod containers;
+mod trait_element;
+mod trait_properties;
+mod types;
 
-pub use types::*;
-pub use namings::*;
-pub use properties::*;
 pub use atom::*;
-pub use element::*;
-pub use molecule::*;
+pub use container::*;
+pub use electron::*;
 pub use ion::*;
+pub use molecule::*;
+pub use namings::*;
 pub use reaction::*;
-pub use containers::*;
+pub use trait_element::*;
+pub use trait_properties::*;
+pub use types::*;
 
 pub mod data_atoms;
-pub mod data_molecules;
 pub mod data_ions;
-pub mod data_electron;
+pub mod data_molecules;
+
+pub mod display_impls;
 
 
 // macros \\
@@ -89,6 +92,8 @@ fn container_reaction_cost() {
     assert_eq!(1000.0, container.available_energy);
     assert_eq!(100.0, reaction.energy_cost());
 
+    // Repeadably try this reaction
+
     container.react(reaction);
     assert_eq!(900.0, container.available_energy);
 
@@ -109,6 +114,7 @@ fn ion_notation_check() {
         molecule: Molecule { compounds: &[
             MoleculeCompound { atom: PHOSPHORUS, amount: 4 }
         ]},
+
         data: Some(IonDataMap::charge(-2))
     };
 
@@ -129,7 +135,7 @@ fn ion_charge_calculation() {
 
 #[test]
 fn electron_data() {
-    use data_electron::*;
+    use electron::*;
 
     assert_eq!(-1, ELECTRON.get_charge().unwrap());
     assert_eq!("e⁻", ELECTRON.symbol());
@@ -273,15 +279,12 @@ fn reaction_check() {
     assert!(! wrong_reaction_0.is_valid());
     assert!(! wrong_reaction_1.is_valid());
 
-    // TODO: Ammonium reactions
-
-    assert_eq!("C + O₂ → CO₂", good_reaction.to_string());
-    assert_eq!("H₂ ↔ 2H", equilibrium_reaction.to_string());
+    assert_eq!("C + O₂ → CO₂", format!("{}", good_reaction));
+    assert_eq!("H₂ ⇌ 2H", format!("{}", equilibrium_reaction));
 }
 
 
 #[test]
-#[should_panic]
 fn equalise() {
     use data_atoms::*;
     use data_molecules::*;

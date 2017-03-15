@@ -1,6 +1,6 @@
-use molecule::*;
-use ion::*;
 use data_atoms::*;
+use ion::*;
+use molecule::*;
 
 
 pub const HYDROXIDE: Ion<'static> = Ion {

@@ -1,5 +1,5 @@
-use molecule::*;
 use data_atoms::*;
+use molecule::*;
 
 
 pub const WATER: Molecule<'static> = Molecule {

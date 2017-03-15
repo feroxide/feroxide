@@ -1,13 +1,15 @@
-use types::*;
-use properties::*;
 use molecule::*;
-use element::*;
+use trait_element::*;
+use trait_properties::*;
+use types::*;
 
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Copy, Clone)]
 pub struct Electron { }
 
+
 pub const ELECTRON: Electron = Electron {};
+
 
 impl Element for Electron {
     fn get_molecule(&self) -> Option<&Molecule> {
@@ -19,6 +21,7 @@ impl Element for Electron {
     }
 }
 
+
 impl Properties for Electron {
     fn symbol(&self) -> String {
         "e⁻".to_owned()
@@ -29,6 +32,6 @@ impl Properties for Electron {
     }
 
     fn mass(&self) -> AtomMass {
-        0 as AtomMass
+        0.0
     }
 }

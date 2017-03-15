@@ -14,10 +14,10 @@ fn main() {
         ]
     };
 
-    // Generate a name
+    // Of which you can generate the name
     let _name = carbondioxide.name();
 
-    // ... or symbol
+    // ... or the symbol
     let symbol = carbondioxide.symbol();
 
     // You can calculate the mass per mole
@@ -29,8 +29,7 @@ fn main() {
     // To get your data
     println!("10 moles of {} weigh {} gram(s).", symbol, weight);
 
-    // You could also throw some molecules together in a container with a bit of energy
-
+    // Make some more molecules, just for fun
     let carbonic_acid = Molecule {
         compounds: &[
             MoleculeCompound { atom: HYDROGEN, amount: 2 },
@@ -39,6 +38,7 @@ fn main() {
         ]
     };
 
+    // Throw a bunch of molecules together in a container with a bit of energy
     let mut container = Container {
         contents: vec! {
             ReactionCompound {
@@ -61,8 +61,8 @@ fn main() {
         available_energy: 100_000f64 // in Joules
     };
 
-    // Then specify a reaction that will occur
-    // H2O + CO2 --> H2CO3
+    // Specify the reaction that will occur
+    // H₂O + CO₂ → H₂CO₃
     let reaction = Reaction {
         lhs: ReactionSide {
             compounds: &[
@@ -77,7 +77,7 @@ fn main() {
             ]
         },
 
-        is_equilibrium: false
+        is_equilibrium: true
     };
 
     // Make sure the reaction is valid
@@ -86,20 +86,17 @@ fn main() {
     // Print the reaction in names
     println!("{}", reaction.name());
 
-    // Print the reaction in symbols
+    // ... or in symbols (the default)
     println!("{}", reaction.symbol());
 
-    // Print the energy cost
-    println!("Energy cost: {}", reaction.energy_cost());
 
-
-    // Print the contents
-    println!("Contents: {}", container.to_string());
+    // Print the contents of the container at the start
+    println!("Contents: {}", container);
 
 
     // Run the reaction 10 times
     for i in 0..10 {
-        // Run the reaction on container
+        // Run the reaction on the container
         container.react(reaction);
 
         // Show what's left

@@ -1,6 +1,6 @@
-use types::*;
-use properties::*;
 use molecule::*;
+use trait_properties::*;
+use types::*;
 
 
 pub trait Element: Properties + Eq + PartialEq {

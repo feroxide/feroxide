@@ -1,9 +1,11 @@
 use types::*;
 
 
+/// The basic function which converts a number to greek
+/// This function should only be called by the public `number_to_greek` function
 fn basic_number_to_greek(n: u8, tenplus: bool) -> String {
     if n == 0 {
-        "0?".to_owned()
+        panic!("0 can't be converted to greek");
     }
 
     else if n == 1 && !tenplus  { "mono".to_owned() }
@@ -29,21 +31,24 @@ fn basic_number_to_greek(n: u8, tenplus: bool) -> String {
 
 
     else {
-        panic!(n.to_string().to_owned() + " uncalculatable");
+        panic!("{} uncalculatable", n.to_string());
     }
 }
 
 
+/// Checks if a given letter is a vowel (one of a, e, i, o, u)
 fn is_vowel(letter: char) -> bool {
     letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'u'
 }
 
 
+/// Get the last character of a word
 fn last_char(word: &str) -> char {
     word.chars().nth(word.len() - 1).unwrap()
 }
 
 
+/// Convert a number to greek notation
 pub fn number_to_greek(n: u8) -> String {
     if n <= 12 || n == 20 || n == 30 {
         basic_number_to_greek(n, false)
@@ -81,6 +86,7 @@ pub fn number_to_greek(n: u8) -> String {
 }
 
 
+/// Convert a number to roman notaion
 pub fn number_to_roman(n: i8) -> String {
     if n < 0 {
         "-".to_owned() + &number_to_roman(-n)
@@ -110,6 +116,7 @@ pub fn number_to_roman(n: i8) -> String {
 }
 
 
+/// Convert a number to subscript notation
 pub fn subscript(n: u8) -> String {
     if n >= 10 {
         return subscript(n / 10) + &subscript(n % 10);
@@ -131,6 +138,9 @@ pub fn subscript(n: u8) -> String {
     }
 }
 
+
+/// Convert a number to superscript notation
+/// See also ion_superscript
 pub fn superscript(n: u8) -> String {
     if n == 0 { "⁰".to_owned() }
     else if n == 1 { "¹".to_owned() }
@@ -152,6 +162,11 @@ pub fn superscript(n: u8) -> String {
     }
 }
 
+
+/// Convert a number to ionic superscript notation
+/// The difference with normal superscript notation is that the 1 is omitted,
+/// also, ionic superscript supports negative numbers (of which the sign
+/// is put at the end, instead of at the beginning)
 pub fn ion_superscript(n: IonCharge) -> String {
     if n == -1 {
         "⁻".to_owned()

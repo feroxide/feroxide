@@ -1,14 +1,15 @@
-use types::*;
-use namings::*;
-use properties::*;
 use atom::*;
-use element::*;
+use namings::*;
+use trait_element::*;
+use trait_properties::*;
+use types::*;
 
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
 pub struct Molecule<'lifetime> {
     pub compounds: &'lifetime [MoleculeCompound]
 }
+
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct MoleculeCompound {
