@@ -90,9 +90,13 @@ fn container_reaction_cost() {
     assert_eq!(100.0, reaction.energy_cost());
 
     container.react(reaction);
-
     assert_eq!(900.0, container.available_energy);
-    assert_eq!(100.0, reaction.energy_cost());
+
+    container.react(reaction);
+    assert_eq!(800.0, container.available_energy);
+
+    container.react(reaction);
+    assert_eq!(700.0, container.available_energy);
 }
 
 #[test]
@@ -336,6 +340,7 @@ fn molecule_mass_calculation() {
 
     assert_eq!(18.015, WATER.mass());
     assert_eq!(342.297, SUGAR.mass());
+    assert_eq!(44.009, CO2.mass());
 }
 
 

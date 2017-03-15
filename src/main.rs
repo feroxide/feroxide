@@ -92,8 +92,17 @@ fn main() {
     // Print the energy cost
     println!("Energy cost: {}", reaction.energy_cost());
 
-    // Run the reaction on container
-    container.react(reaction);
 
-    println!("Energy left: {:?}", container.available_energy);
+    // Print the contents
+    println!("Contents: {}", container.to_string());
+
+
+    // Run the reaction 10 times
+    for i in 0..10 {
+        // Run the reaction on container
+        container.react(reaction);
+
+        // Show what's left
+        println!("[{:>2}] Contents: {}", i+1, container.to_string());
+    }
 }

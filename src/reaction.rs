@@ -126,6 +126,12 @@ impl<T> ReactionCompound<T> where T: Element {
     }
 }
 
+impl<T> ReactionCompound<T> where T: Element {
+    pub fn to_string(&self) -> String {
+        self.element.to_string()
+    }
+}
+
 
 impl<T> PartialEq for ReactionCompound<T> where T: Element {
     fn eq(&self, rhs: &ReactionCompound<T>) -> bool {

@@ -59,8 +59,9 @@ impl<T> Container<T> where T: Element {
             if let Some(position) = self.contents.iter_mut().position(|comp| comp == element) {
                 let mut compound = self.contents.get_mut(position).unwrap();
 
+
                 if compound.amount < element.amount {
-                    panic!("Can't remove element");
+                    panic!("Can't remove element {}", element.to_string());
                 }
 
                 compound.amount -= element.amount;
@@ -70,8 +71,8 @@ impl<T> Container<T> where T: Element {
                     // self.contents.remove(position);
                     println!("####    Removing elements from containers is currently not yet supported.");
                 }
-
-                return;
+            } else {
+                println!("Can't remove element {}", element.to_string());
             }
         }
     }
@@ -82,6 +83,7 @@ impl<T> Container<T> where T: Element {
             if let Some(position) = self.contents.iter_mut().position(|comp| comp == element) {
                 let mut compound = self.contents.get_mut(position).unwrap();
 
+
                 compound.amount += element.amount;
             } else {
                 // FIXME:
@@ -89,5 +91,28 @@ impl<T> Container<T> where T: Element {
                 println!("####    Adding elements to containers is currently not yet supported.");
             }
         }
+    }
+
+    pub fn to_string(&mut self) -> String {
+        let mut string = String::new();
+
+        let mut first = true;
+        for compound in self.contents.iter() {
+            if compound.amount > 0 {
+                if ! first {
+                    string += " + ";
+                }
+                first = false;
+
+                string += &compound.amount.to_string();
+                string += &compound.to_string();
+            }
+        }
+
+        string += &" [";
+        string += &self.available_energy.to_string();
+        string += &" J]";
+
+        return string;
     }
 }
