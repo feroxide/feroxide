@@ -3,7 +3,7 @@ use trait_element::*;
 use types::*;
 
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Container<T> where T: Element {
     pub contents: Vec< ReactionCompound<T> >,
     pub available_energy: Energy

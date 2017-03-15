@@ -9,12 +9,14 @@ pub const WATER: Molecule<'static> = Molecule {
     ]
 };
 
+
 pub const CO2: Molecule<'static> = Molecule {
     compounds: &[
         MoleculeCompound { atom: CARBON, amount: 1 },
         MoleculeCompound { atom: OXYGEN, amount: 2 }
     ]
 };
+
 
 pub const AMMONIA: Molecule<'static> = Molecule {
     compounds: &[
@@ -23,6 +25,7 @@ pub const AMMONIA: Molecule<'static> = Molecule {
     ]
 };
 
+
 pub const SUGAR: Molecule<'static> = Molecule {
     compounds: &[
         MoleculeCompound { atom: CARBON, amount: 12 },
@@ -30,14 +33,3 @@ pub const SUGAR: Molecule<'static> = Molecule {
         MoleculeCompound { atom: OXYGEN, amount: 11 }
     ]
 };
-
-/*
-// Disabled because it should be classified as a Salt
-
-pub const TABLE_SALT: &'static Molecule<'static> = &Molecule {
-    compounds: &[
-        MoleculeCompound { atom: SODIUM, amount: 1 },
-        MoleculeCompound { atom: CHLORINE, amount: 1 }
-    ]
-};
-*/

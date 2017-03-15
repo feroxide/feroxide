@@ -9,11 +9,13 @@ pub const HYDROXIDE: Ion<'static> = Ion {
             atom: OXYGEN,
             amount: 1
         },
+
         MoleculeCompound {
             atom: HYDROGEN,
             amount: 1
         }
     ]},
+
     data: None
 };
 
@@ -24,13 +26,16 @@ pub const AMMONIUM: Ion<'static> = Ion {
             atom: NITROGEN,
             amount: 1
         },
+
         MoleculeCompound {
             atom: HYDROGEN,
             amount: 4
         }
     ]},
+
     data: None
 };
+
 
 pub const SULPHATE: Ion<'static> = Ion {
     molecule: Molecule { compounds: &[
@@ -38,10 +43,12 @@ pub const SULPHATE: Ion<'static> = Ion {
             atom: SULFUR,
             amount: 1
         },
+
         MoleculeCompound {
             atom: OXYGEN,
             amount: 4
         }
     ]},
+
     data: None
 };

@@ -20,7 +20,7 @@ pub struct MoleculeCompound {
 
 impl MoleculeCompound {
     pub fn from_atom(atom: Atom) -> MoleculeCompound {
-        let amount = if atom.is_diatomic { 2 } else { 1 };
+        let amount = if atom.diatomic { 2 } else { 1 };
 
         MoleculeCompound { atom: atom, amount: amount }
     }

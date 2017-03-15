@@ -17,11 +17,11 @@ struct Config {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Atom {
+pub struct Atom {
     pub number: AtomNumber,
+    pub group: AtomGroup,
     pub symbol: String,
     pub name: String,
-    pub group: AtomGroup,
     pub mass: AtomMass,
     pub diatomic: bool
 }
@@ -79,7 +79,7 @@ fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {
 
         let rust_atom = format!("
 pub const {capsname}: Atom = Atom {{
-    number: {number}, mass: {mass:.5}, symbol: \"{symbol}\", name: \"{name}\", group: {group:?}, is_diatomic: {diatomic} }};
+    number: {number}, mass: {mass:.5}, symbol: \"{symbol}\", name: \"{name}\", group: {group:?}, diatomic: {diatomic} }};
 ",
     capsname = capsname, name = name, number = number, mass = mass,
     symbol = symbol, group = group, diatomic = diatomic );

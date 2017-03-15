@@ -5,11 +5,11 @@ use types::*;
 #[derive(Debug, Copy, Clone)]
 pub struct Atom {
     pub number: AtomNumber,
-    pub mass: AtomMass,
+    pub group: AtomGroup,
     pub symbol: &'static str,
     pub name: &'static str,
-    pub group: AtomGroup,
-    pub is_diatomic: bool
+    pub mass: AtomMass,
+    pub diatomic: bool
 }
 
 

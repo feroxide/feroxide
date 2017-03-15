@@ -54,6 +54,57 @@ macro_rules! ion_from_atom {
 // tests \\
 
 #[test]
+fn check_display() {
+    use data_atoms::*;
+    use data_molecules::*;
+    use data_ions::*;
+    use electron::*;
+    use reaction::*;
+    use container::*;
+
+
+    let reactioncompound = ReactionCompound {
+        amount: 1,
+        element: SUGAR
+    };
+
+    let reactionside = ReactionSide {
+        compounds: &[
+            reactioncompound
+        ]
+    };
+
+    let reaction = Reaction {
+        lhs: reactionside,
+
+        rhs: ReactionSide {
+            compounds: &[]
+        },
+
+        is_equilibrium: false
+    };
+
+
+    let container = Container {
+        contents: vec! {
+            reactioncompound
+        },
+        available_energy: 0.0
+    };
+
+
+    format!("{}", HYDROGEN); // Atom
+    format!("{}", SUGAR); // Molecule
+    format!("{}", AMMONIUM); // Ion
+    format!("{}", ELECTRON); // Electron
+    format!("{}", reactioncompound); // ReactionCompound
+    format!("{}", reactionside); // ReactionSide
+    format!("{}", reaction); // Reaction
+    format!("{}", container); // Container
+}
+
+
+#[test]
 fn container_reaction_cost() {
     use data_atoms::*;
     use data_molecules::*;
@@ -167,10 +218,10 @@ fn atoms_database_check() {
     assert_eq!("He", HELIUM.symbol);
     assert_eq!(35.45, CHLORINE.mass);
 
-    assert!(HYDROGEN.is_diatomic);
-    assert!(OXYGEN.is_diatomic);
-    assert!(! CARBON.is_diatomic);
-    assert!(! SULFUR.is_diatomic);
+    assert!(HYDROGEN.diatomic);
+    assert!(OXYGEN.diatomic);
+    assert!(! CARBON.diatomic);
+    assert!(! SULFUR.diatomic);
 
     // Very important
     assert_eq!("aluminium", ALUMINIUM.name);
