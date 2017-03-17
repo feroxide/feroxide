@@ -36,7 +36,7 @@ impl Ion {
     pub fn from_molecule(molecule: Molecule) -> Ion {
         Ion {
             molecule: molecule,
-            charge: Some(0)
+            charge: None // Will be calculated
         }
     }
 

@@ -41,20 +41,20 @@ fn main() {
     // Throw a bunch of molecules together in a container with a bit of energy
     let mut container = Container {
         contents: vec! {
-            ReactionCompound {
+            ContainerCompound {
                 element: carbondioxide.clone(),
-                amount: 1000 // moles
+                moles: 1000.0
             },
 
-            ReactionCompound {
+            ContainerCompound {
                 element: WATER(),
-                amount: 1000 // moles
+                moles: 1000.0
             },
 
             // NOTE: Temporary
-            ReactionCompound {
+            ContainerCompound {
                 element: carbonic_acid.clone(),
-                amount: 0 // moles
+                moles: 0.0
             }
         },
 
@@ -81,6 +81,7 @@ fn main() {
     };
 
     // Make sure the reaction is valid
+    reaction.equalise();
     assert!(reaction.is_valid());
 
     // Print the reaction in names
@@ -97,7 +98,8 @@ fn main() {
     // Run the reaction 10 times
     for i in 0..10 {
         // Run the reaction on the container
-        container.react(&reaction);
+        let x = reaction.clone();
+        container.react(x);
 
         // Show what's left
         println!("[{:>2}] Contents: {}", i+1, container.to_string());

@@ -87,7 +87,7 @@ fn check_display() {
 
     let container = Container {
         contents: vec! {
-            reactioncompound.clone()
+            rc_to_cc(reactioncompound.clone())
         },
         available_energy: 0.0
     };
@@ -114,8 +114,8 @@ fn container_reaction_cost() {
 
     let mut container = Container {
         contents: vec! {
-            ReactionCompound { amount: 100, element: hydrogen.clone() },
-            ReactionCompound { amount: 200, element: oxygen.clone() }
+            ContainerCompound { moles: 100.0, element: hydrogen.clone() },
+            ContainerCompound { moles: 200.0, element: oxygen.clone() }
         },
 
         available_energy: 1000.0
@@ -143,13 +143,15 @@ fn container_reaction_cost() {
 
     // Repeadably try this reaction
 
-    container.react(&reaction);
+    // NOTE: WE SHOULDN'T NEED TO CLONE
+
+    container.react(reaction.clone());
     assert_eq!(900.0, container.available_energy);
 
-    container.react(&reaction);
+    container.react(reaction.clone());
     assert_eq!(800.0, container.available_energy);
 
-    container.react(&reaction);
+    container.react(reaction.clone());
     assert_eq!(700.0, container.available_energy);
 }
 

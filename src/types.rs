@@ -6,3 +6,5 @@ pub type AtomMass = f32; // sould fit 0.0 to 294.0 (possibly higher), with norma
 
 pub type IonCharge = i8; // should fit -7 to 7
 pub type Energy = f64; // should fit 0.0 to 1e5, with high precision  [ J ]
+pub type Moles = f64; // should fit 0.0 to 1e5, with high precision [ moles ]
+pub type Mass = f64; // should fit 0.0 to 1e5, with high precision [ g ]
