@@ -8,10 +8,10 @@ use feroxide::data_molecules::*;
 fn main() {
     // You can create digital molecules with ease
     let carbondioxide = Molecule {
-        compounds: &[
+        compounds: vec! {
             MoleculeCompound { atom: CARBON, amount: 1 },
             MoleculeCompound { atom: OXYGEN, amount: 2 }
-        ]
+        }
     };
 
     // Of which you can generate the name
@@ -31,29 +31,29 @@ fn main() {
 
     // Make some more molecules, just for fun
     let carbonic_acid = Molecule {
-        compounds: &[
+        compounds: vec! {
             MoleculeCompound { atom: HYDROGEN, amount: 2 },
             MoleculeCompound { atom: CARBON, amount: 1 },
             MoleculeCompound { atom: OXYGEN, amount: 3 }
-        ]
+        }
     };
 
     // Throw a bunch of molecules together in a container with a bit of energy
     let mut container = Container {
         contents: vec! {
             ReactionCompound {
-                element: carbondioxide,
+                element: carbondioxide.clone(),
                 amount: 1000 // moles
             },
 
             ReactionCompound {
-                element: WATER,
+                element: WATER(),
                 amount: 1000 // moles
             },
 
             // NOTE: Temporary
             ReactionCompound {
-                element: carbonic_acid,
+                element: carbonic_acid.clone(),
                 amount: 0 // moles
             }
         },
@@ -65,16 +65,16 @@ fn main() {
     // H₂O + CO₂ → H₂CO₃
     let reaction = Reaction {
         lhs: ReactionSide {
-            compounds: &[
-                ReactionCompound { element: WATER, amount: 1 },
-                ReactionCompound { element: carbondioxide, amount: 1 }
-            ]
+            compounds: vec! {
+                ReactionCompound { element: WATER(), amount: 1 },
+                ReactionCompound { element: carbondioxide.clone(), amount: 1 }
+            }
         },
 
         rhs: ReactionSide {
-            compounds: &[
-                ReactionCompound { element: carbonic_acid, amount: 1 }
-            ]
+            compounds: vec! {
+                ReactionCompound { element: carbonic_acid.clone(), amount: 1 }
+            }
         },
 
         is_equilibrium: true
@@ -97,7 +97,7 @@ fn main() {
     // Run the reaction 10 times
     for i in 0..10 {
         // Run the reaction on the container
-        container.react(reaction);
+        container.react(&reaction);
 
         // Show what's left
         println!("[{:>2}] Contents: {}", i+1, container.to_string());

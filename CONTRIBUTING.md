@@ -1,6 +1,6 @@
 Element number thirteen IS called aluminium.
 
-ALWAYS test before pushing to master (please)
+ALWAYS run `cargo test` before pushing to master (please)
 
 Every particle HAS TO implement the `Properties` trait.
 Every element HAS TO implement the `Element` trait.

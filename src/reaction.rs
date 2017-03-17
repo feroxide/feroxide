@@ -6,17 +6,17 @@ use types::*;
 use std::collections::HashMap;
 
 
-#[derive(Debug, Copy, Clone)]
-pub struct Reaction<'lifetime, T: 'lifetime> where T: Element {
-    pub lhs: ReactionSide<'lifetime, T>,
-    pub rhs: ReactionSide<'lifetime, T>,
+#[derive(Debug, Eq, PartialEq, Clone)]
+pub struct Reaction<T> where T: Element {
+    pub lhs: ReactionSide<T>,
+    pub rhs: ReactionSide<T>,
     pub is_equilibrium: bool
 }
 
 
-#[derive(Debug, Copy, Clone)]
-pub struct ReactionSide<'lifetime, T: 'lifetime> where T: Element {
-    pub compounds: &'lifetime [ ReactionCompound<T> ]
+#[derive(Debug, Eq, PartialEq, Clone)]
+pub struct ReactionSide<T> where T: Element {
+    pub compounds: Vec< ReactionCompound<T> >
 }
 
 
@@ -27,7 +27,8 @@ pub struct ReactionCompound<T> where T: Element {
 }
 
 
-impl<'lifetime, T> Reaction<'lifetime, T> where T: Element {
+
+impl<T> Reaction<T> where T: Element {
     /// Check if the reaction is valid by comparing the amount of total atoms on both sides,
     /// and by checking if the total charge on both sides is equal
     pub fn is_valid(&self) -> bool {
@@ -94,17 +95,17 @@ impl<'lifetime, T> Reaction<'lifetime, T> where T: Element {
             }
         }
 
-        return true;
+        return false;
     }
 }
 
 
-impl<'lifetime, T> ReactionSide<'lifetime, T> where T: Element  {
+impl<T> ReactionSide<T> where T: Element  {
     /// Calculate the total charge of this reaction side
     pub fn total_charge(&self) -> IonCharge {
         let mut total_charge = 0;
 
-        for compound in self.compounds {
+        for compound in self.compounds.iter() {
             if let Some(charge) = compound.element.get_charge() {
                 total_charge += charge;
             }
@@ -126,9 +127,9 @@ impl<'lifetime, T> ReactionSide<'lifetime, T> where T: Element  {
         let mut atoms: HashMap<AtomNumber, u16> = HashMap::new();
 
         // for molecule_compound in self.compounds:
-        for reaction_compound in self.compounds {
+        for reaction_compound in self.compounds.iter() {
             if let Some(ref molecule) = reaction_compound.element.get_molecule() {
-                for molecule_compound in molecule.compounds {
+                for molecule_compound in molecule.compounds.iter() {
 
 
                     let atom_number = molecule_compound.atom.number;
@@ -167,7 +168,7 @@ impl<T> PartialEq for ReactionCompound<T> where T: Element {
 }
 
 
-impl<'lifetime, T> Properties for Reaction<'lifetime, T> where T: Element  {
+impl<T> Properties for Reaction<T> where T: Element  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -196,7 +197,7 @@ impl<'lifetime, T> Properties for Reaction<'lifetime, T> where T: Element  {
 }
 
 
-impl<'lifetime, T> Properties for ReactionSide<'lifetime, T> where T: Element  {
+impl<T> Properties for ReactionSide<T> where T: Element  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -230,7 +231,7 @@ impl<'lifetime, T> Properties for ReactionSide<'lifetime, T> where T: Element  {
     fn mass(&self) -> AtomMass {
         let mut mass = 0.0;
 
-        for reaction_compound in self.compounds {
+        for ref reaction_compound in self.compounds.iter() {
             mass += reaction_compound.mass();
         }
 

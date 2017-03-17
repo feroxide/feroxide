@@ -4,11 +4,12 @@ use trait_properties::*;
 use types::*;
 
 
-#[derive(Debug, Eq, PartialEq, Copy, Clone)]
+#[derive(Debug, Eq, PartialEq)]
 pub struct Electron { }
 
 
-pub const ELECTRON: Electron = Electron {};
+#[allow(non_snake_case)]
+pub fn ELECTRON() -> Electron { Electron {} }
 
 
 impl Element for Electron {
@@ -32,6 +33,7 @@ impl Properties for Electron {
     }
 
     fn mass(&self) -> AtomMass {
+        // Approximately
         0.0
     }
 }

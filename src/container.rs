@@ -3,7 +3,7 @@ use trait_element::*;
 use types::*;
 
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Container<T> where T: Element {
     pub contents: Vec< ReactionCompound<T> >,
     pub available_energy: Energy
@@ -17,10 +17,11 @@ impl<T> Container<T> where T: Element {
     /// and adding the elements on the right-hand side.
     /// If there is enough energy for the reaction, that amount will be consumed
     /// otherwise the reaction won't occur.
-    pub fn react(&mut self, reaction: Reaction<T>) {
+    pub fn react(&mut self, reaction: &Reaction<T>) {
         // Get required items
         let required_energy = reaction.energy_cost();
-        let required_elements = reaction.lhs.compounds;
+        let ref required_elements = reaction.lhs.compounds;
+        let ref resulting_elements = reaction.rhs.compounds;
 
         // Check if the container has enough energy
         if self.available_energy < required_energy {
@@ -38,12 +39,12 @@ impl<T> Container<T> where T: Element {
         // Remove required elements
         self.remove_elements(required_elements);
         // Add reaction results
-        self.add_elements(reaction.rhs.compounds);
+        self.add_elements(resulting_elements);
     }
 
 
     /// Check if the container has all given elements
-    pub fn has_elements(&mut self, elements: &[ReactionCompound<T>]) -> bool {
+    pub fn has_elements(&mut self, elements: &Vec< ReactionCompound<T> >) -> bool {
         'outer: for element in elements {
             // Find element in self.contents
             if let Some(position) = self.contents.iter_mut().position(|comp| comp == element) {
@@ -66,7 +67,7 @@ impl<T> Container<T> where T: Element {
 
 
     /// Remove given elements from container
-    pub fn remove_elements(&mut self, elements: &[ReactionCompound<T>]) {
+    pub fn remove_elements(&mut self, elements: &Vec< ReactionCompound<T> >) {
         for element in elements {
             // Find element in self.contents
             if let Some(position) = self.contents.iter_mut().position(|comp| comp == element) {
@@ -94,7 +95,7 @@ impl<T> Container<T> where T: Element {
 
 
     /// Add given elements to container
-    pub fn add_elements(&mut self, elements: &[ReactionCompound<T>]) {
+    pub fn add_elements(&mut self, elements: &Vec< ReactionCompound<T> >) {
         for element in elements {
             // Find element in selfcontents
             if let Some(position) = self.contents.iter_mut().position(|comp| comp == element) {
@@ -106,7 +107,7 @@ impl<T> Container<T> where T: Element {
                 // If the element is not found in the container, add it
 
                 // FIXME:
-                // self.contents.push(*element);
+                // self.contents.push(element);
                 println!("## Adding elements to containers is currently not supported.");
             }
         }

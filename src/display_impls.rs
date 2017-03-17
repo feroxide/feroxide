@@ -53,9 +53,9 @@ macro_rules! fmt_lifetime_type {
 
 fmt!(Atom);
 fmt!(Electron);
-fmt_lifetime!(Ion);
-fmt_lifetime!(Molecule);
+fmt!(Ion);
+fmt!(Molecule);
 fmt_type!(Container);
 fmt_type!(ReactionCompound);
-fmt_lifetime_type!(Reaction);
-fmt_lifetime_type!(ReactionSide);
+fmt_type!(Reaction);
+fmt_type!(ReactionSide);
