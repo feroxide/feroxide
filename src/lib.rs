@@ -52,6 +52,58 @@ macro_rules! ion_from_atom {
 
 
 // tests \\
+#[test]
+fn container_add_and_remove_elements() {
+    use data_atoms::*;
+    use data_molecules::*;
+
+    let mut container = Container {
+        contents: vec! {
+            ContainerCompound {
+                element: WATER(),
+                moles: 6.0
+            }
+        },
+
+        available_energy: 1e23
+    };
+
+    let reaction = Reaction {
+        lhs: ReactionSide {
+            compounds: vec! {
+                ReactionCompound { element: WATER(), amount: 2 }
+            }
+        },
+
+        rhs: ReactionSide {
+            compounds: vec! {
+                ReactionCompound { element: molecule_from_atom!(HYDROGEN), amount: 2 },
+                ReactionCompound { element: molecule_from_atom!(OXYGEN), amount: 1 }
+            }
+        },
+
+        is_equilibrium: false
+    };
+
+    // 6 moles water
+    assert_eq!(1, container.contents.len());
+
+    // 4 moles water, 2 moles hydrogen, 1 mole oxygen
+    assert!(container.react(&reaction));
+    assert_eq!(3, container.contents.len());
+
+    // 2 moles water, 4 moles hydrogen, 2 moles oxygen
+    assert!(container.react(&reaction));
+    assert_eq!(3, container.contents.len());
+
+    // 6 moles hydrogen, 3 moles oxygen
+    assert!(container.react(&reaction));
+    assert_eq!(2, container.contents.len());
+
+    // No water left, so should fail
+    assert!(! container.react(&reaction));
+}
+
 
 #[test]
 fn check_display() {

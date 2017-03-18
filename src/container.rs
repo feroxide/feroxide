@@ -32,7 +32,8 @@ impl<T> Container<T> where T: Element {
     /// and adding the elements on the right-hand side.
     /// If there is enough energy for the reaction, that amount will be consumed
     /// otherwise the reaction won't occur.
-    pub fn react(&mut self, reaction: &Reaction<T>) {
+    /// Returns if the reaction succeeded
+    pub fn react(&mut self, reaction: &Reaction<T>) -> bool {
         // Get required items
         let required_energy = reaction.energy_cost();
         let mut required_elements = vec! {};
@@ -53,13 +54,13 @@ impl<T> Container<T> where T: Element {
         // Check if the container has enough energy
         if self.available_energy < required_energy {
             println!("####    Not enough energy");
-            return;
+            return false;
         }
 
         // Check if the container has the required elements
         if ! self.has_elements(&required_elements) {
             println!("####    Not enough elements");
-            return;
+            return false;
         }
 
         // Subtract needed energy (or add, in case of an exothermic reaction)
@@ -70,6 +71,8 @@ impl<T> Container<T> where T: Element {
 
         // Add reaction results
         self.add_elements(&resulting_elements);
+
+        return true;
     }
 
 
@@ -101,21 +104,21 @@ impl<T> Container<T> where T: Element {
         for element in elements {
             // Find element in self.contents
             if let Some(position) = self.contents.iter().position(|comp| comp == element) {
-                let mut compound = self.contents.get_mut(position).unwrap();
+                if {
+                    let mut compound = self.contents.get_mut(position).unwrap();
 
-                // Check if we have enough
-                if compound.moles < element.moles {
-                    panic!("Can't remove element {} (not enough)", element.symbol());
-                }
+                    // Check if we have enough
+                    if compound.moles < element.moles {
+                        panic!("Can't remove element {} (not enough)", element.symbol());
+                    }
 
-                // Remove amount
-                compound.moles -= element.moles;
+                    // Remove amount
+                    compound.moles -= element.moles;
 
-                // If none is available anymore, remove element from container in its entirety
-                if compound.moles == 0.0 {
-                    // FIXME:
-                    // self.contents.remove(position);
-                    println!("## Removing elements from containers is currently not supported.");
+                    // If none is available anymore, remove element from container in its entirety
+                    compound.moles == 0.0
+                } {
+                    self.contents.remove(position);
                 }
             } else {
                 println!("Can't remove element {} (not found)", element.symbol());
