@@ -4,7 +4,7 @@ use trait_properties::*;
 use types::*;
 
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Electron { }
 
 

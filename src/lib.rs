@@ -143,15 +143,13 @@ fn container_reaction_cost() {
 
     // Repeadably try this reaction
 
-    // NOTE: WE SHOULDN'T NEED TO CLONE
-
-    container.react(reaction.clone());
+    container.react(&reaction);
     assert_eq!(900.0, container.available_energy);
 
-    container.react(reaction.clone());
+    container.react(&reaction);
     assert_eq!(800.0, container.available_energy);
 
-    container.react(reaction.clone());
+    container.react(&reaction);
     assert_eq!(700.0, container.available_energy);
 }
 

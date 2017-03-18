@@ -18,19 +18,6 @@ pub struct ContainerCompound<T> where T: Element {
 }
 
 
-pub fn rc_vec_to_cc_vec<T>(rc_vec: Vec< ReactionCompound<T> >)
-    -> Vec< ContainerCompound<T> > where T: Element {
-    let mut cc_vec = vec!{};
-
-    for rc in rc_vec.into_iter() {
-        let cc = rc_to_cc(rc);
-
-        cc_vec.push(cc);
-    }
-
-    return cc_vec;
-}
-
 pub fn rc_to_cc<T>(rc: ReactionCompound<T>) -> ContainerCompound<T> where T: Element {
     ContainerCompound {
         element: rc.element,
@@ -45,11 +32,23 @@ impl<T> Container<T> where T: Element {
     /// and adding the elements on the right-hand side.
     /// If there is enough energy for the reaction, that amount will be consumed
     /// otherwise the reaction won't occur.
-    pub fn react(&mut self, reaction: Reaction<T>) {
+    pub fn react(&mut self, reaction: &Reaction<T>) {
         // Get required items
         let required_energy = reaction.energy_cost();
-        let ref required_elements = rc_vec_to_cc_vec(reaction.lhs.compounds);
-        let ref resulting_elements = rc_vec_to_cc_vec(reaction.rhs.compounds);
+        let mut required_elements = vec! {};
+        let mut resulting_elements = vec! {};
+
+        for rc in reaction.lhs.compounds.iter() {
+            let cc = rc_to_cc(rc.clone());
+
+            required_elements.push(cc);
+        }
+
+        for rc in reaction.rhs.compounds.iter() {
+            let cc = rc_to_cc(rc.clone());
+
+            resulting_elements.push(cc);
+        }
 
         // Check if the container has enough energy
         if self.available_energy < required_energy {
@@ -58,7 +57,7 @@ impl<T> Container<T> where T: Element {
         }
 
         // Check if the container has the required elements
-        if ! self.has_elements(required_elements) {
+        if ! self.has_elements(&required_elements) {
             println!("####    Not enough elements");
             return;
         }
@@ -67,10 +66,10 @@ impl<T> Container<T> where T: Element {
         self.available_energy -= required_energy;
 
         // Remove required elements
-        self.remove_elements(required_elements);
+        self.remove_elements(&required_elements);
 
         // Add reaction results
-        self.add_elements(resulting_elements);
+        self.add_elements(&resulting_elements);
     }
 
 

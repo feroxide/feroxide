@@ -98,8 +98,7 @@ fn main() {
     // Run the reaction 10 times
     for i in 0..10 {
         // Run the reaction on the container
-        let x = reaction.clone();
-        container.react(x);
+        container.react(&reaction);
 
         // Show what's left
         println!("[{:>2}] Contents: {}", i+1, container.to_string());
