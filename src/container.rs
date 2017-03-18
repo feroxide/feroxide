@@ -126,8 +126,8 @@ impl<T> Container<T> where T: Element {
 
     /// Add given elements to container
     pub fn add_elements(&mut self, elements: &Vec< ContainerCompound<T> >) {
-        for element in elements {
-            // Find element in selfcontents
+        for element in elements.into_iter() {
+            // Find element in self.contents
             if let Some(position) = self.contents.iter().position(|comp| comp == element) {
                 let mut compound = self.contents.get_mut(position).unwrap();
 
@@ -136,9 +136,7 @@ impl<T> Container<T> where T: Element {
             } else {
                 // If the element is not found in the container, add it
 
-                // FIXME:
-                // self.contents.push(element);
-                println!("## Adding elements to containers is currently not supported.");
+                self.contents.push(element.clone());
             }
         }
     }

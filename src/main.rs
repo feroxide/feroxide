@@ -49,12 +49,6 @@ fn main() {
             ContainerCompound {
                 element: WATER(),
                 moles: 1000.0
-            },
-
-            // NOTE: Temporary
-            ContainerCompound {
-                element: carbonic_acid.clone(),
-                moles: 0.0
             }
         },
 
