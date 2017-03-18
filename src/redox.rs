@@ -1,7 +1,7 @@
-// use data_atoms::*;
-// use ion::*;
-// use electron::*;
-// use molecule::*;
+use data_atoms::*;
+use ion::*;
+use electron::*;
+use molecule::*;
 use reaction::*;
 use trait_element::*;
 use trait_properties::*;
@@ -31,7 +31,7 @@ macro_rules! ion_from_atom {
 
 
 #[derive(Debug, Eq, PartialEq, Clone)]
-pub struct Redox<E: Element> {
+pub struct RedoxReaction<E: Element> {
     pub reductor: ElemReaction<E>,
     pub oxidator: ElemReaction<E>
 }
@@ -39,14 +39,14 @@ pub struct Redox<E: Element> {
 
 #[allow(non_snake_case)]
 // NOTE: This is not efficient AT ALL, but Rust won't let me make a const hashmap
-pub fn SEPMAP<E>() -> HashMap<ElemReaction<E>, SEP> where E: Element {
-    let mut map: HashMap<ElemReaction<E>, SEP> = HashMap::new();
+// NOTE: Using Strings is also not very efficient, but Rust is getting annoying
+pub fn SEPMAP() -> HashMap<String, SEP> {
+    let mut map: HashMap<String, SEP> = HashMap::new();
 
     // Using data from https://en.wikipedia.org/wiki/Standard_electrode_potential_(data_page)
 
-    map.insert(ElemReaction {
+    let reaction = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
-            /*
             ReactionCompound {
                 element: Ion {
                     molecule: Molecule {
@@ -66,36 +66,45 @@ pub fn SEPMAP<E>() -> HashMap<ElemReaction<E>, SEP> where E: Element {
                 element: ELECTRON(),
                 amount: 2
             }
-            */
         }},
 
         rhs: ReactionSide { compounds: vec! {
-            /*
             ReactionCompound {
                 element: ion_from_atom!(HYDROGEN),
                 amount: 1
             }
-            */
         }},
 
         is_equilibrium: true
-    }, 0.0000);
+    };
 
+    let reaction_string = reaction.symbol();
+
+    println!("{}", reaction_string);
+
+    map.insert(reaction_string, 0.0000);
 
     map
 }
 
 
-pub fn get_sep<E>(elem_reaction: &ElemReaction<E>) -> SEP where E: Element {
+pub fn get_sep<E>(elem_reaction: &ElemReaction<E>) -> Option<SEP> where E: Element {
     let sepmap = SEPMAP();
 
-    sepmap.get(elem_reaction).unwrap().clone()
+    let reaction_string = elem_reaction.symbol();
+
+    if let Some(sep) = sepmap.get(&reaction_string) {
+        Some(sep.clone())
+    } else {
+        None
+    }
 }
 
 
-impl<E> Reaction<E> for Redox<E> where E: Element {
+impl<E> Reaction<E> for RedoxReaction<E> where E: Element {
     fn is_valid(&self) -> bool {
-        get_sep(&self.reductor) < get_sep(&self.oxidator) && self.elem_reaction().is_valid()
+        // oxidator > reductor
+        get_sep(&self.oxidator) > get_sep(&self.reductor) && self.elem_reaction().is_valid()
     }
 
 
@@ -115,22 +124,39 @@ impl<E> Reaction<E> for Redox<E> where E: Element {
 }
 
 
-impl<E: Element> Properties for Redox<E> {
+impl<E: Element> Properties for RedoxReaction<E> {
     fn symbol(&self) -> String {
-        "".to_owned()
+        let mut symbol = String::new();
+
+        symbol += "oxidator: ";
+        symbol += &self.oxidator.symbol();
+        symbol += "\n";
+        symbol += "reductor: ";
+        symbol += &self.reductor.symbol();
+
+        return symbol;
     }
 
     fn name(&self) -> String {
-        "".to_owned()
+        let mut name = String::new();
+
+        name += "oxidator: ";
+        name += &self.oxidator.name();
+        name += "\n";
+        name += "reductor: ";
+        name += &self.reductor.name();
+
+        return name;
     }
 
     fn mass(&self) -> AtomMass {
+        // law of conservation of mass
         0.0
     }
 }
 
 
-impl<E: Element> Redox<E> {
+impl<E: Element> RedoxReaction<E> {
     pub fn is_valid(&self) -> bool {
         true
     }

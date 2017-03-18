@@ -97,4 +97,87 @@ fn main() {
         // Show what's left
         println!("[{:>2}] Contents: {}", i+1, container.to_string());
     }
+
+
+
+    // Redox is possible, but it's quite a bit of work to type
+    let redox = RedoxReaction {
+        oxidator: ElemReaction {
+            lhs: ReactionSide { compounds: vec! {
+                ReactionCompound {
+                    element: Ion {
+                        molecule: Molecule { compounds: vec! {
+                            MoleculeCompound {
+                                atom: FLUORINE,
+                                amount: 2
+                            }
+                        }},
+                        charge: Some(0)
+                    },
+                    amount: 1
+                },
+                ReactionCompound {
+                    element: ELECTRON(),
+                    amount: 2
+                }
+            }},
+            rhs: ReactionSide { compounds: vec! {
+                ReactionCompound {
+                    element: Ion {
+                        molecule: Molecule { compounds: vec! {
+                            MoleculeCompound {
+                                atom: FLUORINE,
+                                amount: 1
+                            }
+                        }},
+                        charge: Some(-1)
+                    },
+                    amount: 2
+                }
+            }},
+            is_equilibrium: true
+        },
+        reductor: ElemReaction {
+            lhs: ReactionSide { compounds: vec! {
+                ReactionCompound {
+                    element: Ion {
+                        molecule: Molecule { compounds: vec! {
+                            MoleculeCompound {
+                                atom: IRON,
+                                amount: 1
+                            }
+                        }},
+                        charge: Some(0)
+                    },
+                    amount: 1
+                }
+            }},
+            rhs: ReactionSide { compounds: vec! {
+                ReactionCompound {
+                    element: Ion {
+                        molecule: Molecule { compounds: vec! {
+                            MoleculeCompound {
+                                atom: IRON,
+                                amount: 1
+                            }
+                        }},
+                        charge: Some(3)
+                    },
+                    amount: 1
+                },
+                ReactionCompound {
+                    element: ELECTRON(),
+                    amount: 3
+                }
+            }},
+            is_equilibrium: true
+        }
+    };
+
+
+    // Check if it's valid
+    println!("{:?}", redox.is_valid());
+
+    println!("{}", redox.symbol());
+    println!("{}", redox.name());
 }

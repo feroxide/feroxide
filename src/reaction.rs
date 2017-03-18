@@ -273,6 +273,7 @@ impl<E> Properties for ReactionCompound<E> where E: Element  {
 
         if self.amount > 1 {
             name += &self.amount.to_string();
+            name += " ";
         }
 
         name += &self.element.name();
