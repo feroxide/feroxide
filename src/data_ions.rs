@@ -4,10 +4,9 @@ use data_atoms::*;
 use ion::*;
 use molecule::*;
 
-/// Due to the disallowance of Rust of vec! in `const`'s, we made these things functions(?)
 
-pub fn HYDROXIDE() -> Ion {
-    Ion {
+lazy_static! {
+    pub static ref HYDROXIDE: Ion = Ion {
         molecule: Molecule { compounds: vec! {
             MoleculeCompound {
                 atom: OXYGEN,
@@ -21,12 +20,9 @@ pub fn HYDROXIDE() -> Ion {
         }},
 
         charge: None
-    }
-}
+    };
 
-
-pub fn AMMONIUM() -> Ion {
-    Ion {
+    pub static ref AMMONIUM: Ion = Ion {
         molecule: Molecule { compounds: vec! {
             MoleculeCompound {
                 atom: NITROGEN,
@@ -40,12 +36,9 @@ pub fn AMMONIUM() -> Ion {
         }},
 
         charge: None
-    }
-}
+    };
 
-
-pub fn SULPHATE() -> Ion {
-    Ion {
+    pub static ref SULPHATE: Ion = Ion {
         molecule: Molecule { compounds: vec! {
             MoleculeCompound {
                 atom: SULFUR,
@@ -59,5 +52,5 @@ pub fn SULPHATE() -> Ion {
         }},
 
         charge: None
-    }
+    };
 }

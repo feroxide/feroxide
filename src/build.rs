@@ -16,8 +16,9 @@ struct Config {
     pub atoms: HashMap<String, Atom>
 }
 
+
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Atom {
+struct Atom {
     pub number: AtomNumber,
     pub group: AtomGroup,
     pub symbol: String,

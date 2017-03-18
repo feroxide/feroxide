@@ -1,33 +1,10 @@
-use data_atoms::*;
-use ion::*;
-use electron::*;
-use molecule::*;
+use data_sep::*;
+use math::*;
 use reaction::*;
 use trait_element::*;
 use trait_properties::*;
 use trait_reaction::*;
 use types::*;
-
-use std::collections::HashMap;
-
-
-macro_rules! molecule_from_atom {
-    ($atom:expr) => (
-        Molecule { compounds: vec! { MoleculeCompound::from_atom($atom) } }
-    )
-}
-
-macro_rules! ion_from_molecule {
-    ($molecule:expr) => (
-        Ion { molecule: $molecule, charge: Some(0) }
-    )
-}
-
-macro_rules! ion_from_atom {
-    ($atom:expr) => (
-        ion_from_molecule!(molecule_from_atom!($atom))
-    )
-}
 
 
 #[derive(Debug, Eq, PartialEq, Clone)]
@@ -37,71 +14,13 @@ pub struct RedoxReaction<E: Element> {
 }
 
 
-#[allow(non_snake_case)]
-// NOTE: This is not efficient AT ALL, but Rust won't let me make a const hashmap
-// NOTE: Using Strings is also not very efficient, but Rust is getting annoying
-pub fn SEPMAP() -> HashMap<String, SEP> {
-    let mut map: HashMap<String, SEP> = HashMap::new();
-
-    // Using data from https://en.wikipedia.org/wiki/Standard_electrode_potential_(data_page)
-
-    let reaction = ElemReaction {
-        lhs: ReactionSide { compounds: vec! {
-            ReactionCompound {
-                element: Ion {
-                    molecule: Molecule {
-                        compounds: vec! {
-                            MoleculeCompound {
-                                atom: HYDROGEN,
-                                amount: 1
-                            }
-                        }
-                    },
-                    charge: Some(1)
-                },
-                amount: 2
-            },
-
-            ReactionCompound {
-                element: ELECTRON(),
-                amount: 2
-            }
-        }},
-
-        rhs: ReactionSide { compounds: vec! {
-            ReactionCompound {
-                element: ion_from_atom!(HYDROGEN),
-                amount: 1
-            }
-        }},
-
-        is_equilibrium: true
-    };
-
-    let reaction_string = reaction.symbol();
-
-    println!("{}", reaction_string);
-
-    map.insert(reaction_string, 0.0000);
-
-    map
-}
-
-
-pub fn get_sep<E>(elem_reaction: &ElemReaction<E>) -> Option<SEP> where E: Element {
-    let sepmap = SEPMAP();
-
-    let reaction_string = elem_reaction.symbol();
-
-    if let Some(sep) = sepmap.get(&reaction_string) {
-        Some(sep.clone())
-    } else {
-        None
-    }
-}
-
-
 impl<E> Reaction<E> for RedoxReaction<E> where E: Element {
+    fn equalise(&self) -> bool {
+        // Assume reaction is correct for now
+        true
+    }
+
+
     fn is_valid(&self) -> bool {
         // oxidator > reductor
         get_sep(&self.oxidator) > get_sep(&self.reductor) && self.elem_reaction().is_valid()
@@ -114,12 +33,63 @@ impl<E> Reaction<E> for RedoxReaction<E> where E: Element {
 
 
     fn elem_reaction(&self) -> ElemReaction<E> {
-        ElemReaction {
-            lhs: self.reductor.lhs.clone(),
-            rhs: self.reductor.rhs.clone(),
+        // Assuming .rhs and .lhs are equalised
+
+        let red_charge;
+        let oxi_charge;
+
+        // ehm... let me explain these two
+
+        // Get reductor charge by searching for the electron, then getting that amount
+        if let Some(red_elec_pos) = self.reductor.rhs.compounds.iter().position(|x|
+            x.element.get_molecule().unwrap()
+            .compounds.get(0).unwrap()
+            .atom.number == 0
+        ) {
+            red_charge = self.reductor.rhs.compounds.get(red_elec_pos).unwrap().amount;
+        } else if let Some(red_elec_pos) = self.reductor.lhs.compounds.iter().position(|x|
+            x.element.get_molecule().unwrap()
+            .compounds.get(0).unwrap()
+            .atom.number == 0
+        ) {
+            red_charge = self.reductor.lhs.compounds.get(red_elec_pos).unwrap().amount;
+        } else {
+            panic!("Reductor has no electrons!");
+        }
+
+
+        // Get oxidator charge by searching for the electron, then getting that amount
+        if let Some(oxi_elec_pos) = self.oxidator.lhs.compounds.iter().position(|x|
+            x.element.get_molecule().unwrap()
+            .compounds.get(0).unwrap()
+            .atom.number == 0
+        ) {
+            oxi_charge = self.oxidator.lhs.compounds.get(oxi_elec_pos).unwrap().amount;
+        } else if let Some(oxi_elec_pos) = self.oxidator.rhs.compounds.iter().position(|x|
+            x.element.get_molecule().unwrap()
+            .compounds.get(0).unwrap()
+            .atom.number == 0
+        ) {
+            oxi_charge = self.oxidator.rhs.compounds.get(oxi_elec_pos).unwrap().amount;
+        } else {
+            panic!("Oxidator has no electrons!");
+        }
+
+
+        // Make sure that 4/2 or 2/4 gets converted to 2/1 or 1/2 first
+        let gcd = gcd(red_charge as i32, oxi_charge as i32) as u16;
+        let red_mult = oxi_charge / gcd;
+        let oxi_mult = red_charge / gcd;
+
+
+        let x = ElemReaction {
+            lhs: self.reductor.lhs.clone() * red_mult + self.oxidator.lhs.clone() * oxi_mult,
+            rhs: self.reductor.rhs.clone() * red_mult + self.oxidator.rhs.clone() * oxi_mult,
 
             is_equilibrium: true
-        }
+        };
+
+        x
     }
 }
 
@@ -137,6 +107,7 @@ impl<E: Element> Properties for RedoxReaction<E> {
         return symbol;
     }
 
+
     fn name(&self) -> String {
         let mut name = String::new();
 
@@ -149,15 +120,9 @@ impl<E: Element> Properties for RedoxReaction<E> {
         return name;
     }
 
+
     fn mass(&self) -> AtomMass {
-        // law of conservation of mass
+        // Law of Conservation of Mass
         0.0
-    }
-}
-
-
-impl<E: Element> RedoxReaction<E> {
-    pub fn is_valid(&self) -> bool {
-        true
     }
 }

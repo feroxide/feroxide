@@ -1,5 +1,6 @@
 extern crate feroxide;
 
+
 use feroxide::*;
 use feroxide::data_atoms::*;
 use feroxide::data_molecules::*;
@@ -29,6 +30,7 @@ fn main() {
     // To get your data
     println!("10 moles of {} weigh {} gram(s).", symbol, weight);
 
+
     // Make some more molecules, just for fun
     let carbonic_acid = Molecule {
         compounds: vec! {
@@ -47,7 +49,7 @@ fn main() {
             },
 
             ContainerCompound {
-                element: WATER(),
+                element: WATER.clone(),
                 moles: 1000.0
             }
         },
@@ -60,7 +62,7 @@ fn main() {
     let reaction = ElemReaction {
         lhs: ReactionSide {
             compounds: vec! {
-                ReactionCompound { element: WATER(), amount: 1 },
+                ReactionCompound { element: WATER.clone(), amount: 1 },
                 ReactionCompound { element: carbondioxide.clone(), amount: 1 }
             }
         },
@@ -75,7 +77,7 @@ fn main() {
     };
 
     // Make sure the reaction is valid
-    reaction.equalise();
+    assert!(reaction.equalise());
     assert!(reaction.is_valid());
 
     // Print the reaction in names
@@ -100,7 +102,7 @@ fn main() {
 
 
 
-    // Redox is possible, but it's quite a bit of work to type
+    // Redox is possible, but it's quite a hassle to type
     let redox = RedoxReaction {
         oxidator: ElemReaction {
             lhs: ReactionSide { compounds: vec! {
@@ -112,15 +114,19 @@ fn main() {
                                 amount: 2
                             }
                         }},
+
                         charge: Some(0)
                     },
+
                     amount: 1
                 },
+
                 ReactionCompound {
-                    element: ELECTRON(),
+                    element: ELECTRON.clone(),
                     amount: 2
                 }
             }},
+
             rhs: ReactionSide { compounds: vec! {
                 ReactionCompound {
                     element: Ion {
@@ -130,13 +136,17 @@ fn main() {
                                 amount: 1
                             }
                         }},
+
                         charge: Some(-1)
                     },
+
                     amount: 2
                 }
             }},
+
             is_equilibrium: true
         },
+
         reductor: ElemReaction {
             lhs: ReactionSide { compounds: vec! {
                 ReactionCompound {
@@ -147,11 +157,14 @@ fn main() {
                                 amount: 1
                             }
                         }},
+
                         charge: Some(0)
                     },
+
                     amount: 1
                 }
             }},
+
             rhs: ReactionSide { compounds: vec! {
                 ReactionCompound {
                     element: Ion {
@@ -161,23 +174,31 @@ fn main() {
                                 amount: 1
                             }
                         }},
+
                         charge: Some(3)
                     },
+
                     amount: 1
                 },
+
                 ReactionCompound {
-                    element: ELECTRON(),
+                    element: ELECTRON.clone(),
                     amount: 3
                 }
             }},
+
             is_equilibrium: true
         }
     };
 
 
-    // Check if it's valid
-    println!("{:?}", redox.is_valid());
+    // Make sure it's valid
+    assert!(redox.equalise());
+    assert!(redox.is_valid());
 
+    // Print the symbol version
     println!("{}", redox.symbol());
+
+    // Print the name version
     println!("{}", redox.name());
 }

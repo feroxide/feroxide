@@ -1,6 +1,10 @@
 use types::*;
 
 
+// Reference: https://www.shodor.org/unchem/basic/nomen/index.html
+// Reference: BiNaS 6th edition, table 66C
+
+
 /// The basic function which converts a number to greek
 /// This function should only be called by the public `number_to_greek` function
 fn basic_number_to_greek(n: u8, tenplus: bool) -> String {

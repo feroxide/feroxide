@@ -4,7 +4,7 @@ use types::*;
 use std::hash::*;
 
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Clone)]
 pub struct Atom {
     pub number: AtomNumber,
     pub group: AtomGroup,
@@ -24,6 +24,7 @@ impl PartialEq for Atom {
     }
 }
 
+
 impl Hash for Atom {
     fn hash<H: Hasher>(&self, state: &mut H) {
         // Only the AtomNumber determines the hash
@@ -37,6 +38,7 @@ impl Properties for Atom {
         self.symbol.to_owned()
     }
 
+
     fn name(&self) -> String {
         // NOTE: This case is temporary
         if self.name == "oxygen" {
@@ -46,6 +48,7 @@ impl Properties for Atom {
 
         self.name.to_owned()
     }
+
 
     fn mass(&self) -> AtomMass {
         self.mass

@@ -6,13 +6,12 @@ use types::*;
 
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
-// And I'd love to include Copy, but Vec doesn't want me to
 pub struct Molecule {
     pub compounds: Vec<MoleculeCompound>
 }
 
 
-#[derive(Debug, Eq, PartialEq, Copy, Clone, Hash)]
+#[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct MoleculeCompound {
     pub atom: Atom,
     pub amount: u8

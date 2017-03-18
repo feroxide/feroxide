@@ -15,13 +15,14 @@ pub struct Container<E> where E: Element {
 }
 
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Clone)]
 pub struct ContainerCompound<E> where E: Element {
     pub element: E,
     pub moles: Moles
 }
 
 
+/// Convert a given ReactionCompound into a ContainerCompound
 pub fn rc_to_cc<E>(rc: ReactionCompound<E>) -> ContainerCompound<E> where E: Element {
     ContainerCompound {
         element: rc.element,
@@ -43,12 +44,14 @@ impl<E> Container<E> where E: Element {
         let mut required_elements = vec! {};
         let mut resulting_elements = vec! {};
 
+        // Convert lhs.compounds into ContainerCompound's
         for rc in reaction.elem_reaction().lhs.compounds.iter() {
             let cc = rc_to_cc(rc.clone());
 
             required_elements.push(cc);
         }
 
+        // Convert rhs.compounds into ContainerCompound's
         for rc in reaction.elem_reaction().rhs.compounds.iter() {
             let cc = rc_to_cc(rc.clone());
 

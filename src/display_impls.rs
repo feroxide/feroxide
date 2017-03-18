@@ -1,6 +1,5 @@
 use atom::Atom;
 use container::{ Container, ContainerCompound };
-// use electron::Electron;
 use ion::Ion;
 use molecule::Molecule;
 use reaction::{ ElemReaction, ReactionSide, ReactionCompound };
@@ -52,7 +51,6 @@ macro_rules! fmt_lifetime_type {
 
 
 fmt!(Atom);
-// fmt!(Electron);
 fmt!(Ion);
 fmt!(Molecule);
 fmt_type!(Container);

@@ -1,11 +1,12 @@
-// #[macro_use]
-// extern crate lazy_static;
+#[macro_use]
+extern crate lazy_static;
 
 
 mod atom;
 mod container;
 mod electron;
 mod ion;
+mod math;
 mod molecule;
 mod namings;
 mod reaction;
@@ -19,6 +20,7 @@ pub use atom::*;
 pub use container::*;
 pub use electron::*;
 pub use ion::*;
+pub use math::*;
 pub use molecule::*;
 pub use namings::*;
 pub use reaction::*;
@@ -31,8 +33,10 @@ pub use types::*;
 pub mod data_atoms;
 pub mod data_ions;
 pub mod data_molecules;
+pub mod data_sep;
 
 pub mod display_impls;
+
 
 
 // macros \\
@@ -59,16 +63,54 @@ macro_rules! ion_from_atom {
 }
 
 
+
 // tests \\
+#[test]
+fn test_gcd() {
+    assert_eq!(2, gcd(4, 6));
+    assert_eq!(5, gcd(10, 25));
+    assert_eq!(12, gcd(48, 36));
+    assert_eq!(1, gcd(7, 13));
+}
+
+
+#[test]
+fn total_atoms() {
+    use data_atoms::*;
+    use data_molecules::*;
+
+    let side = ReactionSide {
+        compounds: vec! {
+            ReactionCompound {
+                element: WATER.clone(),
+                amount: 8
+            },
+
+            ReactionCompound {
+                element: molecule_from_atom!(OXYGEN),
+                amount: 5
+            }
+        }
+    };
+
+    // 16 Hydrogen atoms
+    assert_eq!(16, *side.total_atoms().get(&1).unwrap());
+
+    // 8 + 10 = 18 Oxygen atoms
+    assert_eq!(18, *side.total_atoms().get(&8).unwrap());
+}
+
+
 #[test]
 fn container_add_and_remove_elements() {
     use data_atoms::*;
     use data_molecules::*;
 
+
     let mut container = Container {
         contents: vec! {
             ContainerCompound {
-                element: WATER(),
+                element: WATER.clone(),
                 moles: 6.0
             }
         },
@@ -76,10 +118,11 @@ fn container_add_and_remove_elements() {
         available_energy: 1e5 // Should be enough
     };
 
+
     let reaction = ElemReaction {
         lhs: ReactionSide {
             compounds: vec! {
-                ReactionCompound { element: WATER(), amount: 2 }
+                ReactionCompound { element: WATER.clone(), amount: 2 }
             }
         },
 
@@ -120,6 +163,7 @@ fn container_add_and_remove_elements() {
         ContainerCompound { element: molecule_from_atom!(OXYGEN), moles: 3.0 }
     });
 
+    // Now it should be empty
     assert_eq!(0, container.contents.len());
 }
 
@@ -136,7 +180,7 @@ fn check_display() {
 
     let reactioncompound = ReactionCompound {
         amount: 1,
-        element: SUGAR()
+        element: SUGAR.clone()
     };
 
     let reactionside = ReactionSide {
@@ -166,9 +210,9 @@ fn check_display() {
 
 
     format!("{}", HYDROGEN); // Atom
-    format!("{}", SUGAR()); // Molecule
-    format!("{}", AMMONIUM()); // Ion
-    format!("{}", ELECTRON()); // Electron
+    format!("{}", SUGAR.clone()); // Molecule
+    format!("{}", AMMONIUM.clone()); // Ion
+    format!("{}", ELECTRON.clone()); // Electron
     format!("{}", reactioncompound); // ReactionCompound
     format!("{}", reactionside); // ReactionSide
     format!("{}", reaction); // Reaction
@@ -182,8 +226,10 @@ fn container_reaction_cost() {
     use data_atoms::*;
     use data_molecules::*;
 
+
     let hydrogen = molecule_from_atom!(HYDROGEN);
     let oxygen = molecule_from_atom!(OXYGEN);
+
 
     let mut container = Container {
         contents: vec! {
@@ -193,6 +239,7 @@ fn container_reaction_cost() {
 
         available_energy: 1000.0
     };
+
 
     let reaction = ElemReaction {
         lhs: ReactionSide {
@@ -204,31 +251,33 @@ fn container_reaction_cost() {
 
         rhs: ReactionSide {
             compounds: vec! {
-                ReactionCompound { element: WATER(), amount: 2 }
+                ReactionCompound { element: WATER.clone(), amount: 2 }
             }
         },
 
         is_equilibrium: false // actually true, but false for this test
     };
 
+
     assert_eq!(1000.0, container.available_energy);
     assert_eq!(100.0, reaction.energy_cost());
 
     // Repeadably try this reaction
 
-    container.react(&reaction);
+    assert!(container.react(&reaction));
     assert_eq!(900.0, container.available_energy);
 
-    container.react(&reaction);
+    assert!(container.react(&reaction));
     assert_eq!(800.0, container.available_energy);
 
-    container.react(&reaction);
+    assert!(container.react(&reaction));
     assert_eq!(700.0, container.available_energy);
 }
 
 #[test]
 fn ion_notation_check() {
     use data_atoms::*;
+
 
     // P₄²⁻  tetraphosphorus(-II)
     #[allow(non_snake_case)]
@@ -250,23 +299,27 @@ fn ion_notation_check() {
 fn ion_charge_calculation() {
     use data_ions::*;
 
-    assert_eq!(-2, SULPHATE().get_charge().unwrap());
-    assert_eq!(-1, HYDROXIDE().get_charge().unwrap());
-    assert_eq!(1, AMMONIUM().get_charge().unwrap());
+
+    assert_eq!(-2, SULPHATE.get_charge().unwrap());
+    assert_eq!(-1, HYDROXIDE.get_charge().unwrap());
+    assert_eq!(1, AMMONIUM.get_charge().unwrap());
 }
+
 
 #[test]
 fn electron_data() {
     use electron::*;
 
-    assert_eq!(-1, ELECTRON().get_charge().unwrap());
-    assert_eq!("e⁻", ELECTRON().symbol());
+
+    assert_eq!(-1, ELECTRON.get_charge().unwrap());
+    assert_eq!("e⁻", ELECTRON.symbol());
 }
 
 
 #[test]
 fn diatomic_check() {
     use data_atoms::*;
+
 
     assert_eq!(2, MoleculeCompound::from_atom(HYDROGEN).amount);
     assert_eq!(2, MoleculeCompound::from_atom(NITROGEN).amount);
@@ -275,14 +328,17 @@ fn diatomic_check() {
     assert_eq!(2, MoleculeCompound::from_atom(CHLORINE).amount);
     assert_eq!(2, MoleculeCompound::from_atom(BROMINE).amount);
     assert_eq!(2, MoleculeCompound::from_atom(IODINE).amount);
+
     assert_eq!(1, MoleculeCompound::from_atom(CARBON).amount);
     assert_eq!(1, MoleculeCompound::from_atom(LITHIUM).amount);
     assert_eq!(1, MoleculeCompound::from_atom(SULFUR).amount);
 }
 
+
 #[test]
 fn atoms_database_check() {
     use data_atoms::*;
+
 
     assert_eq!(1, HYDROGEN.number);
     assert_eq!("oxygen", OXYGEN.name);
@@ -298,9 +354,11 @@ fn atoms_database_check() {
     assert_eq!("aluminium", ALUMINIUM.name);
 }
 
+
 #[test]
 fn greek_namings() {
     use namings::number_to_greek as to_greek;
+
 
     assert_eq!("di", to_greek(2));
     assert_eq!("undeca", to_greek(11));
@@ -316,9 +374,11 @@ fn greek_namings() {
     assert_eq!("nonanonaconta", to_greek(99));
 }
 
+
 #[test]
 fn roman_namings() {
     use namings::number_to_roman as to_roman;
+
 
     assert_eq!("0", to_roman(0));
     assert_eq!("IV", to_roman(4));
@@ -336,6 +396,7 @@ fn reaction_check() {
     use data_atoms::*;
     use data_molecules::*;
 
+
     let good_reaction = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
             ReactionCompound { amount: 1, element: molecule_from_atom!(CARBON) },
@@ -343,7 +404,7 @@ fn reaction_check() {
         }},
 
         rhs: ReactionSide { compounds: vec! {
-            ReactionCompound { amount: 1, element: CO2() }
+            ReactionCompound { amount: 1, element: CO2.clone() }
         }},
 
         is_equilibrium: false
@@ -357,7 +418,7 @@ fn reaction_check() {
         }},
 
         rhs: ReactionSide { compounds: vec! {
-            ReactionCompound { amount: 3, element: CO2() }
+            ReactionCompound { amount: 3, element: CO2.clone() }
         }},
 
         is_equilibrium: false
@@ -375,6 +436,7 @@ fn reaction_check() {
 
         is_equilibrium: false
     };
+
 
     let equilibrium_reaction = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
@@ -397,10 +459,13 @@ fn reaction_check() {
     };
 
 
+    // Test validity
     assert!(good_reaction.is_valid());
     assert!(! wrong_reaction_0.is_valid());
     assert!(! wrong_reaction_1.is_valid());
 
+
+    // Test display
     assert_eq!("C + O₂ → CO₂", format!("{}", good_reaction));
     assert_eq!("H₂ ⇌ 2H", format!("{}", equilibrium_reaction));
 }
@@ -411,6 +476,7 @@ fn equalise() {
     use data_atoms::*;
     use data_molecules::*;
 
+
     let water_reaction = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
             ReactionCompound { element: molecule_from_atom!(HYDROGEN), amount: 0 },
@@ -418,13 +484,14 @@ fn equalise() {
         }},
 
         rhs: ReactionSide { compounds: vec! {
-            ReactionCompound { element: WATER(), amount: 0 }
+            ReactionCompound { element: WATER.clone(), amount: 0 }
         }},
 
         is_equilibrium: false
     };
 
-    water_reaction.equalise();
+
+    assert!(water_reaction.equalise());
 }
 
 
@@ -433,25 +500,27 @@ fn only_compare_similiar_elements() {
     use data_molecules::*;
     use data_ions::*;
 
+
     let _ = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
-            ReactionCompound { element: WATER(), amount: 1 }
+            ReactionCompound { element: WATER.clone(), amount: 1 }
         }},
 
         rhs: ReactionSide { compounds: vec! {
-            ReactionCompound { element: CO2(), amount: 1 }
+            ReactionCompound { element: CO2.clone(), amount: 1 }
         }},
 
         is_equilibrium: true
     };
 
+
     let _ = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
-            ReactionCompound { element: AMMONIUM(), amount: 1 }
+            ReactionCompound { element: AMMONIUM.clone(), amount: 1 }
         }},
 
         rhs: ReactionSide { compounds: vec! {
-            ReactionCompound { element: SULPHATE(), amount: 1 }
+            ReactionCompound { element: SULPHATE.clone(), amount: 1 }
         }},
 
         is_equilibrium: true
@@ -463,15 +532,8 @@ fn only_compare_similiar_elements() {
 fn molecule_mass_calculation() {
     use data_molecules::*;
 
-    assert_eq!(18.015, WATER().mass());
-    assert_eq!(342.297, SUGAR().mass());
-    assert_eq!(44.009, CO2().mass());
-}
 
-
-
-#[test]
-#[should_panic]
-fn panic_case_0() {
-    namings::number_to_greek(250);
+    assert_eq!(18.015, WATER.mass());
+    assert_eq!(342.297, SUGAR.mass());
+    assert_eq!(44.009, CO2.mass());
 }

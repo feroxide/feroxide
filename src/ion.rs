@@ -46,7 +46,7 @@ impl Ion {
         let mut charge = 0;
 
         for molecule_compound in self.molecule.compounds.iter() {
-            if let Some(atom_charge) = charge_of_atom(molecule_compound.atom) {
+            if let Some(atom_charge) = charge_of_atom(molecule_compound.atom.clone()) {
                 let mol_charge = (molecule_compound.amount as IonCharge) * atom_charge;
 
                 charge += mol_charge;

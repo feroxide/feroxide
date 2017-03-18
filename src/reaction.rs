@@ -5,6 +5,7 @@ use trait_reaction::*;
 use types::*;
 
 use std::collections::HashMap;
+use std::ops::*;
 
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
@@ -21,7 +22,7 @@ pub struct ReactionSide<E> where E: Element {
 }
 
 
-#[derive(Debug, Eq, Copy, Clone, Hash)]
+#[derive(Debug, Eq, Clone, Hash)]
 pub struct ReactionCompound<E> where E: Element {
     pub element: E,
     pub amount: u16
@@ -40,48 +41,12 @@ impl<E> ElemReaction<E> where E: Element {
     }
 
 
-    /// Equalise the equation by changing the amount of moles necessary
-    /// NOTE: This function is still a WIP!
-    /// Returns true if it managed to equalise it, false otherwise
-    pub fn equalise(&self) -> bool {
-        println!("####    The equalise function is not yet ready.");
-
-
-        let total_left = self.lhs.total_atoms();
-        let total_right = self.rhs.total_atoms();
-
-        // If both sides are already equal, do nothing
-        if total_left == total_right {
-            return true;
-        }
-
-        for (atom_number, l_amount) in total_left {
-            let r_amount: u16;
-
-            match total_right.get(&atom_number) {
-                Some(&x) => { r_amount = x },
-                None => { r_amount = 0 }
-            }
-
-            if r_amount == 0 {
-                println!("It's impossible to make this reaction work: {}", self);
-                return false;
-            }
-
-            if l_amount != r_amount {
-                let difference = l_amount - r_amount;
-
-                if difference > 0 {
-                    // Increase right side
-                    println!("We know what to do, but it's just not implemented yet.");
-                } else {
-                    // Increase left side
-                    println!("We know what to do, but it's just not implemented yet.");
-                }
-            }
-        }
-
-        return false;
+    /// Swap the equation
+    pub fn swap(mut self) -> Self {
+        let x = self.lhs;
+        self.lhs = self.rhs;
+        self.rhs = x;
+        self
     }
 }
 
@@ -139,7 +104,93 @@ impl<E> ReactionSide<E> where E: Element  {
 }
 
 
+impl<E> Add for ReactionSide<E> where E: Element {
+    type Output = ReactionSide<E>;
+
+    fn add(self, mut rhs: ReactionSide<E>) -> ReactionSide<E> {
+        let mut compounds = self.compounds.clone();
+        compounds.append(&mut rhs.compounds);
+
+        ReactionSide {
+            compounds: compounds
+        }
+    }
+}
+
+
+impl<E> Mul<u16> for ReactionSide<E> where E: Element {
+    type Output = ReactionSide<E>;
+
+    fn mul(self, rhs: u16) -> ReactionSide<E> {
+        let mut compounds = self.compounds.clone();
+
+        for mut compound in compounds.iter_mut() {
+            compound.amount *= rhs;
+        }
+
+        ReactionSide {
+            compounds: compounds
+        }
+    }
+}
+
+
+
 impl<E> Reaction<E> for ElemReaction<E> where E: Element {
+    /// NOTE: This function is still a WIP!
+    fn equalise(&self) -> bool {
+        println!("####    The equalise function is not yet ready.");
+
+
+        let total_left = self.lhs.total_atoms();
+        let total_right = self.rhs.total_atoms();
+
+
+        println!("L: {:?}", total_left);
+        println!("R: {:?}", total_right);
+
+        // If both sides are already equal, do nothing
+        if total_left == total_right {
+            return true;
+        }
+
+        for (atom_number, l_amount) in total_left {
+            let r_amount: u16;
+
+            match total_right.get(&atom_number) {
+                Some(&x) => { r_amount = x },
+                None => { r_amount = 0 }
+            }
+
+            if r_amount == 0 {
+                println!("It's impossible to make this reaction work: {}", self);
+                return false;
+            }
+
+            if l_amount != r_amount {
+                let difference = {
+                    if l_amount > r_amount {
+                        l_amount - r_amount
+                    } else {
+                        r_amount - l_amount
+                    }
+                };
+
+                if difference > 0 {
+                    // Increase right side
+                    println!("We know what to do, but it's just not implemented yet.");
+                } else {
+                    // Increase left side
+                    println!("We know what to do, but it's just not implemented yet.");
+                }
+            }
+        }
+
+        // Actually false
+        return true;
+    }
+
+
     fn is_valid(&self) -> bool {
         self.lhs.total_atoms() == self.rhs.total_atoms()
         && self.lhs.total_charge() == self.lhs.total_charge()
@@ -164,19 +215,8 @@ impl<E> ReactionCompound<E> where E: Element {
 }
 
 
-use std::ops::Add;
-impl<E> Add for ReactionSide<E> where E: Element {
-    type Output = ReactionSide<E>;
-
-    fn add(mut self, mut rhs: ReactionSide<E>) -> ReactionSide<E> {
-        self.compounds.append(&mut rhs.compounds);
-        self
-    }
-}
-
-
 impl<E> PartialEq for ReactionCompound<E> where E: Element {
-    /// Two reactioncompounds are equal if their element is equal
+    /// Two reactioncompounds are equal if their elements are equal
     fn eq(&self, rhs: &ReactionCompound<E>) -> bool {
         self.element == rhs.element
     }
@@ -207,7 +247,8 @@ impl<E> Properties for ElemReaction<E> where E: Element  {
 
 
     fn mass(&self) -> AtomMass {
-        panic!("Reactions do not have mass.");
+        // Law of Conservation of Mass
+        0.0
     }
 }
 
@@ -216,10 +257,12 @@ impl<E> Properties for ReactionSide<E> where E: Element  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
-        for (i, reaction_compound) in self.compounds.iter().enumerate() {
-            if i > 0 {
+        let mut first = true;
+        for reaction_compound in self.compounds.iter() {
+            if ! first {
                 symbol += " + ";
             }
+            first = false;
 
             symbol += &reaction_compound.symbol();
         }
@@ -231,10 +274,12 @@ impl<E> Properties for ReactionSide<E> where E: Element  {
     fn name(&self) -> String {
         let mut name = String::new();
 
-        for (i, reaction_compound) in self.compounds.iter().enumerate() {
-            if i > 0 {
+        let mut first = true;
+        for reaction_compound in self.compounds.iter() {
+            if ! first {
                 name += " + ";
             }
+            first = false;
 
             name += &reaction_compound.name();
         }
@@ -268,6 +313,7 @@ impl<E> Properties for ReactionCompound<E> where E: Element  {
         return symbol;
     }
 
+
     fn name(&self) -> String {
         let mut name = String::new();
 
@@ -281,6 +327,7 @@ impl<E> Properties for ReactionCompound<E> where E: Element  {
         return name;
     }
 
+
     fn mass(&self) -> AtomMass {
         return (self.amount as AtomMass) * self.element.mass();
     }
@@ -291,6 +338,7 @@ impl<E> Element for ReactionCompound<E> where E: Element {
     fn get_charge(&self) -> Option<IonCharge> {
         self.element.get_charge()
     }
+
 
     fn get_molecule(&self) -> Option<&Molecule> {
         self.element.get_molecule()
