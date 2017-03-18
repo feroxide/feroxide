@@ -1,3 +1,7 @@
+// #[macro_use]
+// extern crate lazy_static;
+
+
 mod atom;
 mod container;
 mod electron;
@@ -5,8 +9,10 @@ mod ion;
 mod molecule;
 mod namings;
 mod reaction;
+mod redox;
 mod trait_element;
 mod trait_properties;
+mod trait_reaction;
 mod types;
 
 pub use atom::*;
@@ -16,8 +22,10 @@ pub use ion::*;
 pub use molecule::*;
 pub use namings::*;
 pub use reaction::*;
+pub use redox::*;
 pub use trait_element::*;
 pub use trait_properties::*;
+pub use trait_reaction::*;
 pub use types::*;
 
 pub mod data_atoms;
@@ -39,7 +47,7 @@ macro_rules! molecule_from_atom {
 #[macro_export]
 macro_rules! ion_from_molecule {
     ($molecule:expr) => (
-        Ion { molecule: $molecule, data: Some(0) }
+        Ion { molecule: $molecule, charge: Some(0) }
     )
 }
 
@@ -68,7 +76,7 @@ fn container_add_and_remove_elements() {
         available_energy: 1e5 // Should be enough
     };
 
-    let reaction = Reaction {
+    let reaction = ElemReaction {
         lhs: ReactionSide {
             compounds: vec! {
                 ReactionCompound { element: WATER(), amount: 2 }
@@ -137,7 +145,7 @@ fn check_display() {
         }
     };
 
-    let reaction = Reaction {
+    let reaction = ElemReaction {
         lhs: reactionside.clone(),
 
         rhs: ReactionSide {
@@ -186,7 +194,7 @@ fn container_reaction_cost() {
         available_energy: 1000.0
     };
 
-    let reaction = Reaction {
+    let reaction = ElemReaction {
         lhs: ReactionSide {
             compounds: vec! {
                 ReactionCompound { amount: 2, element: hydrogen.clone() },
@@ -328,7 +336,7 @@ fn reaction_check() {
     use data_atoms::*;
     use data_molecules::*;
 
-    let good_reaction = Reaction {
+    let good_reaction = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
             ReactionCompound { amount: 1, element: molecule_from_atom!(CARBON) },
             ReactionCompound { amount: 1, element: molecule_from_atom!(OXYGEN) }
@@ -342,7 +350,7 @@ fn reaction_check() {
     };
 
 
-    let wrong_reaction_0 = Reaction {
+    let wrong_reaction_0 = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
             ReactionCompound { amount: 9, element: molecule_from_atom!(CARBON) },
             ReactionCompound { amount: 5, element: molecule_from_atom!(OXYGEN) }
@@ -356,7 +364,7 @@ fn reaction_check() {
     };
 
 
-    let wrong_reaction_1 = Reaction {
+    let wrong_reaction_1 = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
             ReactionCompound { amount: 1, element: molecule_from_atom!(LITHIUM) }
         }},
@@ -368,7 +376,7 @@ fn reaction_check() {
         is_equilibrium: false
     };
 
-    let equilibrium_reaction = Reaction {
+    let equilibrium_reaction = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
             ReactionCompound { amount: 1, element: molecule_from_atom!(HYDROGEN) }
         }},
@@ -403,7 +411,7 @@ fn equalise() {
     use data_atoms::*;
     use data_molecules::*;
 
-    let water_reaction = Reaction {
+    let water_reaction = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
             ReactionCompound { element: molecule_from_atom!(HYDROGEN), amount: 0 },
             ReactionCompound { element: molecule_from_atom!(OXYGEN), amount: 0 }
@@ -425,7 +433,7 @@ fn only_compare_similiar_elements() {
     use data_molecules::*;
     use data_ions::*;
 
-    let _ = Reaction {
+    let _ = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
             ReactionCompound { element: WATER(), amount: 1 }
         }},
@@ -437,7 +445,7 @@ fn only_compare_similiar_elements() {
         is_equilibrium: true
     };
 
-    let _ = Reaction {
+    let _ = ElemReaction {
         lhs: ReactionSide { compounds: vec! {
             ReactionCompound { element: AMMONIUM(), amount: 1 }
         }},

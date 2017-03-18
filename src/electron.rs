@@ -1,10 +1,39 @@
+use atom::*;
+use ion::*;
+use molecule::*;
+
+
+#[allow(non_snake_case)]
+pub fn ELECTRON() -> Ion {
+    Ion {
+        molecule: Molecule {
+            compounds: vec! {
+                MoleculeCompound {
+                    atom: Atom {
+                        name: "electron",
+                        symbol: "e",
+                        number: 0,
+                        group: 0,
+                        mass: 0.0,
+                        diatomic: false
+                    },
+                    amount: 1
+                }
+            }
+        },
+
+        charge: Some(-1)
+    }
+}
+
+
+/*
 use molecule::*;
 use trait_element::*;
 use trait_properties::*;
 use types::*;
 
-
-#[derive(Debug, Eq, PartialEq, Clone)]
+#[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct Electron { }
 
 
@@ -37,3 +66,5 @@ impl Properties for Electron {
         0.0
     }
 }
+
+*/

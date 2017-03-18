@@ -1,9 +1,9 @@
 use atom::Atom;
 use container::{ Container, ContainerCompound };
-use electron::Electron;
+// use electron::Electron;
 use ion::Ion;
 use molecule::Molecule;
-use reaction::{ Reaction, ReactionSide, ReactionCompound };
+use reaction::{ ElemReaction, ReactionSide, ReactionCompound };
 use trait_element::Element;
 use trait_properties::Properties;
 
@@ -32,7 +32,7 @@ macro_rules! fmt_lifetime {
 
 macro_rules! fmt_type {
     ($x:tt) => (
-        impl<T> Display for $x<T> where T: Element {
+        impl<E> Display for $x<E> where E: Element {
             fn fmt(&self, formatter: &mut Formatter) -> Result {
                 write!(formatter, "{}", self.stringify())
             }
@@ -42,7 +42,7 @@ macro_rules! fmt_type {
 
 macro_rules! fmt_lifetime_type {
     ($x:tt) => (
-        impl<'lifetime, T> Display for $x<'lifetime, T> where T: Element {
+        impl<'lifetime, T> Display for $x<'lifetime, T> where E: Element {
             fn fmt(&self, formatter: &mut Formatter) -> Result {
                 write!(formatter, "{}", self.stringify())
             }
@@ -52,11 +52,11 @@ macro_rules! fmt_lifetime_type {
 
 
 fmt!(Atom);
-fmt!(Electron);
+// fmt!(Electron);
 fmt!(Ion);
 fmt!(Molecule);
 fmt_type!(Container);
 fmt_type!(ContainerCompound);
+fmt_type!(ElemReaction);
 fmt_type!(ReactionCompound);
-fmt_type!(Reaction);
 fmt_type!(ReactionSide);

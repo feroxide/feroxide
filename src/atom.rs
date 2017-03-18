@@ -1,6 +1,8 @@
 use trait_properties::*;
 use types::*;
 
+use std::hash::*;
+
 
 #[derive(Debug, Copy, Clone)]
 pub struct Atom {
@@ -19,6 +21,13 @@ impl PartialEq for Atom {
     /// Two atoms are equal when their atom numbers are equal
     fn eq(&self, rhs: &Atom) -> bool {
         self.number == rhs.number
+    }
+}
+
+impl Hash for Atom {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        // Only the AtomNumber determines the hash
+        self.number.hash(state);
     }
 }
 

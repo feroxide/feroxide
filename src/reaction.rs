@@ -1,49 +1,35 @@
 use molecule::*;
 use trait_element::*;
 use trait_properties::*;
+use trait_reaction::*;
 use types::*;
 
 use std::collections::HashMap;
 
 
-#[derive(Debug, Eq, PartialEq, Clone)]
-pub struct Reaction<T> where T: Element {
-    pub lhs: ReactionSide<T>,
-    pub rhs: ReactionSide<T>,
+#[derive(Debug, Eq, PartialEq, Clone, Hash)]
+pub struct ElemReaction<E> where E: Element {
+    pub lhs: ReactionSide<E>,
+    pub rhs: ReactionSide<E>,
     pub is_equilibrium: bool
 }
 
 
-#[derive(Debug, Eq, PartialEq, Clone)]
-pub struct ReactionSide<T> where T: Element {
-    pub compounds: Vec< ReactionCompound<T> >
+#[derive(Debug, Eq, PartialEq, Clone, Hash)]
+pub struct ReactionSide<E> where E: Element {
+    pub compounds: Vec< ReactionCompound<E> >
 }
 
 
-#[derive(Debug, Eq, Copy, Clone)]
-pub struct ReactionCompound<T> where T: Element {
-    pub element: T,
+#[derive(Debug, Eq, Copy, Clone, Hash)]
+pub struct ReactionCompound<E> where E: Element {
+    pub element: E,
     pub amount: u16
 }
 
 
 
-impl<T> Reaction<T> where T: Element {
-    /// Check if the reaction is valid by comparing the amount of total atoms on both sides,
-    /// and by checking if the total charge on both sides is equal
-    pub fn is_valid(&self) -> bool {
-        self.lhs.total_atoms() == self.rhs.total_atoms()
-        && self.lhs.total_charge() == self.lhs.total_charge()
-    }
-
-
-    /// Calculate the cost of this reaction
-    /// This can be negative in case of an exothermic reaction
-    pub fn energy_cost(&self) -> Energy {
-        self.rhs.energy() - self.lhs.energy()
-    }
-
-
+impl<E> ElemReaction<E> where E: Element {
     /// Get the sign of the equation ( → or ⇌ ), depending whether it is an equilibrium or not
     pub fn reaction_sign(&self) -> &str {
         if self.is_equilibrium {
@@ -100,7 +86,7 @@ impl<T> Reaction<T> where T: Element {
 }
 
 
-impl<T> ReactionSide<T> where T: Element  {
+impl<E> ReactionSide<E> where E: Element  {
     /// Calculate the total charge of this reaction side
     pub fn total_charge(&self) -> IonCharge {
         let mut total_charge = 0;
@@ -153,22 +139,51 @@ impl<T> ReactionSide<T> where T: Element  {
 }
 
 
-impl<T> ReactionCompound<T> where T: Element {
+impl<E> Reaction<E> for ElemReaction<E> where E: Element {
+    fn is_valid(&self) -> bool {
+        self.lhs.total_atoms() == self.rhs.total_atoms()
+        && self.lhs.total_charge() == self.lhs.total_charge()
+    }
+
+
+    fn energy_cost(&self) -> Energy {
+        self.rhs.energy() - self.lhs.energy()
+    }
+
+
+    fn elem_reaction(&self) -> ElemReaction<E> {
+        self.clone()
+    }
+}
+
+
+impl<E> ReactionCompound<E> where E: Element {
     pub fn stringify(&self) -> String {
         self.element.stringify()
     }
 }
 
 
-impl<T> PartialEq for ReactionCompound<T> where T: Element {
+use std::ops::Add;
+impl<E> Add for ReactionSide<E> where E: Element {
+    type Output = ReactionSide<E>;
+
+    fn add(mut self, mut rhs: ReactionSide<E>) -> ReactionSide<E> {
+        self.compounds.append(&mut rhs.compounds);
+        self
+    }
+}
+
+
+impl<E> PartialEq for ReactionCompound<E> where E: Element {
     /// Two reactioncompounds are equal if their element is equal
-    fn eq(&self, rhs: &ReactionCompound<T>) -> bool {
+    fn eq(&self, rhs: &ReactionCompound<E>) -> bool {
         self.element == rhs.element
     }
 }
 
 
-impl<T> Properties for Reaction<T> where T: Element  {
+impl<E> Properties for ElemReaction<E> where E: Element  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -197,7 +212,7 @@ impl<T> Properties for Reaction<T> where T: Element  {
 }
 
 
-impl<T> Properties for ReactionSide<T> where T: Element  {
+impl<E> Properties for ReactionSide<E> where E: Element  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -240,7 +255,7 @@ impl<T> Properties for ReactionSide<T> where T: Element  {
 }
 
 
-impl<T> Properties for ReactionCompound<T> where T: Element  {
+impl<E> Properties for ReactionCompound<E> where E: Element  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -271,7 +286,7 @@ impl<T> Properties for ReactionCompound<T> where T: Element  {
 }
 
 
-impl<T> Element for ReactionCompound<T> where T: Element {
+impl<E> Element for ReactionCompound<E> where E: Element {
     fn get_charge(&self) -> Option<IonCharge> {
         self.element.get_charge()
     }

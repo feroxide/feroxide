@@ -6,7 +6,7 @@ use trait_properties::*;
 use types::*;
 
 
-#[derive(Debug, Eq, PartialEq, Clone)]
+#[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct Ion {
     pub molecule: Molecule,
     pub charge: Option<IonCharge>

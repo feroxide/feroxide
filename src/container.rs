@@ -2,24 +2,27 @@ use molecule::*;
 use reaction::*;
 use trait_element::*;
 use trait_properties::*;
+use trait_reaction::*;
 use types::*;
+
+use std::hash::*;
 
 
 #[derive(Debug)]
-pub struct Container<T> where T: Element {
-    pub contents: Vec< ContainerCompound<T> >,
+pub struct Container<E> where E: Element {
+    pub contents: Vec< ContainerCompound<E> >,
     pub available_energy: Energy
 }
 
 
 #[derive(Debug, Copy, Clone)]
-pub struct ContainerCompound<T> where T: Element {
-    pub element: T,
+pub struct ContainerCompound<E> where E: Element {
+    pub element: E,
     pub moles: Moles
 }
 
 
-pub fn rc_to_cc<T>(rc: ReactionCompound<T>) -> ContainerCompound<T> where T: Element {
+pub fn rc_to_cc<E>(rc: ReactionCompound<E>) -> ContainerCompound<E> where E: Element {
     ContainerCompound {
         element: rc.element,
         moles: rc.amount as Moles
@@ -27,26 +30,26 @@ pub fn rc_to_cc<T>(rc: ReactionCompound<T>) -> ContainerCompound<T> where T: Ele
 }
 
 
-impl<T> Container<T> where T: Element {
+impl<E> Container<E> where E: Element {
     /// Applies given reaction to container
     /// Removing the elements on the left-hand side
     /// and adding the elements on the right-hand side.
     /// If there is enough energy for the reaction, that amount will be consumed
     /// otherwise the reaction won't occur.
     /// Returns if the reaction succeeded
-    pub fn react(&mut self, reaction: &Reaction<T>) -> bool {
+    pub fn react<R>(&mut self, reaction: &R) -> bool where R: Reaction<E> {
         // Get required items
         let required_energy = reaction.energy_cost();
         let mut required_elements = vec! {};
         let mut resulting_elements = vec! {};
 
-        for rc in reaction.lhs.compounds.iter() {
+        for rc in reaction.elem_reaction().lhs.compounds.iter() {
             let cc = rc_to_cc(rc.clone());
 
             required_elements.push(cc);
         }
 
-        for rc in reaction.rhs.compounds.iter() {
+        for rc in reaction.elem_reaction().rhs.compounds.iter() {
             let cc = rc_to_cc(rc.clone());
 
             resulting_elements.push(cc);
@@ -78,7 +81,7 @@ impl<T> Container<T> where T: Element {
 
 
     /// Check if the container has all given elements
-    pub fn has_elements(&mut self, elements: &Vec< ContainerCompound<T> >) -> bool {
+    pub fn has_elements(&mut self, elements: &Vec< ContainerCompound<E> >) -> bool {
         'outer: for element in elements {
             // Find element in self.contents
             if let Some(position) = self.contents.iter().position(|comp| comp == element) {
@@ -101,7 +104,7 @@ impl<T> Container<T> where T: Element {
 
 
     /// Remove given elements from container
-    pub fn remove_elements(&mut self, elements: &Vec< ContainerCompound<T> >) {
+    pub fn remove_elements(&mut self, elements: &Vec< ContainerCompound<E> >) {
         for element in elements {
             // Find element in self.contents
             if let Some(position) = self.contents.iter().position(|comp| comp == element) {
@@ -129,7 +132,7 @@ impl<T> Container<T> where T: Element {
 
 
     /// Add given elements to container
-    pub fn add_elements(&mut self, elements: &Vec< ContainerCompound<T> >) {
+    pub fn add_elements(&mut self, elements: &Vec< ContainerCompound<E> >) {
         for element in elements.into_iter() {
             // Find element in self.contents
             if let Some(position) = self.contents.iter().position(|comp| comp == element) {
@@ -171,17 +174,24 @@ impl<T> Container<T> where T: Element {
 }
 
 
-impl<T> Eq for ContainerCompound<T> where T: Element {}
+impl<E> Eq for ContainerCompound<E> where E: Element {}
 
-impl<T> PartialEq for ContainerCompound<T> where T: Element {
+impl<E> PartialEq for ContainerCompound<E> where E: Element {
     /// Two container compounds are equal when their elements are equal
-    fn eq(&self, rhs: &ContainerCompound<T>) -> bool {
+    fn eq(&self, rhs: &ContainerCompound<E>) -> bool {
         self.element == rhs.element
     }
 }
 
 
-impl<T> Element for ContainerCompound<T> where T: Element {
+impl<E> Hash for ContainerCompound<E> where E: Element {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.element.hash(state);
+    }
+}
+
+
+impl<E> Element for ContainerCompound<E> where E: Element {
     fn get_charge(&self) -> Option<IonCharge> {
         self.element.get_charge()
     }
@@ -192,7 +202,7 @@ impl<T> Element for ContainerCompound<T> where T: Element {
 }
 
 
-impl<T> Properties for ContainerCompound<T> where T: Element {
+impl<E> Properties for ContainerCompound<E> where E: Element {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
         symbol += &self.moles.to_string();

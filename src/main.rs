@@ -57,7 +57,7 @@ fn main() {
 
     // Specify the reaction that will occur
     // H₂O + CO₂ → H₂CO₃
-    let reaction = Reaction {
+    let reaction = ElemReaction {
         lhs: ReactionSide {
             compounds: vec! {
                 ReactionCompound { element: WATER(), amount: 1 },
