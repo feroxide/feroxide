@@ -11,6 +11,7 @@ pub struct Container<T> where T: Element {
     pub available_energy: Energy
 }
 
+
 #[derive(Debug, Copy, Clone)]
 pub struct ContainerCompound<T> where T: Element {
     pub element: T,

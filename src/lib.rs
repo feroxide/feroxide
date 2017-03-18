@@ -65,7 +65,7 @@ fn container_add_and_remove_elements() {
             }
         },
 
-        available_energy: 1e23
+        available_energy: 1e5 // Should be enough
     };
 
     let reaction = Reaction {
@@ -85,6 +85,9 @@ fn container_add_and_remove_elements() {
         is_equilibrium: false
     };
 
+    // Make sure reaction is valid
+    assert!(reaction.is_valid());
+
     // 6 moles water
     assert_eq!(1, container.contents.len());
 
@@ -102,6 +105,14 @@ fn container_add_and_remove_elements() {
 
     // No water left, so should fail
     assert!(! container.react(&reaction));
+
+    // Remove 6 moles of hydrogen and 3 moles of oxygen (all contents)
+    container.remove_elements(&vec! {
+        ContainerCompound { element: molecule_from_atom!(HYDROGEN), moles: 6.0 },
+        ContainerCompound { element: molecule_from_atom!(OXYGEN), moles: 3.0 }
+    });
+
+    assert_eq!(0, container.contents.len());
 }
 
 
@@ -136,10 +147,11 @@ fn check_display() {
         is_equilibrium: false
     };
 
+    let containercompound = rc_to_cc(reactioncompound.clone());
 
     let container = Container {
         contents: vec! {
-            rc_to_cc(reactioncompound.clone())
+            containercompound.clone()
         },
         available_energy: 0.0
     };
@@ -152,6 +164,7 @@ fn check_display() {
     format!("{}", reactioncompound); // ReactionCompound
     format!("{}", reactionside); // ReactionSide
     format!("{}", reaction); // Reaction
+    format!("{}", containercompound); // ContainerCompound
     format!("{}", container); // Container
 }
 

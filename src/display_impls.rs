@@ -1,5 +1,5 @@
 use atom::Atom;
-use container::Container;
+use container::{ Container, ContainerCompound };
 use electron::Electron;
 use ion::Ion;
 use molecule::Molecule;
@@ -56,6 +56,7 @@ fmt!(Electron);
 fmt!(Ion);
 fmt!(Molecule);
 fmt_type!(Container);
+fmt_type!(ContainerCompound);
 fmt_type!(ReactionCompound);
 fmt_type!(Reaction);
 fmt_type!(ReactionSide);
