@@ -11,13 +11,13 @@ use std::collections::HashMap;
 use std::io::*;
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 struct Config {
     pub atoms: HashMap<String, Atom>
 }
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 struct Atom {
     pub number: AtomNumber,
     pub group: AtomGroup,
@@ -75,7 +75,7 @@ fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {
     atoms_rs_file.write_all(b"use atom::Atom;").unwrap();
 
     // Convert items from TOML file to RS syntax
-    for (capsname, atom) in config.atoms {
+    for (capsname, atom) in config.atoms.clone().into_iter() {
         let Atom { number, symbol, name, group, mass, diatomic } = atom;
 
         let rust_atom = format!("
@@ -88,6 +88,16 @@ pub const {capsname}: Atom = Atom {{
         // Append to file
         atoms_rs_file.write_all( rust_atom.as_bytes() ).unwrap();
     }
+
+
+    atoms_rs_file.write_all(b"\npub const ALL_ATOMS: &'static[Atom] = &[").unwrap();
+    for (i, (capsname, _)) in config.atoms.clone().iter().enumerate() {
+        if i > 0 {
+            atoms_rs_file.write_all(b", ").unwrap();
+        }
+        atoms_rs_file.write_all(capsname.as_bytes()).unwrap();
+    }
+    atoms_rs_file.write_all(b"];").unwrap();
 }
 
 

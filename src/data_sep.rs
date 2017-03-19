@@ -89,7 +89,6 @@ lazy_static! {
                 is_equilibrium: true
             };
 
-
             let hash = reaction_to_hash(&reaction);
             map.insert(hash, 0.0000);
         }

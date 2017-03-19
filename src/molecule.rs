@@ -18,8 +18,106 @@ pub struct MoleculeCompound {
 }
 
 
+macro_rules! is_upper {
+    ($c: expr) => {
+        $c >= 'A' && $c <= 'Z'
+    }
+}
+
+macro_rules! is_lower {
+    ($c: expr) => {
+        $c >= 'a' && $c <= 'z'
+    }
+}
+
+macro_rules! is_number {
+    ($c: expr) => {
+        $c >= '0' && $c <= '9'
+    }
+}
+
+macro_rules! is_letter {
+    ($c: expr) => {
+        is_upper!($c) || is_lower!($c)
+    }
+}
+
+macro_rules! to_number {
+    ($c: expr) => {
+        ($c as u8) - ('0' as u8)
+    }
+}
+
+
+impl Molecule {
+    pub fn from_string(string: String) -> Molecule {
+        let mut compounds = vec!{};
+
+        let mut token = String::new();
+
+        for c in string.chars() {
+            // Ignore whitespace
+            if c == ' ' {
+                continue;
+            }
+
+            if is_upper!(c) && token.len() > 0 {
+                let compound = MoleculeCompound::from_string(token).unwrap();
+
+                compounds.push(compound);
+                token = String::new();
+            }
+
+            token.push(c);
+        }
+
+        // If some tokens remain
+        if token.len() > 0 {
+            let compound = MoleculeCompound::from_string(token).unwrap();
+            compounds.push(compound);
+        }
+
+        Molecule {
+            compounds: compounds
+        }
+    }
+}
+
+
 
 impl MoleculeCompound {
+    /// Takes a symbol string representing a MoleculeCompound, and turns it into one
+    pub fn from_string(string: String) -> Option<MoleculeCompound> {
+        let mut atom_symbol = String::new();
+        let mut amount = 0;
+
+        for c in string.chars() {
+            if is_letter!(c) {
+                atom_symbol.push(c);
+            } else {
+                amount *= 10;
+                amount += to_number!(c);
+            }
+        }
+
+        // If no amount given, assume 1
+        if amount == 0 {
+            amount = 1;
+        }
+
+
+        if let Some(atom) = Atom::from_string(atom_symbol) {
+            Some(MoleculeCompound {
+                atom: atom,
+                amount: amount
+            })
+        } else {
+            None
+        }
+    }
+
+
+    /// Converts an Atom into a MoleculeCompound, paying attention to diatomic ones
     pub fn from_atom(atom: Atom) -> MoleculeCompound {
         let amount = if atom.diatomic { 2 } else { 1 };
 

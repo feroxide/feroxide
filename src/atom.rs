@@ -1,3 +1,4 @@
+use data_atoms::*;
 use trait_properties::*;
 use types::*;
 
@@ -14,6 +15,18 @@ pub struct Atom {
     pub diatomic: bool
 }
 
+
+impl Atom {
+    pub fn from_string(symbol: String) -> Option<Atom> {
+        for atom in ALL_ATOMS {
+            if atom.symbol == symbol {
+                return Some(atom.clone());
+            }
+        }
+
+        None
+    }
+}
 
 
 impl Eq for Atom {}

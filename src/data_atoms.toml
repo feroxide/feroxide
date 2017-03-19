@@ -154,6 +154,14 @@ name = "iron"
 group = 8
 diatomic = false
 
+[atoms.COBALT]
+number = 27
+mass = 58.933194
+symbol = "Co"
+name = "cobalt"
+group = 9
+diatomic = false
+
 [atoms.BROMINE]
 number = 35
 mass = 79.904

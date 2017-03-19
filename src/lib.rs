@@ -66,6 +66,28 @@ macro_rules! ion_from_atom {
 
 // tests \\
 #[test]
+fn atom_from_string() {
+    use data_atoms::*;
+
+    assert_eq!(HYDROGEN, Atom::from_string("H".to_owned()).unwrap());
+    assert_eq!(CARBON, Atom::from_string("C".to_owned()).unwrap());
+    assert_eq!(COBALT, Atom::from_string("Co".to_owned()).unwrap());
+    assert_eq!(FLUORINE, Atom::from_string("F".to_owned()).unwrap());
+    assert_eq!(IRON, Atom::from_string("Fe".to_owned()).unwrap());
+}
+
+
+#[test]
+fn molecule_from_string() {
+    use data_molecules::*;
+
+    assert_eq!(WATER.clone(), Molecule::from_string("H2O".to_owned()));
+    assert_eq!(CO2.clone(), Molecule::from_string("CO2".to_owned()));
+    assert_eq!(SUGAR.clone(), Molecule::from_string("C12H22O11".to_owned()));
+}
+
+
+#[test]
 fn test_gcd() {
     assert_eq!(2, gcd(4, 6));
     assert_eq!(5, gcd(10, 25));
