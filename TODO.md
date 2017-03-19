@@ -5,17 +5,17 @@
     * Acid/Base reactions
 
 
-- atoms.rs
+- `atoms.rs`
   * Names for special cases (-oxide etc)
 
-- reaction.rs
+- `reaction.rs`
   * Calculate the correct amount of Energy required
 
-- redox.rs
-  * Clean up elem_reaction
+- `redox.rs`
+  * Clean up `elem_reaction`
 
-- data_atoms.toml
-  * Complete data list
+- `data_atoms.toml`
+  * Complete list of atoms
 
-- data_sep.rs
-  * Complete SEP list
+- `data_sep.rs`
+  * Complete list of SEP
