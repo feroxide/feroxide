@@ -181,6 +181,11 @@ impl<E: Element> ReactionSide<E> {
 
                     let atom_number = molecule_compound.atom.number;
 
+                    if atom_number == 0 {
+                        // Ignore electrons in the atom count
+                        continue;
+                    }
+
                     let mut amount;
                     if let Some(&old_amount) = atoms.get(&atom_number) {
                         amount = old_amount;

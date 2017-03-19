@@ -145,6 +145,53 @@ name = "argon"
 group = 18
 diatomic = false
 
+[atoms.POTASSIUM]
+number = 19
+mass = 39.0983
+symbol = "K"
+name = "potassium"
+group = 1
+diatomic = false
+
+[atoms.CALCIUM]
+number = 20
+mass = 40.078
+symbol = "Ca"
+name = "calcium"
+group = 2
+diatomic = false
+
+[atoms.TITANIUM]
+number = 22
+mass = 47.867
+symbol = "Ti"
+name = "titanium"
+group = 4
+diatomic = false
+
+[atoms.VANADIUM]
+number = 23
+mass = 50.9415
+symbol = "V"
+name = "vanadium"
+group = 5
+diatomic = false
+
+[atoms.CHROMIUM]
+number = 24
+mass = 51.9961
+symbol = "Cr"
+name = "chromium"
+group = 6
+diatomic = false
+
+[atoms.MANGANESE]
+number = 25
+mass = 54.938044
+symbol = "Mn"
+name = "manganese"
+group = 7
+diatomic = false
 
 [atoms.IRON]
 number = 26
@@ -162,6 +209,24 @@ name = "cobalt"
 group = 9
 diatomic = false
 
+
+
+[atoms.COPPER]
+number = 29
+mass = 63.546
+symbol = "Cu"
+name = "copper"
+group = 11
+diatomic = false
+
+[atoms.ZINC]
+number = 30
+mass = 65.38
+symbol = "Zn"
+name = "zinc"
+group = 12
+diatomic = false
+
 [atoms.BROMINE]
 number = 35
 mass = 79.904
@@ -177,3 +242,11 @@ symbol = "I"
 name = "iodine"
 group = 17
 diatomic = true
+
+[atoms.BARIUM]
+number = 56
+mass = 137.327
+symbol = "Ba"
+name = "barium"
+group = 2
+diatomic = false
