@@ -18,7 +18,7 @@ license = "MIT"
 license-file = "LICENSE"
 
 [badges]
-travis-ci = { repository = "https://github.com/C-Bouthoorn/feroxide-gui", branch = "master" }
+travis-ci = { repository = "C-Bouthoorn/feroxide", branch = "master" }
 
 
 [[bin]]
