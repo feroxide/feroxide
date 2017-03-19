@@ -1,5 +1,6 @@
 # feroxide
-A basic chemistry simulator. [![Travis Build Status][travis-badge]][travis-page]
+## [![Travis Build Status][travis-badge]][travis-page]
+A basic chemistry simulator.
 
 ## Currently includes
 - Basic functionality
@@ -14,7 +15,7 @@ A basic chemistry simulator. [![Travis Build Status][travis-badge]][travis-page]
   * Apply reactions to containers
   * Redox reactions
 
-Before requesting a new feature, please check [TODO.md] first.
+Before requesting a new feature, please check [the TODO list](./TODO.md) first.
 
 [travis-page]: https://travis-ci.org/C-Bouthoorn/feroxide
 [travis-badge]: https://travis-ci.org/C-Bouthoorn/feroxide.svg?branch=master
