@@ -93,7 +93,7 @@ lazy_static! {
         map.insert(react_str_hash!("Be;2 + 2e <> Be"), -1.847);
         map.insert(react_str_hash!("Al;3 + 3e <> Al"), -1.662);
         map.insert(react_str_hash!("Mn;2 + 2e <> Mn"), -1.185);
-        map.insert(react_str_hash!("Sn + 2H;1 + 4e <> SnH4"), -1.07);
+        map.insert(react_str_hash!("Sn + 4H;1 + 4e <> SnH4"), -1.07);
         map.insert(react_str_hash!("2H2O + 2e <> H2 + 2OH;-"), -0.8277);
         map.insert(react_str_hash!("Zn;2 + 2e <> Zn"), -0.7618);
         map.insert(react_str_hash!("Fe;2 + 2e <> Fe"), -0.44);
@@ -104,7 +104,7 @@ lazy_static! {
         map.insert(react_str_hash!("2H;1 + 2e <> H2"), 0.0000);
 
         map.insert(react_str_hash!("S4O6;2- + 2e <> 2S2O3;2-"), 0.08);
-        map.insert(react_str_hash!("S + 2H;1 + 2e <> H2S", 0.14));
+        map.insert(react_str_hash!("S + 2H;1 + 2e <> H2S"), 0.14);
         map.insert(react_str_hash!("Sn;4 + 2e <> Sn;2"), 0.15);
         map.insert(react_str_hash!("Cu;2 + e <> Cu;1"), 0.159);
         map.insert(react_str_hash!("HSO4;- + 3H;1 + 2e <> SO2 + 2H2O"), 0.16);
@@ -136,6 +136,7 @@ lazy_static! {
         map.insert(react_str_hash!("Ag;2 + e <> Ag;1"), 1.98);
         map.insert(react_str_hash!("S2O8;2- + 2e <> 2SO4;2-"), 2.010);
         map.insert(react_str_hash!("HMnO4;- + 3H;1 + 2e <> MnO2 + 2H2O"), 2.09);
+        map.insert(react_str_hash!("FeO4;2- + 3e + 8H;1 <> Fe;3 + 4H2O"), 2.20);
         map.insert(react_str_hash!("F2 + 2e <> 2F;-"), 2.87);
         map.insert(react_str_hash!("F2 + 2H;1 + 2e <> 2HF"), 3.05);
         map.insert(react_str_hash!("KrF2 + 2e <> Kr + 2F;-"), 3.27);

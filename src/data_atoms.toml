@@ -329,6 +329,7 @@ diatomic = false
 number = 55
 mass = 132.90545196
 symbol = "Cs"
+name = "caesium"
 group = 1
 diatomic = false
 

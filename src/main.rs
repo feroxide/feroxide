@@ -12,6 +12,7 @@ use feroxide::{
 
 use feroxide::data_atoms::*;
 use feroxide::data_molecules::*;
+use feroxide::data_sep::*;
 
 
 fn main() {
@@ -117,6 +118,7 @@ fn main() {
     // Print the symbol version
     println!("{}", redox.symbol());
 
-    // Print the name version
-    println!("{}", redox.name());
+    // Print the SEP values
+    println!("oxidator: {}", get_sep(&redox.oxidator).unwrap());
+    println!("reductor: {}", get_sep(&redox.reductor).unwrap());
 }
