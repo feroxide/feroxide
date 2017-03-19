@@ -14,13 +14,7 @@ A basic chemistry simulator. [![Travis Build Status][travis-badge]][travis-page]
   * Apply reactions to containers
   * Redox reactions
 
-
-## Plans for the future
-- GUI
-- Reactions
-  * Precipitation reactions
-  * Acid/Base reactions
-
+Before requesting a new feature, please check [TODO.md] first.
 
 [travis-page]: https://travis-ci.org/C-Bouthoorn/feroxide
 [travis-badge]: https://travis-ci.org/C-Bouthoorn/feroxide.svg?branch=master
