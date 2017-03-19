@@ -1,7 +1,15 @@
 extern crate feroxide;
 
 
-use feroxide::*;
+use feroxide::{
+    Ion,
+    Molecule, MoleculeCompound,
+    Container, ContainerCompound,
+    ElemReaction, ReactionSide, ReactionCompound,
+    RedoxReaction,
+    Properties, Reaction
+};
+
 use feroxide::data_atoms::*;
 use feroxide::data_molecules::*;
 

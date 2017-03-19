@@ -1,6 +1,6 @@
-use reaction::*;
-use trait_element::*;
-use trait_properties::*;
+use reaction::{ ElemReaction };
+use trait_element::{ Element };
+use trait_properties::{ Properties };
 use types::*;
 
 

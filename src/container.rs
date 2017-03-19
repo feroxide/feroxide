@@ -1,11 +1,11 @@
-use molecule::*;
-use reaction::*;
-use trait_element::*;
-use trait_properties::*;
-use trait_reaction::*;
+use molecule::{ Molecule };
+use reaction::{ ReactionCompound };
+use trait_element::{ Element };
+use trait_properties::{ Properties };
+use trait_reaction::{ Reaction };
 use types::*;
 
-use std::hash::*;
+use std::hash::{ Hash, Hasher };
 
 
 #[derive(Debug)]

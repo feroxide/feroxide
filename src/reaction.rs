@@ -1,8 +1,8 @@
-use ion::*;
-use molecule::*;
-use trait_element::*;
-use trait_properties::*;
-use trait_reaction::*;
+use ion::{ Ion };
+use molecule::{ Molecule };
+use trait_element::{ Element };
+use trait_properties::{ Properties };
+use trait_reaction::{ Reaction };
 use types::*;
 
 use std::collections::HashMap;

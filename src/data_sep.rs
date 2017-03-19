@@ -1,12 +1,12 @@
-use ion::*;
-use reaction::*;
-use trait_element::*;
-use trait_reaction::*;
+use ion::{ Ion };
+use reaction::{ ElemReaction };
+use trait_element::{ Element };
+use trait_reaction::{ Reaction };
 use types::*;
 
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
-use std::hash::*;
+use std::hash::{ Hash, Hasher };
 
 
 // Reference: https://en.wikipedia.org/wiki/Standard_electrode_potential_(data_page)

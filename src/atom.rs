@@ -1,8 +1,8 @@
-use data_atoms::*;
-use trait_properties::*;
+use data_atoms::{ ALL_ATOMS };
+use trait_properties::{ Properties };
 use types::*;
 
-use std::hash::*;
+use std::hash::{ Hash, Hasher };
 
 
 #[derive(Debug, Clone)]

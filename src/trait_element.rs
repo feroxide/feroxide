@@ -1,5 +1,5 @@
-use molecule::*;
-use trait_properties::*;
+use molecule::{ Molecule };
+use trait_properties::{ Properties };
 use types::*;
 
 use std::hash::Hash;

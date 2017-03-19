@@ -1,9 +1,9 @@
 use data_sep::*;
-use math::*;
-use reaction::*;
-use trait_element::*;
-use trait_properties::*;
-use trait_reaction::*;
+use math::{ gcd };
+use reaction::{ ElemReaction };
+use trait_element::{ Element };
+use trait_properties::{ Properties };
+use trait_reaction::{ Reaction };
 use types::*;
 
 

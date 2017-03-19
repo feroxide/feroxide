@@ -1,9 +1,9 @@
-use atom::*;
-use electron::*;
-use namings::*;
-use molecule::*;
-use trait_element::*;
-use trait_properties::*;
+use atom::{ Atom };
+use electron::{ ELECTRON };
+use namings::{ ion_superscript, number_to_roman };
+use molecule::{ Molecule };
+use trait_element::{ Element };
+use trait_properties::{ Properties };
 use types::*;
 
 
