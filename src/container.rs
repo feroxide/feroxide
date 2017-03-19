@@ -9,21 +9,31 @@ use std::hash::*;
 
 
 #[derive(Debug)]
-pub struct Container<E> where E: Element {
+/// A container for elements
+pub struct Container<E: Element> {
+    /// A vector with the contents of this container
     pub contents: Vec< ContainerCompound<E> >,
+
+
+    /// The amount of energy available
     pub available_energy: Energy
 }
 
 
 #[derive(Debug, Clone)]
-pub struct ContainerCompound<E> where E: Element {
+/// A compound for containers
+pub struct ContainerCompound<E: Element> {
+    /// The element it contains
     pub element: E,
+
+
+    /// The amount of moles of this element
     pub moles: Moles
 }
 
 
 /// Convert a given ReactionCompound into a ContainerCompound
-pub fn rc_to_cc<E>(rc: ReactionCompound<E>) -> ContainerCompound<E> where E: Element {
+pub fn rc_to_cc<E: Element>(rc: ReactionCompound<E>) -> ContainerCompound<E> {
     ContainerCompound {
         element: rc.element,
         moles: rc.amount as Moles
@@ -31,14 +41,14 @@ pub fn rc_to_cc<E>(rc: ReactionCompound<E>) -> ContainerCompound<E> where E: Ele
 }
 
 
-impl<E> Container<E> where E: Element {
+impl<E: Element> Container<E> {
     /// Applies given reaction to container
     /// Removing the elements on the left-hand side
     /// and adding the elements on the right-hand side.
     /// If there is enough energy for the reaction, that amount will be consumed
     /// otherwise the reaction won't occur.
     /// Returns if the reaction succeeded
-    pub fn react<R>(&mut self, reaction: &R) -> bool where R: Reaction<E> {
+    pub fn react<R: Reaction<E>>(&mut self, reaction: &R) -> bool {
         // Get required items
         let required_energy = reaction.energy_cost();
         let mut required_elements = vec! {};
@@ -177,9 +187,12 @@ impl<E> Container<E> where E: Element {
 }
 
 
-impl<E> Eq for ContainerCompound<E> where E: Element {}
+impl<E: Element> Eq for ContainerCompound<E> {
 
-impl<E> PartialEq for ContainerCompound<E> where E: Element {
+}
+
+
+impl<E: Element> PartialEq for ContainerCompound<E> {
     /// Two container compounds are equal when their elements are equal
     fn eq(&self, rhs: &ContainerCompound<E>) -> bool {
         self.element == rhs.element
@@ -187,17 +200,18 @@ impl<E> PartialEq for ContainerCompound<E> where E: Element {
 }
 
 
-impl<E> Hash for ContainerCompound<E> where E: Element {
+impl<E: Element> Hash for ContainerCompound<E> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.element.hash(state);
     }
 }
 
 
-impl<E> Element for ContainerCompound<E> where E: Element {
+impl<E: Element> Element for ContainerCompound<E> {
     fn get_charge(&self) -> Option<IonCharge> {
         self.element.get_charge()
     }
+
 
     fn get_molecule(&self) -> Option<&Molecule> {
         self.element.get_molecule()
@@ -205,7 +219,7 @@ impl<E> Element for ContainerCompound<E> where E: Element {
 }
 
 
-impl<E> Properties for ContainerCompound<E> where E: Element {
+impl<E: Element> Properties for ContainerCompound<E> {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
         symbol += &self.moles.to_string();
@@ -213,12 +227,14 @@ impl<E> Properties for ContainerCompound<E> where E: Element {
         return symbol;
     }
 
+
     fn name(&self) -> String {
         let mut name = String::new();
         name += &self.moles.to_string();
         name += &self.element.name();
         return name;
     }
+
 
     fn mass(&self) -> AtomMass {
         self.element.mass()

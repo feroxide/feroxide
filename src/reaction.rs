@@ -10,28 +10,44 @@ use std::ops::*;
 
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
-pub struct ElemReaction<E> where E: Element {
+/// An elementair reaction (not containing ions)
+pub struct ElemReaction<E: Element> {
+    /// The left-hand-side
     pub lhs: ReactionSide<E>,
+
+
+    /// The right-hand-side
     pub rhs: ReactionSide<E>,
+
+
+    // If it's an equilibrium
     pub is_equilibrium: bool
 }
 
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
-pub struct ReactionSide<E> where E: Element {
+/// A side of a reaction
+pub struct ReactionSide<E: Element> {
+    /// The compounds of this side
     pub compounds: Vec< ReactionCompound<E> >
 }
 
 
 #[derive(Debug, Eq, Clone, Hash)]
-pub struct ReactionCompound<E> where E: Element {
+/// A reaction compound
+pub struct ReactionCompound<E: Element> {
+    /// The element it uses
     pub element: E,
+
+
+    /// The amount of moles needed
     pub amount: u16
 }
 
 
 
-impl<E> ElemReaction<E> where E: Element {
+impl<E: Element> ElemReaction<E> {
+    /// Convert a string representation of a reaction into one
     pub fn from_string(string: String) -> Option< ElemReaction<Ion> > {
         let mut token = String::new();
 
@@ -93,7 +109,8 @@ impl<E> ElemReaction<E> where E: Element {
 }
 
 
-impl<E> ReactionSide<E> where E: Element  {
+impl<E: Element> ReactionSide<E> {
+    /// Convert a string representation of a reactionside into one
     pub fn from_string(symbol: String) -> Option< ReactionSide<Ion> > {
         let mut compounds = vec! {};
 
@@ -147,8 +164,8 @@ impl<E> ReactionSide<E> where E: Element  {
 
     /// Calculate the energy this side has
     pub fn energy(&self) -> Energy {
-        // NOTE: Temporary
-        500.0 - (self.compounds.len() as f64) * 100.0
+        // FIXME: Calculate actual energy
+        1_000.0 - (self.compounds.len() as f64) * 100.0
     }
 
 
@@ -183,7 +200,8 @@ impl<E> ReactionSide<E> where E: Element  {
 }
 
 
-impl<E> ReactionCompound<E> where E: Element {
+impl<E: Element> ReactionCompound<E> {
+    /// Convert a string representation of a reaction compound into one
     pub fn from_string(symbol: String) -> Option< ReactionCompound<Ion> > {
         let mut amount: u16 = 0;
         let mut element = None;
@@ -223,39 +241,7 @@ impl<E> ReactionCompound<E> where E: Element {
 }
 
 
-impl<E> Add for ReactionSide<E> where E: Element {
-    type Output = ReactionSide<E>;
-
-    fn add(self, mut rhs: ReactionSide<E>) -> ReactionSide<E> {
-        let mut compounds = self.compounds.clone();
-        compounds.append(&mut rhs.compounds);
-
-        ReactionSide {
-            compounds: compounds
-        }
-    }
-}
-
-
-impl<E> Mul<u16> for ReactionSide<E> where E: Element {
-    type Output = ReactionSide<E>;
-
-    fn mul(self, rhs: u16) -> ReactionSide<E> {
-        let mut compounds = self.compounds.clone();
-
-        for mut compound in compounds.iter_mut() {
-            compound.amount *= rhs;
-        }
-
-        ReactionSide {
-            compounds: compounds
-        }
-    }
-}
-
-
-
-impl<E> Reaction<E> for ElemReaction<E> where E: Element {
+impl<E: Element> Reaction<E> for ElemReaction<E> {
     /// NOTE: This function is still a WIP!
     fn equalise(&self) -> bool {
         println!("####    The equalise function is not yet ready.");
@@ -264,9 +250,6 @@ impl<E> Reaction<E> for ElemReaction<E> where E: Element {
         let total_left = self.lhs.total_atoms();
         let total_right = self.rhs.total_atoms();
 
-
-        println!("L: {:?}", total_left);
-        println!("R: {:?}", total_right);
 
         // If both sides are already equal, do nothing
         if total_left == total_right {
@@ -327,22 +310,49 @@ impl<E> Reaction<E> for ElemReaction<E> where E: Element {
 }
 
 
-impl<E> ReactionCompound<E> where E: Element {
-    pub fn stringify(&self) -> String {
-        self.element.stringify()
+impl<E: Element> Add for ReactionSide<E> {
+    type Output = ReactionSide<E>;
+
+    /// Adding two ReactionSide's adds their compounds
+    fn add(self, mut rhs: ReactionSide<E>) -> ReactionSide<E> {
+        let mut compounds = self.compounds.clone();
+        compounds.append(&mut rhs.compounds);
+
+        ReactionSide {
+            compounds: compounds
+        }
     }
 }
 
 
-impl<E> PartialEq for ReactionCompound<E> where E: Element {
-    /// Two reactioncompounds are equal if their elements are equal
+impl<E: Element> Mul<u16> for ReactionSide<E> {
+    type Output = ReactionSide<E>;
+
+    /// Multiplying a ReactionSide with a number
+    /// multiplies the amount of all compounds of that side
+    fn mul(self, rhs: u16) -> ReactionSide<E> {
+        let mut compounds = self.compounds.clone();
+
+        for mut compound in compounds.iter_mut() {
+            compound.amount *= rhs;
+        }
+
+        ReactionSide {
+            compounds: compounds
+        }
+    }
+}
+
+
+impl<E: Element> PartialEq for ReactionCompound<E> {
+    /// Two ReactionCompound's are equal if their elements are equal
     fn eq(&self, rhs: &ReactionCompound<E>) -> bool {
         self.element == rhs.element
     }
 }
 
 
-impl<E> Properties for ElemReaction<E> where E: Element  {
+impl<E: Element> Properties for ElemReaction<E>  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -372,7 +382,7 @@ impl<E> Properties for ElemReaction<E> where E: Element  {
 }
 
 
-impl<E> Properties for ReactionSide<E> where E: Element  {
+impl<E: Element> Properties for ReactionSide<E>  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -419,7 +429,7 @@ impl<E> Properties for ReactionSide<E> where E: Element  {
 }
 
 
-impl<E> Properties for ReactionCompound<E> where E: Element  {
+impl<E: Element> Properties for ReactionCompound<E>  {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -453,7 +463,7 @@ impl<E> Properties for ReactionCompound<E> where E: Element  {
 }
 
 
-impl<E> Element for ReactionCompound<E> where E: Element {
+impl<E: Element> Element for ReactionCompound<E> {
     fn get_charge(&self) -> Option<IonCharge> {
         self.element.get_charge()
     }

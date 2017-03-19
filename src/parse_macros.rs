@@ -31,16 +31,24 @@ macro_rules! is_letter {
 
 
 #[macro_export]
-macro_rules! to_number {
+macro_rules! is_whitespace {
     ($c: expr) => {
-        ($c as u8) - ('0' as u8)
+        $c == ' ' || $c == '\n' || $c == '\t' || $c == '\r'
     }
 }
 
 
 #[macro_export]
-macro_rules! is_whitespace {
+macro_rules! is_vowel {
     ($c: expr) => {
-        $c == ' ' || $c == '\n' || $c == '\t' || $c == '\r'
+        $c == 'a' || $c == 'e' || $c == 'i' || $c == 'o' || $c == 'u'
+    }
+}
+
+
+#[macro_export]
+macro_rules! to_number {
+    ($c: expr) => {
+        ($c as u8) - ('0' as u8)
     }
 }

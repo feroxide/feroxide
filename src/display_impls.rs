@@ -19,6 +19,7 @@ macro_rules! fmt {
     )
 }
 
+
 macro_rules! fmt_lifetime {
     ($x:tt) => (
         impl<'lifetime> Display for $x<'lifetime> {
@@ -29,9 +30,10 @@ macro_rules! fmt_lifetime {
     )
 }
 
+
 macro_rules! fmt_type {
     ($x:tt) => (
-        impl<E> Display for $x<E> where E: Element {
+        impl<E: Element> Display for $x<E> {
             fn fmt(&self, formatter: &mut Formatter) -> Result {
                 write!(formatter, "{}", self.stringify())
             }
@@ -39,9 +41,10 @@ macro_rules! fmt_type {
     )
 }
 
+
 macro_rules! fmt_lifetime_type {
     ($x:tt) => (
-        impl<'lifetime, T> Display for $x<'lifetime, T> where E: Element {
+        impl<'lifetime, E: Element> Display for $x<'lifetime, E> {
             fn fmt(&self, formatter: &mut Formatter) -> Result {
                 write!(formatter, "{}", self.stringify())
             }

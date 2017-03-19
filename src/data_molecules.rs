@@ -1,5 +1,3 @@
-#![allow(non_snake_case)]
-
 use data_atoms::*;
 use molecule::*;
 

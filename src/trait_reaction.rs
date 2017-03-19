@@ -4,7 +4,7 @@ use trait_properties::*;
 use types::*;
 
 
-pub trait Reaction<E>: Properties where E: Element {
+pub trait Reaction<E: Element>: Properties {
     /// Check if the reaction is valid by comparing the amount of total atoms on both sides,
     /// and by checking if the total charge on both sides is equal
     fn is_valid(&self) -> bool;

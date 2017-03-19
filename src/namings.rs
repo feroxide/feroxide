@@ -40,12 +40,6 @@ fn basic_number_to_greek(n: u8, tenplus: bool) -> String {
 }
 
 
-/// Checks if a given letter is a vowel (one of a, e, i, o, u)
-fn is_vowel(letter: char) -> bool {
-    letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'u'
-}
-
-
 /// Get the last character of a word
 fn last_char(word: &str) -> char {
     word.chars().nth(word.len() - 1).unwrap()
@@ -64,7 +58,7 @@ pub fn number_to_greek(n: u8) -> String {
 
     else if n > 20 && n < 30 {
         let prefix = basic_number_to_greek(n - 20, true);
-        let suffix = if is_vowel(last_char(&prefix)) { "cosa" } else { "icosa" };
+        let suffix = if is_vowel!(last_char(&prefix)) { "cosa" } else { "icosa" };
 
         prefix + suffix
     }

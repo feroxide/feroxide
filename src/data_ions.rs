@@ -1,5 +1,3 @@
-#![allow(non_snake_case)]
-
 use data_atoms::*;
 use ion::*;
 use molecule::*;
@@ -22,6 +20,7 @@ lazy_static! {
         charge: None
     };
 
+
     pub static ref AMMONIUM: Ion = Ion {
         molecule: Molecule { compounds: vec! {
             MoleculeCompound {
@@ -37,6 +36,7 @@ lazy_static! {
 
         charge: None
     };
+
 
     pub static ref SULPHATE: Ion = Ion {
         molecule: Molecule { compounds: vec! {

@@ -8,8 +8,13 @@ use types::*;
 
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
+/// An Ion
 pub struct Ion {
+    /// The molecule of this ion
     pub molecule: Molecule,
+
+
+    /// The charge of this ion
     pub charge: Option<IonCharge>
 }
 
@@ -33,16 +38,15 @@ pub fn charge_of_atom(atom: Atom) -> Option<IonCharge> {
 
 
 impl Ion {
-    pub fn from_string(symbol: String) -> Option< Ion > {
-
-        println!("Ion from string \"{}\"", symbol);
-
+    /// Convert a string representation of an Ion into one
+    pub fn from_string(symbol: String) -> Option<Ion> {
         let mut molecule = None;
         let mut charge: IonCharge = 0;
         let mut is_negative = false;
 
         let mut token = String::new();
         let mut set_charge = false;
+
         for c in symbol.chars() {
             if c == ';' {
                 // Electron
@@ -104,7 +108,7 @@ impl Ion {
     pub fn from_molecule(molecule: Molecule) -> Ion {
         Ion {
             molecule: molecule,
-            charge: None // Will be calculated
+            charge: None // Will be calculated later
         }
     }
 

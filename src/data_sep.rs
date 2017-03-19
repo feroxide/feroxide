@@ -14,25 +14,7 @@ use std::hash::*;
 // Reference: https://en.wikipedia.org/wiki/Standard_electrode_potential_(data_page)
 
 
-macro_rules! molecule_from_atom {
-    ($atom:expr) => (
-        Molecule { compounds: vec! { MoleculeCompound::from_atom($atom) } }
-    )
-}
-
-macro_rules! ion_from_molecule {
-    ($molecule:expr) => (
-        Ion { molecule: $molecule, charge: Some(0) }
-    )
-}
-
-macro_rules! ion_from_atom {
-    ($atom:expr) => (
-        ion_from_molecule!(molecule_from_atom!($atom))
-    )
-}
-
-
+/// Get the hash of a reaction
 pub fn reaction_to_hash<E: Element>(reaction: &ElemReaction<E>) -> u64 {
     let mut s = DefaultHasher::new();
     reaction.hash(&mut s);
@@ -40,7 +22,8 @@ pub fn reaction_to_hash<E: Element>(reaction: &ElemReaction<E>) -> u64 {
 }
 
 
-pub fn get_sep<E>(elem_reaction: &ElemReaction<E>) -> Option<SEP> where E: Element {
+/// Get the Standerd Electrode Potential (SEP) of a reaction
+pub fn get_sep<E: Element>(elem_reaction: &ElemReaction<E>) -> Option<SEP> {
     if let Some(sep) = SEPMAP.get(& reaction_to_hash(&elem_reaction)) {
         Some(sep.clone())
     } else if let Some(sep) = SEPMAP.get(& reaction_to_hash(& elem_reaction.clone().swap())){
@@ -93,6 +76,7 @@ lazy_static! {
             map.insert(hash, 0.0000);
         }
 
+
         {
             let reaction = ElemReaction {
                 lhs: ReactionSide { compounds: vec! {
@@ -140,6 +124,7 @@ lazy_static! {
             let hash = reaction_to_hash(&reaction);
             map.insert(hash, 2.87);
         }
+
 
         {
             let reaction = ElemReaction {

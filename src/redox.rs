@@ -8,16 +8,21 @@ use types::*;
 
 
 #[derive(Debug, Eq, PartialEq, Clone)]
+/// A Redox reaction
 pub struct RedoxReaction<E: Element> {
+    /// The reductor
     pub reductor: ElemReaction<E>,
+
+
+    /// The oxidator
     pub oxidator: ElemReaction<E>
 }
 
 
-impl<E> Reaction<E> for RedoxReaction<E> where E: Element {
+impl<E: Element> Reaction<E> for RedoxReaction<E> {
     fn equalise(&self) -> bool {
-        // Assume reaction is correct for now
-        true
+        // NOTE: This edits a clone, so doesn't do much!
+        self.elem_reaction().equalise()
     }
 
 
@@ -38,7 +43,9 @@ impl<E> Reaction<E> for RedoxReaction<E> where E: Element {
         let red_charge;
         let oxi_charge;
 
+
         // ehm... let me explain these two
+        // FIXME: Cleanup
 
         // Get reductor charge by searching for the electron, then getting that amount
         if let Some(red_elec_pos) = self.reductor.rhs.compounds.iter().position(|x|
@@ -82,14 +89,12 @@ impl<E> Reaction<E> for RedoxReaction<E> where E: Element {
         let oxi_mult = red_charge / gcd;
 
 
-        let x = ElemReaction {
+        ElemReaction {
             lhs: self.reductor.lhs.clone() * red_mult + self.oxidator.lhs.clone() * oxi_mult,
             rhs: self.reductor.rhs.clone() * red_mult + self.oxidator.rhs.clone() * oxi_mult,
 
             is_equilibrium: true
-        };
-
-        x
+        }
     }
 }
 

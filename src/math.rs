@@ -1,4 +1,4 @@
-/// Calculate greatest common divisor
+/// Calculate Greatest Common Divisor (GCD), using Euclides' algorithm
 pub fn gcd(x: i32, y: i32) -> i32 {
     // Store the highest in a, the lowest in b
     let (mut a, mut b) = {
@@ -9,7 +9,6 @@ pub fn gcd(x: i32, y: i32) -> i32 {
         }
     };
 
-    // Use Euclides' algorithm
     while b != 0 {
         let r = a % b;
         a = b;
