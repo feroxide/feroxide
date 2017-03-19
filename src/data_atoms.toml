@@ -209,7 +209,13 @@ name = "cobalt"
 group = 9
 diatomic = false
 
-
+[atoms.NICKEL]
+number = 28
+mass = 58.6934
+symbol = "Ni"
+name = "nickel"
+group = 10
+diatomic = false
 
 [atoms.COPPER]
 number = 29
@@ -227,6 +233,39 @@ name = "zinc"
 group = 12
 diatomic = false
 
+[atoms.GALLIUM]
+number = 31
+mass = 69.723
+symbol = "Ga"
+name = "gallium"
+group = 13
+diatomic = false
+
+[atoms.GERMANIUM]
+number = 32
+mass = 72.630
+symbol = "Ge"
+name = "germanium"
+group = 14
+diatomic = false
+
+
+[atoms.ARSENIC]
+number = 33
+mass = 74.921595
+symbol = "As"
+name = "arsenic"
+group = 15
+diatomic = false
+
+[atoms.SELENIUM]
+number = 34
+mass = 78.971
+symbol = "Se"
+name = "selenium"
+group = 16
+diatomic = false
+
 [atoms.BROMINE]
 number = 35
 mass = 79.904
@@ -234,6 +273,41 @@ symbol = "Br"
 name = "bromine"
 group = 17
 diatomic = true
+
+[atoms.KRYPTON]
+number = 36
+mass = 83.798
+symbol = "Kr"
+name = "krypton"
+group = 18
+diatomic = false
+
+[atoms.RUBIDIUM]
+number = 37
+mass = 85.4678
+symbol = "Rb"
+name = "rubidium"
+group = 1
+diatomic = false
+
+
+
+
+[atoms.SILVER]
+number = 47
+mass = 107.8682
+symbol = "Ag"
+name = "silver"
+group = 11
+diatomic = false
+
+[atoms.TIN]
+number = 50
+mass = 118.710
+symbol = "Sn"
+name = "tin"
+group = 14
+diatomic = false
 
 [atoms.IODINE]
 number = 53
@@ -243,10 +317,57 @@ name = "iodine"
 group = 17
 diatomic = true
 
+[atoms.XENON]
+number = 54
+mass = 131.293
+symbol = "Xe"
+name = "xenon"
+group = 18
+diatomic = false
+
+[atoms.CAESIUM]
+number = 55
+mass = 132.90545196
+symbol = "Cs"
+group = 1
+diatomic = false
+
 [atoms.BARIUM]
 number = 56
 mass = 137.327
 symbol = "Ba"
 name = "barium"
 group = 2
+diatomic = false
+
+[atoms.PLATINUM]
+number = 78
+mass = 195.084
+symbol = "Pt"
+name = "platinum"
+group = 10
+diatomic = false
+
+[atoms.GOLD]
+number = 79
+mass = 196.966569
+symbol = "Au"
+name = "gold"
+group = 11
+diatomic = false
+
+[atoms.LEAD]
+number = 82
+mass = 207.2
+symbol = "Pb"
+name = "lead"
+group = 14
+diatomic = false
+
+[atoms.FRANCIUM]
+number = 87
+mass = 223
+symbol = "Fr"
+name = "francium"
+group = 1
 diatomic = false
