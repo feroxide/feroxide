@@ -1,3 +1,4 @@
+use ion::*;
 use molecule::*;
 use trait_element::*;
 use trait_properties::*;
@@ -31,6 +32,47 @@ pub struct ReactionCompound<E> where E: Element {
 
 
 impl<E> ElemReaction<E> where E: Element {
+    pub fn from_string(string: String) -> Option< ElemReaction<Ion> > {
+        let mut token = String::new();
+
+        let mut lhs = None;
+        let mut rhs = None;
+        let mut is_equilibrium = false;
+
+        for c in string.chars() {
+            if c == '<' || c == '>' || c == '⇌' || c == '→' {
+                if lhs == None {
+                    lhs = ReactionSide::<Ion>::from_string(token.clone());
+                    token = String::new();
+                }
+
+                if c == '<' || c == '⇌' {
+                    is_equilibrium = true;
+                }
+
+                continue;
+            }
+
+            token.push(c);
+        }
+
+        if token.len() > 0 {
+            rhs = ReactionSide::<Ion>::from_string(token.clone());
+        }
+
+
+        if let (Some(lhs), Some(rhs)) = (lhs, rhs) {
+            Some(ElemReaction {
+                lhs: lhs,
+                rhs: rhs,
+                is_equilibrium: is_equilibrium
+            })
+        } else {
+            None
+        }
+    }
+
+
     /// Get the sign of the equation ( → or ⇌ ), depending whether it is an equilibrium or not
     pub fn reaction_sign(&self) -> &str {
         if self.is_equilibrium {
@@ -52,6 +94,43 @@ impl<E> ElemReaction<E> where E: Element {
 
 
 impl<E> ReactionSide<E> where E: Element  {
+    pub fn from_string(symbol: String) -> Option< ReactionSide<Ion> > {
+        let mut compounds = vec! {};
+
+        let mut token = String::new();
+        for c in symbol.chars() {
+            if is_whitespace!(c) {
+                continue;
+            }
+
+            if c == '+' {
+                if let Some(compound) = ReactionCompound::<Ion>::from_string(token) {
+                    compounds.push(compound);
+                }
+                token = String::new();
+                continue;
+            }
+
+            token.push(c);
+        }
+
+        if token.len() > 0 {
+            if let Some(compound) = ReactionCompound::<Ion>::from_string(token) {
+                compounds.push(compound);
+            }
+        }
+
+
+        if compounds.len() > 0 {
+            Some(ReactionSide {
+                compounds: compounds
+            })
+        } else {
+            None
+        }
+    }
+
+
     /// Calculate the total charge of this reaction side
     pub fn total_charge(&self) -> IonCharge {
         let mut total_charge = 0;
@@ -100,6 +179,46 @@ impl<E> ReactionSide<E> where E: Element  {
         }
 
         return atoms;
+    }
+}
+
+
+impl<E> ReactionCompound<E> where E: Element {
+    pub fn from_string(symbol: String) -> Option< ReactionCompound<Ion> > {
+        let mut amount: u16 = 0;
+        let mut element = None;
+
+        let mut set_amount = true;
+        let mut token = String::new();
+
+        for c in symbol.chars() {
+            if set_amount && is_number!(c) {
+                amount *= 10;
+                amount += to_number!(c) as u16;
+                continue;
+            } else {
+                set_amount = false;
+            }
+
+            token.push(c);
+        }
+
+        if token.len() > 0 {
+            element = Ion::from_string(token);
+        }
+
+        if amount == 0 {
+            amount = 1;
+        }
+
+        if let Some(element) = element {
+            Some(ReactionCompound {
+                amount: amount,
+                element: element
+            })
+        } else {
+            None
+        }
     }
 }
 

@@ -18,46 +18,15 @@ pub struct MoleculeCompound {
 }
 
 
-macro_rules! is_upper {
-    ($c: expr) => {
-        $c >= 'A' && $c <= 'Z'
-    }
-}
-
-macro_rules! is_lower {
-    ($c: expr) => {
-        $c >= 'a' && $c <= 'z'
-    }
-}
-
-macro_rules! is_number {
-    ($c: expr) => {
-        $c >= '0' && $c <= '9'
-    }
-}
-
-macro_rules! is_letter {
-    ($c: expr) => {
-        is_upper!($c) || is_lower!($c)
-    }
-}
-
-macro_rules! to_number {
-    ($c: expr) => {
-        ($c as u8) - ('0' as u8)
-    }
-}
-
-
 impl Molecule {
-    pub fn from_string(string: String) -> Molecule {
+    pub fn from_string(string: String) -> Option< Molecule > {
         let mut compounds = vec!{};
 
         let mut token = String::new();
 
         for c in string.chars() {
             // Ignore whitespace
-            if c == ' ' {
+            if is_whitespace!(c) {
                 continue;
             }
 
@@ -77,8 +46,12 @@ impl Molecule {
             compounds.push(compound);
         }
 
-        Molecule {
-            compounds: compounds
+        if compounds.len() > 0 {
+            Some(Molecule {
+                compounds: compounds
+            })
+        } else {
+            None
         }
     }
 }

@@ -1,5 +1,31 @@
+// macros \\
+
+#[macro_use]
+pub mod parse_macros;
+
 #[macro_use]
 extern crate lazy_static;
+
+#[macro_export]
+macro_rules! molecule_from_atom {
+    ($atom:expr) => (
+        Molecule { compounds: vec! { MoleculeCompound::from_atom($atom) } }
+    )
+}
+
+#[macro_export]
+macro_rules! ion_from_molecule {
+    ($molecule:expr) => (
+        Ion { molecule: $molecule, charge: Some(0) }
+    )
+}
+
+#[macro_export]
+macro_rules! ion_from_atom {
+    ($atom:expr) => (
+        ion_from_molecule!(molecule_from_atom!($atom))
+    )
+}
 
 
 mod atom;
@@ -39,32 +65,55 @@ pub mod display_impls;
 
 
 
-// macros \\
-
-#[macro_export]
-macro_rules! molecule_from_atom {
-    ($atom:expr) => (
-        Molecule { compounds: vec! { MoleculeCompound::from_atom($atom) } }
-    )
-}
-
-#[macro_export]
-macro_rules! ion_from_molecule {
-    ($molecule:expr) => (
-        Ion { molecule: $molecule, charge: Some(0) }
-    )
-}
-
-#[macro_export]
-macro_rules! ion_from_atom {
-    ($atom:expr) => (
-        ion_from_molecule!(molecule_from_atom!($atom))
-    )
-}
-
-
 
 // tests \\
+
+#[test]
+fn reaction_from_string() {
+    use data_atoms::*;
+    use data_molecules::*;
+
+
+    let reaction = ElemReaction {
+        lhs: ReactionSide {
+            compounds: vec! {
+                ReactionCompound {
+                    element: ion_from_atom!(HYDROGEN),
+                    amount: 2
+                },
+
+                ReactionCompound {
+                    element: ion_from_atom!(OXYGEN),
+                    amount: 1
+                }
+            }
+        },
+
+        rhs: ReactionSide {
+            compounds: vec! {
+                ReactionCompound {
+                    element: ion_from_molecule!(WATER.clone()),
+                    amount: 2
+                }
+            }
+        },
+
+        is_equilibrium: true
+    };
+
+    let reaction_from_string =
+        ElemReaction::<Ion>::from_string("2H2 + O2 <> 2H2O".to_owned()).unwrap();
+
+    assert_eq!(reaction, reaction_from_string);
+
+
+    let reaction_from_string =
+        ElemReaction::<Ion>::from_string("2 H2 + O2 ⇌ 2 H2O".to_owned()).unwrap();
+
+    assert_eq!(reaction, reaction_from_string);
+}
+
+
 #[test]
 fn atom_from_string() {
     use data_atoms::*;
@@ -81,9 +130,9 @@ fn atom_from_string() {
 fn molecule_from_string() {
     use data_molecules::*;
 
-    assert_eq!(WATER.clone(), Molecule::from_string("H2O".to_owned()));
-    assert_eq!(CO2.clone(), Molecule::from_string("CO2".to_owned()));
-    assert_eq!(SUGAR.clone(), Molecule::from_string("C12H22O11".to_owned()));
+    assert_eq!(WATER.clone(), Molecule::from_string("H2O".to_owned()).unwrap());
+    assert_eq!(CO2.clone(), Molecule::from_string("CO2".to_owned()).unwrap());
+    assert_eq!(SUGAR.clone(), Molecule::from_string("C12H22O11".to_owned()).unwrap());
 }
 
 

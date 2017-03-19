@@ -31,14 +31,9 @@ fn main() {
     println!("10 moles of {} weigh {} gram(s).", symbol, weight);
 
 
-    // Make some more molecules, just for fun
-    let carbonic_acid = Molecule {
-        compounds: vec! {
-            MoleculeCompound { atom: HYDROGEN, amount: 2 },
-            MoleculeCompound { atom: CARBON, amount: 1 },
-            MoleculeCompound { atom: OXYGEN, amount: 3 }
-        }
-    };
+    // If you don't want to type a lot, and have some time, you could also convert strings
+    let carbonic_acid = Molecule::from_string("H2CO3".to_owned()).unwrap();
+
 
     // Throw a bunch of molecules together in a container with a bit of energy
     let mut container = Container {
@@ -58,7 +53,7 @@ fn main() {
     };
 
     // Specify the reaction that will occur
-    // H₂O + CO₂ → H₂CO₃
+    // H₂O + CO₂ ⇌ H₂CO₃
     let reaction = ElemReaction {
         lhs: ReactionSide {
             compounds: vec! {
@@ -102,7 +97,9 @@ fn main() {
 
 
 
-    // Redox is possible, but it's quite a hassle to type
+    // Redox is possible, but to save you from a lot of typing, I recommend using strings here
+    /*
+    // You wouldn't want to type this:
     let redox = RedoxReaction {
         oxidator: ElemReaction {
             lhs: ReactionSide { compounds: vec! {
@@ -190,6 +187,15 @@ fn main() {
             is_equilibrium: true
         }
     };
+    */
+
+    // Instead, do this:
+    let redox = RedoxReaction {
+        oxidator: ElemReaction::<Ion>::from_string("F2 + 2e <> 2F;1-".to_owned()).unwrap(),
+        reductor: ElemReaction::<Ion>::from_string("Fe <> Fe;3 + 3e".to_owned()).unwrap()
+    };
+
+    println!("{}", redox.symbol());
 
 
     // Make sure it's valid
