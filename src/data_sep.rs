@@ -39,7 +39,7 @@ macro_rules! react_str_hash {
         reaction_to_hash(
             & valid_or_panic(
                 safe_unwrap_reaction(
-                    ElemReaction::<Ion>::from_string(
+                    ElemReaction::<Ion>::ion_from_string(
                         $s.to_owned()
                     ),
                     $s.to_owned()

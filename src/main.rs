@@ -106,8 +106,8 @@ fn main() {
 
     // Redox is possible, but to save you from a lot of typing, I recommend using strings here
     let redox = RedoxReaction {
-        oxidator: ElemReaction::<Ion>::from_string("F2 + 2e <> 2F;1-".to_owned()).unwrap(),
-        reductor: ElemReaction::<Ion>::from_string("Fe <> Fe;3 + 3e".to_owned()).unwrap()
+        oxidator: ElemReaction::<Ion>::ion_from_string("F2 + 2e <> 2F;1-".to_owned()).unwrap(),
+        reductor: ElemReaction::<Ion>::ion_from_string("Fe <> Fe;3 + 3e".to_owned()).unwrap()
     };
 
 

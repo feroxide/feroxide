@@ -102,13 +102,13 @@ fn reaction_from_string() {
     };
 
     let reaction_from_string =
-        ElemReaction::<Ion>::from_string("2H2 + O2 <> 2H2O".to_owned()).unwrap();
+        ElemReaction::<Ion>::ion_from_string("2H2 + O2 <> 2H2O".to_owned()).unwrap();
 
     assert_eq!(reaction, reaction_from_string);
 
 
     let reaction_from_string =
-        ElemReaction::<Ion>::from_string("2 H2 + O2 ⇌ 2 H2O".to_owned()).unwrap();
+        ElemReaction::<Ion>::ion_from_string("2 H2 + O2 ⇌ 2 H2O".to_owned()).unwrap();
 
     assert_eq!(reaction, reaction_from_string);
 }
