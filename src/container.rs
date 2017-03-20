@@ -8,7 +8,7 @@ use types::*;
 use std::hash::{ Hash, Hasher };
 
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 /// A container for elements
 pub struct Container<E: Element> {
     /// A vector with the contents of this container

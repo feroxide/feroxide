@@ -1,20 +1,19 @@
 [package]
 name = "feroxide"
-version = "1.0.1"
+version = "1.1.0"
 authors = ["C-Bouthoorn <cbouthoorn19@gmail.com>"]
 build = "src/build.rs"
 
 description = "A basic chemistry simulator"
 documentation = "https://github.com/C-Bouthoorn/feroxide-gui"
 homepage = "https://github.com/C-Bouthoorn/feroxide-gui"
-respository = "https://github.com/C-Bouthoorn/feroxide-gui"
+repository = "https://github.com/C-Bouthoorn/feroxide-gui"
 
 readme = "README.md"
 
 keywords = ["chemistry", "simulator", "mit"]
 categories = ["command-line-interface", "science"]
 
-license = "MIT"
 license-file = "LICENSE"
 
 [badges]
