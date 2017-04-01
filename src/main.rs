@@ -1,3 +1,4 @@
+#[macro_use(ion_from_molecule)]
 extern crate feroxide;
 
 
@@ -46,13 +47,18 @@ fn main() {
     let mut container = Container {
         contents: vec! {
             ContainerCompound {
-                element: carbondioxide.clone(),
+                element: ion_from_molecule!(carbondioxide.clone()),
                 moles: 1000.0
             },
 
             ContainerCompound {
-                element: WATER.clone(),
+                element: ion_from_molecule!(WATER.clone()),
                 moles: 1000.0
+            },
+
+            ContainerCompound {
+                element: Ion::from_string("SO4;2-".to_owned()).unwrap(),
+                moles: 100.0
             }
         },
 
@@ -64,14 +70,14 @@ fn main() {
     let reaction = ElemReaction {
         lhs: ReactionSide {
             compounds: vec! {
-                ReactionCompound { element: WATER.clone(), amount: 1 },
-                ReactionCompound { element: carbondioxide.clone(), amount: 1 }
+                ReactionCompound { element: ion_from_molecule!(WATER.clone()), amount: 1 },
+                ReactionCompound { element: ion_from_molecule!(carbondioxide.clone()), amount: 1 }
             }
         },
 
         rhs: ReactionSide {
             compounds: vec! {
-                ReactionCompound { element: carbonic_acid.clone(), amount: 1 }
+                ReactionCompound { element: ion_from_molecule!(carbonic_acid.clone()), amount: 1 }
             }
         },
 
