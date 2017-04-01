@@ -1,5 +1,4 @@
 - global
-  - GUI
   - Reactions
     * Precipitation reactions
     * Acid/Base reactions
