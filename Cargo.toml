@@ -5,7 +5,7 @@ authors = ["feroxide"]
 build = "src/build.rs"
 
 description = "A basic chemistry simulator"
-documentation = "https://github.com/feroxide/feroxide"
+documentation = "https://feroxide.github.io/feroxide/docs"
 homepage = "https://feroxide.github.io/feroxide/"
 repository = "https://github.com/feroxide/feroxide"
 

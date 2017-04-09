@@ -63,7 +63,7 @@ fn write(mut atoms_rs_file: &File) {
 fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {
     // Read TOML file
     let mut atoms_toml = String::new();
-    let _ = atoms_toml_file.read_to_string(&mut atoms_toml);
+    atoms_toml_file.read_to_string(&mut atoms_toml).ok();
 
     // Convert to config struct
     let config: Config;
@@ -73,7 +73,7 @@ fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {
     }
 
     // Write header to file
-    atoms_rs_file.write_all(b"use atom::Atom;").unwrap();
+    atoms_rs_file.write_all(b"use atom::Atom;").ok();
 
     // Convert items from TOML file to RS syntax
     for (capsname, atom) in config.atoms.clone().into_iter() {
@@ -100,20 +100,22 @@ pub const {capsname}: Atom = Atom {{
                                 diatomic = diatomic);
 
         // Append to file
-        atoms_rs_file.write_all(rust_atom.as_bytes()).unwrap();
+        atoms_rs_file.write_all(rust_atom.as_bytes()).ok();
     }
 
 
     atoms_rs_file
         .write_all(b"\npub const ALL_ATOMS: &'static[Atom] = &[")
-        .unwrap();
-    for (i, (capsname, _)) in config.atoms.clone().iter().enumerate() {
+        .ok();
+
+    for (i, (capsname, _)) in config.atoms.iter().enumerate() {
         if i > 0 {
-            atoms_rs_file.write_all(b", ").unwrap();
+            atoms_rs_file.write_all(b", ").ok();
         }
-        atoms_rs_file.write_all(capsname.as_bytes()).unwrap();
+        atoms_rs_file.write_all(capsname.as_bytes()).ok();
     }
-    atoms_rs_file.write_all(b"];").unwrap();
+
+    atoms_rs_file.write_all(b"];").ok();
 }
 
 
