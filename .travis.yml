@@ -9,12 +9,12 @@ rust:
   - nightly
 
 before_script:
-  - cargo install clippy
+  - ./clippy.sh install
 
 script:
   - cargo test --verbose
-  - cargo clippy --verbose -- -D warnings
+  - ./clippy.sh test
 
-matrix:
-  allow_failures:
-    - rust: nightly
+#matrix:
+  #allow_failures:
+    #- rust: nightly
