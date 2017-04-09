@@ -10,7 +10,6 @@ rust:
 
 before_script:
   - cargo install clippy
-  - cargo install rustfmt
 
 script:
   - cargo test --verbose
