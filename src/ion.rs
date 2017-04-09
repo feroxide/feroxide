@@ -1,44 +1,48 @@
-use atom::{ Atom };
-use electron::{ ELECTRON };
-use namings::{ ion_superscript, number_to_roman };
-use molecule::{ Molecule };
-use trait_element::{ Element };
-use trait_properties::{ Properties };
+use atom::Atom;
+use electron::ELECTRON;
+use namings::{ion_superscript, number_to_roman};
+use molecule::Molecule;
+use trait_element::Element;
+use trait_properties::Properties;
 use types::*;
 
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
-/// An Ion
+/// An `Ion`
 pub struct Ion {
     /// The molecule of this ion
     pub molecule: Molecule,
 
-
     /// The charge of this ion
-    pub charge: Option<IonCharge>
+    pub charge: Option<IonCharge>,
 }
 
 
 /// Get the charge an atom has based on its group
-pub fn charge_of_atom(atom: Atom) -> Option<IonCharge> {
+pub fn charge_of_atom(atom: &Atom) -> Option<IonCharge> {
     let group = atom.group;
     let number = atom.number;
 
-    if group == 1 { Some(1) }
-    else if group == 2 { Some(2) }
-    else if group == 15 && number <= 15 { Some(-3) }
-    else if group == 16 && number <= 34 { Some(-2) }
-    else if group == 17 && number <= 53 { Some(-1) }
-    else if group == 18 { Some(0) }
-
-    else {
+    if group == 1 {
+        Some(1)
+    } else if group == 2 {
+        Some(2)
+    } else if group == 15 && number <= 15 {
+        Some(-3)
+    } else if group == 16 && number <= 34 {
+        Some(-2)
+    } else if group == 17 && number <= 53 {
+        Some(-1)
+    } else if group == 18 {
+        Some(0)
+    } else {
         None
     }
 }
 
 
 impl Ion {
-    /// Convert a string representation of an Ion into one
+    /// Convert a string representation of an `Ion` into one
     pub fn from_string(symbol: String) -> Option<Ion> {
         let mut molecule = None;
         let mut charge: IonCharge = 0;
@@ -75,7 +79,7 @@ impl Ion {
         }
 
         // It's just a molecule
-        if token.len() > 0 && ! set_charge {
+        if !token.is_empty() && !set_charge {
             // Electron
             if token == "e" {
                 return Some(ELECTRON.clone());
@@ -95,30 +99,30 @@ impl Ion {
 
         if let Some(molecule) = molecule {
             Some(Ion {
-                molecule: molecule,
-                charge: Some(charge)
-            })
+                     molecule: molecule,
+                     charge: Some(charge),
+                 })
         } else {
             None
         }
     }
 
 
-    /// Convert a Molecule into an Ion
+    /// Convert a `Molecule` into an `Ion`
     pub fn from_molecule(molecule: Molecule) -> Ion {
         Ion {
             molecule: molecule,
-            charge: None // Will be calculated later
+            charge: None, // Will be calculated later
         }
     }
 
 
-    /// Calculate the charge of this Ion
+    /// Calculate the charge of this `Ion`
     pub fn calculate_charge(&self) -> Option<IonCharge> {
         let mut charge = 0;
 
-        for molecule_compound in self.molecule.compounds.iter() {
-            if let Some(atom_charge) = charge_of_atom(molecule_compound.atom.clone()) {
+        for molecule_compound in &self.molecule.compounds {
+            if let Some(atom_charge) = charge_of_atom(&molecule_compound.atom) {
                 let mol_charge = (molecule_compound.amount as IonCharge) * atom_charge;
 
                 charge += mol_charge;
@@ -126,7 +130,7 @@ impl Ion {
         }
 
         // HACK: This seems to be correct for now
-        charge = charge % 8;
+        charge %= 8;
 
         Some(charge)
     }
@@ -161,7 +165,7 @@ impl Properties for Ion {
             }
         }
 
-        return symbol;
+        symbol
     }
 
 
@@ -178,7 +182,7 @@ impl Properties for Ion {
             }
         }
 
-        return name;
+        name
     }
 
 

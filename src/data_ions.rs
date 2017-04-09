@@ -1,6 +1,6 @@
 use data_atoms::*;
-use ion::{ Ion };
-use molecule::{ Molecule, MoleculeCompound };
+use ion::Ion;
+use molecule::{Molecule, MoleculeCompound};
 
 
 lazy_static! {

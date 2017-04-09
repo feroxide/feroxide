@@ -1,8 +1,8 @@
-use data_atoms::{ ALL_ATOMS };
-use trait_properties::{ Properties };
+use data_atoms::ALL_ATOMS;
+use trait_properties::Properties;
 use types::*;
 
-use std::hash::{ Hash, Hasher };
+use std::hash::{Hash, Hasher};
 
 
 #[derive(Debug, Clone)]
@@ -11,30 +11,25 @@ pub struct Atom {
     /// Atom Number (Hydrogen: 1)
     pub number: AtomNumber,
 
-
     /// Atom Group (Hydrogen: 1)
     pub group: AtomGroup,
-
 
     /// Atom symbol (Hydrogen: H)
     pub symbol: &'static str,
 
-
     /// Atom name (Hydrogen: hydrogen)
     pub name: &'static str,
-
 
     /// Atom mass (Hydrogen: 1.008)
     pub mass: AtomMass,
 
-
     // Diatomic? (Hydrogen: true)
-    pub diatomic: bool
+    pub diatomic: bool,
 }
 
 
 impl Atom {
-    /// Convert a string representation to an Atom
+    /// Convert a string representation to an `Atom`
     pub fn from_string(symbol: String) -> Option<Atom> {
         for atom in ALL_ATOMS {
             if atom.symbol == symbol {
@@ -47,13 +42,11 @@ impl Atom {
 }
 
 
-impl Eq for Atom {
-
-}
+impl Eq for Atom {}
 
 
 impl PartialEq for Atom {
-    /// Two atoms are equal when their atom numbers are equal
+    /// Two `Atom`s are equal when their atom numbers are equal
     fn eq(&self, rhs: &Atom) -> bool {
         self.number == rhs.number
     }
@@ -62,7 +55,7 @@ impl PartialEq for Atom {
 
 impl Hash for Atom {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        // Only the AtomNumber determines the hash
+        // Only the `AtomNumber` determines the hash
         self.number.hash(state);
     }
 }

@@ -1,12 +1,12 @@
 use atom::Atom;
-use container::{ Container, ContainerCompound };
+use container::{Container, ContainerCompound};
 use ion::Ion;
 use molecule::Molecule;
-use reaction::{ ElemReaction, ReactionSide, ReactionCompound };
+use reaction::{ElemReaction, ReactionSide, ReactionCompound};
 use trait_element::Element;
 use trait_properties::Properties;
 
-use std::fmt::{ Display, Formatter, Result };
+use std::fmt::{Display, Formatter, Result};
 
 
 macro_rules! fmt {

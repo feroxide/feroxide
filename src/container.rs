@@ -1,22 +1,21 @@
-use molecule::{ Molecule };
-use reaction::{ ReactionCompound };
-use trait_element::{ Element };
-use trait_properties::{ Properties };
-use trait_reaction::{ Reaction };
+use molecule::Molecule;
+use reaction::ReactionCompound;
+use trait_element::Element;
+use trait_properties::Properties;
+use trait_reaction::Reaction;
 use types::*;
 
-use std::hash::{ Hash, Hasher };
+use std::hash::{Hash, Hasher};
 
 
 #[derive(Debug, Clone)]
 /// A container for elements
 pub struct Container<E: Element> {
     /// A vector with the contents of this container
-    pub contents: Vec< ContainerCompound<E> >,
-
+    pub contents: Vec<ContainerCompound<E>>,
 
     /// The amount of energy available
-    pub available_energy: Energy
+    pub available_energy: Energy,
 }
 
 
@@ -26,23 +25,22 @@ pub struct ContainerCompound<E: Element> {
     /// The element it contains
     pub element: E,
 
-
     /// The amount of moles of this element
-    pub moles: Moles
+    pub moles: Moles,
 }
 
 
-/// Convert a given ReactionCompound into a ContainerCompound
+/// Convert a given `ReactionCompound` into a `ContainerCompound`
 pub fn rc_to_cc<E: Element>(rc: ReactionCompound<E>) -> ContainerCompound<E> {
     ContainerCompound {
         element: rc.element,
-        moles: rc.amount as Moles
+        moles: rc.amount as Moles,
     }
 }
 
 
 impl<E: Element> Container<E> {
-    /// Applies given reaction to container
+    /// Applies given `Reaction` to `Container`
     /// Removing the elements on the left-hand side
     /// and adding the elements on the right-hand side.
     /// If there is enough energy for the reaction, that amount will be consumed
@@ -51,18 +49,18 @@ impl<E: Element> Container<E> {
     pub fn react<R: Reaction<E>>(&mut self, reaction: &R) -> bool {
         // Get required items
         let required_energy = reaction.energy_cost();
-        let mut required_elements = vec! {};
-        let mut resulting_elements = vec! {};
+        let mut required_elements = vec![];
+        let mut resulting_elements = vec![];
 
-        // Convert lhs.compounds into ContainerCompound's
-        for rc in reaction.elem_reaction().lhs.compounds.iter() {
+        // Convert lhs compounds into `ContainerCompound`s
+        for rc in &reaction.elem_reaction().lhs.compounds {
             let cc = rc_to_cc(rc.clone());
 
             required_elements.push(cc);
         }
 
-        // Convert rhs.compounds into ContainerCompound's
-        for rc in reaction.elem_reaction().rhs.compounds.iter() {
+        // Convert rhs compounds into `ContainerCompound`s
+        for rc in &reaction.elem_reaction().rhs.compounds {
             let cc = rc_to_cc(rc.clone());
 
             resulting_elements.push(cc);
@@ -75,7 +73,7 @@ impl<E: Element> Container<E> {
         }
 
         // Check if the container has the required elements
-        if ! self.has_elements(&required_elements) {
+        if !self.has_elements(&required_elements) {
             println!("####    Not enough elements");
             return false;
         }
@@ -89,16 +87,16 @@ impl<E: Element> Container<E> {
         // Add reaction results
         self.add_elements(&resulting_elements);
 
-        return true;
+        true
     }
 
 
     /// Check if the container has all given elements
-    pub fn has_elements(&mut self, elements: &Vec< ContainerCompound<E> >) -> bool {
+    pub fn has_elements(&mut self, elements: &[ContainerCompound<E>]) -> bool {
         'outer: for element in elements {
             // Find element in self.contents
             if let Some(position) = self.contents.iter().position(|comp| comp == element) {
-                let compound = self.contents.get(position).unwrap();
+                let compound = &self.contents[position];
 
                 // Check if more elements are required than available
                 if element.moles > compound.moles {
@@ -112,50 +110,54 @@ impl<E: Element> Container<E> {
             return false;
         }
 
-        return true;
+        true
     }
 
 
     /// Remove given elements from container
-    pub fn remove_elements(&mut self, elements: &Vec< ContainerCompound<E> >) {
+    pub fn remove_elements(&mut self, elements: &[ContainerCompound<E>]) {
         for element in elements {
+            let mut to_remove = None;
+
             // Find element in self.contents
             if let Some(position) = self.contents.iter().position(|comp| comp == element) {
-                if {
-                    let mut compound = self.contents.get_mut(position).unwrap();
+                let mut compound = &mut self.contents[position];
 
-                    // Check if we have enough
-                    if compound.moles < element.moles {
-                        panic!("Can't remove element {} (not enough)", element.symbol());
-                    }
+                // Check if we have enough
+                if compound.moles < element.moles {
+                    panic!("Can't remove element {} (not enough)", element.symbol());
+                }
 
-                    // Remove amount
-                    compound.moles -= element.moles;
+                // Remove amount
+                compound.moles -= element.moles;
 
-                    // If none is available anymore, remove element from container in its entirety
-                    compound.moles == 0.0
-                } {
-                    self.contents.remove(position);
+                // If none is available anymore, let element be removed from container
+                if compound.moles == 0.0 {
+                    to_remove = Some(position);
                 }
             } else {
                 println!("Can't remove element {} (not found)", element.symbol());
+            }
+
+            // Remove element if needed
+            if let Some(pos) = to_remove {
+                self.contents.remove(pos);
             }
         }
     }
 
 
     /// Add given elements to container
-    pub fn add_elements(&mut self, elements: &Vec< ContainerCompound<E> >) {
-        for element in elements.into_iter() {
+    pub fn add_elements(&mut self, elements: &[ContainerCompound<E>]) {
+        for element in elements {
             // Find element in self.contents
             if let Some(position) = self.contents.iter().position(|comp| comp == element) {
-                let mut compound = self.contents.get_mut(position).unwrap();
+                let mut compound = &mut self.contents[position];
 
                 // Add amount
                 compound.moles += element.moles;
             } else {
                 // If the element is not found in the container, add it
-
                 self.contents.push(element.clone());
             }
         }
@@ -167,9 +169,9 @@ impl<E: Element> Container<E> {
         let mut string = String::new();
 
         let mut first = true;
-        for compound in self.contents.iter() {
+        for compound in &self.contents {
             if compound.moles > 0.0 {
-                if ! first {
+                if !first {
                     string += " + ";
                 }
                 first = false;
@@ -178,18 +180,16 @@ impl<E: Element> Container<E> {
             }
         }
 
-        string += &" [";
+        string += " [";
         string += &self.available_energy.to_string();
-        string += &" J]";
+        string += " J]";
 
-        return string;
+        string
     }
 }
 
 
-impl<E: Element> Eq for ContainerCompound<E> {
-
-}
+impl<E: Element> Eq for ContainerCompound<E> {}
 
 
 impl<E: Element> PartialEq for ContainerCompound<E> {
@@ -224,7 +224,8 @@ impl<E: Element> Properties for ContainerCompound<E> {
         let mut symbol = String::new();
         symbol += &self.moles.to_string();
         symbol += &self.element.symbol();
-        return symbol;
+
+        symbol
     }
 
 
@@ -232,7 +233,8 @@ impl<E: Element> Properties for ContainerCompound<E> {
         let mut name = String::new();
         name += &self.moles.to_string();
         name += &self.element.name();
-        return name;
+
+        name
     }
 
 

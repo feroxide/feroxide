@@ -1,9 +1,9 @@
 use data_sep::*;
-use math::{ gcd };
-use reaction::{ ElemReaction };
-use trait_element::{ Element };
-use trait_properties::{ Properties };
-use trait_reaction::{ Reaction };
+use math::gcd;
+use reaction::ElemReaction;
+use trait_element::Element;
+use trait_properties::Properties;
+use trait_reaction::Reaction;
 use types::*;
 
 
@@ -13,9 +13,8 @@ pub struct RedoxReaction<E: Element> {
     /// The reductor
     pub reductor: ElemReaction<E>,
 
-
     /// The oxidator
-    pub oxidator: ElemReaction<E>
+    pub oxidator: ElemReaction<E>,
 }
 
 
@@ -48,36 +47,56 @@ impl<E: Element> Reaction<E> for RedoxReaction<E> {
         // FIXME: Cleanup
 
         // Get reductor charge by searching for the electron, then getting that amount
-        if let Some(red_elec_pos) = self.reductor.rhs.compounds.iter().position(|x|
-            x.element.get_molecule().unwrap()
-            .compounds.get(0).unwrap()
-            .atom.number == 0
-        ) {
-            red_charge = self.reductor.rhs.compounds.get(red_elec_pos).unwrap().amount;
-        } else if let Some(red_elec_pos) = self.reductor.lhs.compounds.iter().position(|x|
-            x.element.get_molecule().unwrap()
-            .compounds.get(0).unwrap()
-            .atom.number == 0
-        ) {
-            red_charge = self.reductor.lhs.compounds.get(red_elec_pos).unwrap().amount;
+        if let Some(red_elec_pos) =
+            self.reductor
+                .rhs
+                .compounds
+                .iter()
+                .position(|x| {
+                              x.element.get_molecule().unwrap().compounds[0]
+                                  .atom
+                                  .number == 0
+                          }) {
+            red_charge = self.reductor.rhs.compounds[red_elec_pos].amount;
+        } else if let Some(red_elec_pos) =
+            self.reductor
+                .lhs
+                .compounds
+                .iter()
+                .position(|x| {
+                              x.element.get_molecule().unwrap().compounds[0]
+                                  .atom
+                                  .number == 0
+                          }) {
+            red_charge = self.reductor.lhs.compounds[red_elec_pos].amount;
         } else {
             panic!("Reductor has no electrons!");
         }
 
 
         // Get oxidator charge by searching for the electron, then getting that amount
-        if let Some(oxi_elec_pos) = self.oxidator.lhs.compounds.iter().position(|x|
-            x.element.get_molecule().unwrap()
-            .compounds.get(0).unwrap()
-            .atom.number == 0
-        ) {
-            oxi_charge = self.oxidator.lhs.compounds.get(oxi_elec_pos).unwrap().amount;
-        } else if let Some(oxi_elec_pos) = self.oxidator.rhs.compounds.iter().position(|x|
-            x.element.get_molecule().unwrap()
-            .compounds.get(0).unwrap()
-            .atom.number == 0
-        ) {
-            oxi_charge = self.oxidator.rhs.compounds.get(oxi_elec_pos).unwrap().amount;
+        if let Some(oxi_elec_pos) =
+            self.oxidator
+                .lhs
+                .compounds
+                .iter()
+                .position(|x| {
+                              x.element.get_molecule().unwrap().compounds[0]
+                                  .atom
+                                  .number == 0
+                          }) {
+            oxi_charge = self.oxidator.lhs.compounds[oxi_elec_pos].amount;
+        } else if let Some(oxi_elec_pos) =
+            self.oxidator
+                .rhs
+                .compounds
+                .iter()
+                .position(|x| {
+                              x.element.get_molecule().unwrap().compounds[0]
+                                  .atom
+                                  .number == 0
+                          }) {
+            oxi_charge = self.oxidator.rhs.compounds[oxi_elec_pos].amount;
         } else {
             panic!("Oxidator has no electrons!");
         }
@@ -93,7 +112,7 @@ impl<E: Element> Reaction<E> for RedoxReaction<E> {
             lhs: self.reductor.lhs.clone() * red_mult + self.oxidator.lhs.clone() * oxi_mult,
             rhs: self.reductor.rhs.clone() * red_mult + self.oxidator.rhs.clone() * oxi_mult,
 
-            is_equilibrium: true
+            is_equilibrium: true,
         }
     }
 }
@@ -109,7 +128,7 @@ impl<E: Element> Properties for RedoxReaction<E> {
         symbol += "reductor: ";
         symbol += &self.reductor.symbol();
 
-        return symbol;
+        symbol
     }
 
 
@@ -122,7 +141,7 @@ impl<E: Element> Properties for RedoxReaction<E> {
         name += "reductor: ";
         name += &self.reductor.name();
 
-        return name;
+        name
     }
 
 

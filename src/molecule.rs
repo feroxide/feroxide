@@ -1,7 +1,7 @@
-use atom::{ Atom };
-use namings::{ number_to_greek, subscript };
-use trait_element::{ Element };
-use trait_properties::{ Properties };
+use atom::Atom;
+use namings::{number_to_greek, subscript};
+use trait_element::Element;
+use trait_properties::Properties;
 use types::*;
 
 
@@ -9,7 +9,7 @@ use types::*;
 /// A molecule
 pub struct Molecule {
     /// The compounds it contains
-    pub compounds: Vec<MoleculeCompound>
+    pub compounds: Vec<MoleculeCompound>,
 }
 
 
@@ -19,16 +19,15 @@ pub struct MoleculeCompound {
     /// The atom it uses
     pub atom: Atom,
 
-
     /// The amount
-    pub amount: u8
+    pub amount: u8,
 }
 
 
 impl Molecule {
     /// Convert a string representation of a molecule into one
     pub fn from_string(string: String) -> Option<Molecule> {
-        let mut compounds = vec!{};
+        let mut compounds = vec![];
 
         let mut token = String::new();
 
@@ -38,7 +37,7 @@ impl Molecule {
                 continue;
             }
 
-            if is_upper!(c) && token.len() > 0 {
+            if is_upper!(c) && !token.is_empty() {
                 let compound = MoleculeCompound::from_string(token).unwrap();
 
                 compounds.push(compound);
@@ -49,17 +48,15 @@ impl Molecule {
         }
 
         // If some tokens remain, convert it into a compound
-        if token.len() > 0 {
+        if !token.is_empty() {
             if let Some(compound) = MoleculeCompound::from_string(token) {
                 compounds.push(compound);
             }
         }
 
 
-        if compounds.len() > 0 {
-            Some(Molecule {
-                compounds: compounds
-            })
+        if !compounds.is_empty() {
+            Some(Molecule { compounds: compounds })
         } else {
             None
         }
@@ -92,9 +89,9 @@ impl MoleculeCompound {
 
         if let Some(atom) = Atom::from_string(token) {
             Some(MoleculeCompound {
-                atom: atom,
-                amount: amount
-            })
+                     atom: atom,
+                     amount: amount,
+                 })
         } else {
             None
         }
@@ -105,7 +102,10 @@ impl MoleculeCompound {
     pub fn from_atom(atom: Atom) -> MoleculeCompound {
         let amount = if atom.diatomic { 2 } else { 1 };
 
-        MoleculeCompound { atom: atom, amount: amount }
+        MoleculeCompound {
+            atom: atom,
+            amount: amount,
+        }
     }
 }
 
@@ -114,33 +114,33 @@ impl Properties for Molecule {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
-        for compound in self.compounds.iter() {
+        for compound in &self.compounds {
             symbol += &compound.symbol();
         }
 
-        return symbol;
+        symbol
     }
 
 
     fn name(&self) -> String {
         let mut name = String::new();
 
-        for compound in self.compounds.iter() {
+        for compound in &self.compounds {
             name += &compound.name();
         }
 
-        return name;
+        name
     }
 
 
     fn mass(&self) -> AtomMass {
         let mut mass = 0.0;
 
-        for compound in self.compounds.iter() {
+        for compound in &self.compounds {
             mass += compound.mass();
         }
 
-        return mass;
+        mass
     }
 }
 
@@ -155,7 +155,7 @@ impl Properties for MoleculeCompound {
             symbol += &subscript(self.amount);
         }
 
-        return symbol;
+        symbol
     }
 
 
@@ -168,12 +168,12 @@ impl Properties for MoleculeCompound {
 
         name += &self.atom.name();
 
-        return name;
+        name
     }
 
 
     fn mass(&self) -> AtomMass {
-        return (self.amount as AtomMass) * self.atom.mass;
+        (self.amount as AtomMass) * self.atom.mass
     }
 }
 

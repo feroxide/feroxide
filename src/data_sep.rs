@@ -1,12 +1,12 @@
-use ion::{ Ion };
-use reaction::{ ElemReaction };
-use trait_element::{ Element };
-use trait_reaction::{ Reaction };
+use ion::Ion;
+use reaction::ElemReaction;
+use trait_element::Element;
+use trait_reaction::Reaction;
 use types::*;
 
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
-use std::hash::{ Hash, Hasher };
+use std::hash::{Hash, Hasher};
 
 
 // Reference: https://en.wikipedia.org/wiki/Standard_electrode_potential_(data_page)
@@ -23,10 +23,10 @@ pub fn reaction_to_hash<E: Element>(reaction: &ElemReaction<E>) -> u64 {
 
 /// Get the Standerd Electrode Potential (SEP) of a reaction
 pub fn get_sep<E: Element>(elem_reaction: &ElemReaction<E>) -> Option<SEP> {
-    if let Some(sep) = SEPMAP.get(& reaction_to_hash(&elem_reaction)) {
-        Some(sep.clone())
-    } else if let Some(sep) = SEPMAP.get(& reaction_to_hash(& elem_reaction.clone().swap())){
-        Some(sep.clone())
+    if let Some(sep) = SEPMAP.get(&reaction_to_hash(elem_reaction)) {
+        Some(*sep)
+    } else if let Some(sep) = SEPMAP.get(&reaction_to_hash(&elem_reaction.clone().swap())) {
+        Some(*sep)
     } else {
         None
     }
@@ -42,7 +42,7 @@ macro_rules! react_str_hash {
                     ElemReaction::<Ion>::ion_from_string(
                         $s.to_owned()
                     ),
-                    $s.to_owned()
+                    $s
                 )
             )
         )
@@ -52,7 +52,7 @@ macro_rules! react_str_hash {
 
 /// Make sure the reaction is valid, panic otherwise
 fn valid_or_panic<E: Element>(reaction: ElemReaction<E>) -> ElemReaction<E> {
-    if ! reaction.is_valid() {
+    if !reaction.is_valid() {
         panic!("Invalid reaction: {}", reaction);
     }
 
@@ -61,8 +61,7 @@ fn valid_or_panic<E: Element>(reaction: ElemReaction<E>) -> ElemReaction<E> {
 
 
 /// Check if the reaction is defined, then unwrap. Otherwise: panic!
-fn safe_unwrap_reaction<E: Element>
-    (reaction: Option< ElemReaction<E> >, s: String) -> ElemReaction<E> {
+fn safe_unwrap_reaction<E: Element>(reaction: Option<ElemReaction<E>>, s: &str) -> ElemReaction<E> {
 
     if reaction == None {
         panic!("Reaction failed to create: {}", s);

@@ -1,5 +1,5 @@
 use data_atoms::*;
-use molecule::{ Molecule, MoleculeCompound };
+use molecule::{Molecule, MoleculeCompound};
 
 
 lazy_static! {

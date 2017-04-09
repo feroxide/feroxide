@@ -1,11 +1,13 @@
-use ion::{ Ion };
-use molecule::{ Molecule };
-use trait_element::{ Element };
-use trait_properties::{ Properties };
-use trait_reaction::{ Reaction };
+use ion::Ion;
+use molecule::Molecule;
+use trait_element::Element;
+use trait_properties::Properties;
+use trait_reaction::Reaction;
 use types::*;
 
 use std::collections::HashMap;
+use std::hash::{Hash, Hasher};
+use std::mem;
 use std::ops::*;
 
 
@@ -15,13 +17,11 @@ pub struct ElemReaction<E: Element> {
     /// The left-hand-side
     pub lhs: ReactionSide<E>,
 
-
     /// The right-hand-side
     pub rhs: ReactionSide<E>,
 
-
     // If it's an equilibrium
-    pub is_equilibrium: bool
+    pub is_equilibrium: bool,
 }
 
 
@@ -29,26 +29,25 @@ pub struct ElemReaction<E: Element> {
 /// A side of a reaction
 pub struct ReactionSide<E: Element> {
     /// The compounds of this side
-    pub compounds: Vec< ReactionCompound<E> >
+    pub compounds: Vec<ReactionCompound<E>>,
 }
 
 
-#[derive(Debug, Eq, Clone, Hash)]
+#[derive(Debug, Eq, Clone)]
 /// A reaction compound
 pub struct ReactionCompound<E: Element> {
     /// The element it uses
     pub element: E,
 
-
     /// The amount of moles needed
-    pub amount: u16
+    pub amount: u16,
 }
 
 
 
 impl<E: Element> ElemReaction<E> {
     /// Convert a string representation of a reaction into one
-    pub fn ion_from_string(string: String) -> Option< ElemReaction<Ion> > {
+    pub fn ion_from_string(string: String) -> Option<ElemReaction<Ion>> {
         let mut token = String::new();
 
         let mut lhs = None;
@@ -72,17 +71,17 @@ impl<E: Element> ElemReaction<E> {
             token.push(c);
         }
 
-        if token.len() > 0 {
+        if !token.is_empty() {
             rhs = ReactionSide::<Ion>::ion_from_string(token.clone());
         }
 
 
         if let (Some(lhs), Some(rhs)) = (lhs, rhs) {
             Some(ElemReaction {
-                lhs: lhs,
-                rhs: rhs,
-                is_equilibrium: is_equilibrium
-            })
+                     lhs: lhs,
+                     rhs: rhs,
+                     is_equilibrium: is_equilibrium,
+                 })
         } else {
             None
         }
@@ -90,7 +89,7 @@ impl<E: Element> ElemReaction<E> {
 
 
     /// Convert a string representation of a reaction into one
-    pub fn molecule_from_string(string: String) -> Option< ElemReaction<Molecule> > {
+    pub fn molecule_from_string(string: String) -> Option<ElemReaction<Molecule>> {
         let mut token = String::new();
 
         let mut lhs = None;
@@ -114,17 +113,17 @@ impl<E: Element> ElemReaction<E> {
             token.push(c);
         }
 
-        if token.len() > 0 {
+        if !token.is_empty() {
             rhs = ReactionSide::<Molecule>::molecule_from_string(token.clone());
         }
 
 
         if let (Some(lhs), Some(rhs)) = (lhs, rhs) {
             Some(ElemReaction {
-                lhs: lhs,
-                rhs: rhs,
-                is_equilibrium: is_equilibrium
-            })
+                     lhs: lhs,
+                     rhs: rhs,
+                     is_equilibrium: is_equilibrium,
+                 })
         } else {
             None
         }
@@ -143,9 +142,7 @@ impl<E: Element> ElemReaction<E> {
 
     /// Swap the equation
     pub fn swap(mut self) -> Self {
-        let x = self.lhs;
-        self.lhs = self.rhs;
-        self.rhs = x;
+        mem::swap(&mut self.lhs, &mut self.rhs);
         self
     }
 }
@@ -153,8 +150,8 @@ impl<E: Element> ElemReaction<E> {
 
 impl<E: Element> ReactionSide<E> {
     /// Convert a string representation of a reactionside into one
-    pub fn ion_from_string(symbol: String) -> Option< ReactionSide<Ion> > {
-        let mut compounds = vec! {};
+    pub fn ion_from_string(symbol: String) -> Option<ReactionSide<Ion>> {
+        let mut compounds = vec![];
 
         let mut token = String::new();
         for c in symbol.chars() {
@@ -173,17 +170,15 @@ impl<E: Element> ReactionSide<E> {
             token.push(c);
         }
 
-        if token.len() > 0 {
+        if !token.is_empty() {
             if let Some(compound) = ReactionCompound::<Ion>::ion_from_string(token) {
                 compounds.push(compound);
             }
         }
 
 
-        if compounds.len() > 0 {
-            Some(ReactionSide {
-                compounds: compounds
-            })
+        if !compounds.is_empty() {
+            Some(ReactionSide { compounds: compounds })
         } else {
             None
         }
@@ -191,8 +186,8 @@ impl<E: Element> ReactionSide<E> {
 
 
     /// Convert a string representation of a reactionside into one
-    pub fn molecule_from_string(symbol: String) -> Option< ReactionSide<Molecule> > {
-        let mut compounds = vec! {};
+    pub fn molecule_from_string(symbol: String) -> Option<ReactionSide<Molecule>> {
+        let mut compounds = vec![];
 
         let mut token = String::new();
         for c in symbol.chars() {
@@ -211,17 +206,15 @@ impl<E: Element> ReactionSide<E> {
             token.push(c);
         }
 
-        if token.len() > 0 {
+        if !token.is_empty() {
             if let Some(compound) = ReactionCompound::<Molecule>::molecule_from_string(token) {
                 compounds.push(compound);
             }
         }
 
 
-        if compounds.len() > 0 {
-            Some(ReactionSide {
-                compounds: compounds
-            })
+        if !compounds.is_empty() {
+            Some(ReactionSide { compounds: compounds })
         } else {
             None
         }
@@ -232,13 +225,13 @@ impl<E: Element> ReactionSide<E> {
     pub fn total_charge(&self) -> IonCharge {
         let mut total_charge = 0;
 
-        for compound in self.compounds.iter() {
+        for compound in &self.compounds {
             if let Some(charge) = compound.element.get_charge() {
                 total_charge += charge;
             }
         }
 
-        return total_charge;
+        total_charge
     }
 
 
@@ -254,9 +247,9 @@ impl<E: Element> ReactionSide<E> {
         let mut atoms: HashMap<AtomNumber, u16> = HashMap::new();
 
         // for molecule_compound in self.compounds:
-        for reaction_compound in self.compounds.iter() {
-            if let Some(ref molecule) = reaction_compound.element.get_molecule() {
-                for molecule_compound in molecule.compounds.iter() {
+        for reaction_compound in &self.compounds {
+            if let Some(molecule) = reaction_compound.element.get_molecule() {
+                for molecule_compound in &molecule.compounds {
 
 
                     let atom_number = molecule_compound.atom.number;
@@ -280,14 +273,14 @@ impl<E: Element> ReactionSide<E> {
             }
         }
 
-        return atoms;
+        atoms
     }
 }
 
 
 impl<E: Element> ReactionCompound<E> {
     /// Convert a string representation of a reaction compound into one
-    pub fn ion_from_string(symbol: String) -> Option< ReactionCompound<Ion> > {
+    pub fn ion_from_string(symbol: String) -> Option<ReactionCompound<Ion>> {
         let mut amount: u16 = 0;
         let mut element = None;
 
@@ -306,7 +299,7 @@ impl<E: Element> ReactionCompound<E> {
             token.push(c);
         }
 
-        if token.len() > 0 {
+        if !token.is_empty() {
             element = Ion::from_string(token);
         }
 
@@ -316,9 +309,9 @@ impl<E: Element> ReactionCompound<E> {
 
         if let Some(element) = element {
             Some(ReactionCompound {
-                amount: amount,
-                element: element
-            })
+                     amount: amount,
+                     element: element,
+                 })
         } else {
             None
         }
@@ -326,7 +319,7 @@ impl<E: Element> ReactionCompound<E> {
 
 
     /// Convert a string representation of a reaction compound into one
-    pub fn molecule_from_string(symbol: String) -> Option< ReactionCompound<Molecule> > {
+    pub fn molecule_from_string(symbol: String) -> Option<ReactionCompound<Molecule>> {
         let mut amount: u16 = 0;
         let mut element = None;
 
@@ -345,7 +338,7 @@ impl<E: Element> ReactionCompound<E> {
             token.push(c);
         }
 
-        if token.len() > 0 {
+        if !token.is_empty() {
             element = Molecule::from_string(token);
         }
 
@@ -355,9 +348,9 @@ impl<E: Element> ReactionCompound<E> {
 
         if let Some(element) = element {
             Some(ReactionCompound {
-                amount: amount,
-                element: element
-            })
+                     amount: amount,
+                     element: element,
+                 })
         } else {
             None
         }
@@ -384,8 +377,8 @@ impl<E: Element> Reaction<E> for ElemReaction<E> {
             let r_amount: u16;
 
             match total_right.get(&atom_number) {
-                Some(&x) => { r_amount = x },
-                None => { r_amount = 0 }
+                Some(&x) => r_amount = x,
+                None => r_amount = 0,
             }
 
             if r_amount == 0 {
@@ -412,14 +405,14 @@ impl<E: Element> Reaction<E> for ElemReaction<E> {
             }
         }
 
-        // Actually false
-        return true;
+        // NOTE: true only for debugging
+        true
     }
 
 
     fn is_valid(&self) -> bool {
-        self.lhs.total_atoms() == self.rhs.total_atoms()
-        && self.lhs.total_charge() == self.lhs.total_charge()
+        self.lhs.total_atoms() == self.rhs.total_atoms() &&
+        self.lhs.total_charge() == self.lhs.total_charge()
     }
 
 
@@ -442,9 +435,7 @@ impl<E: Element> Add for ReactionSide<E> {
         let mut compounds = self.compounds.clone();
         compounds.append(&mut rhs.compounds);
 
-        ReactionSide {
-            compounds: compounds
-        }
+        ReactionSide { compounds: compounds }
     }
 }
 
@@ -457,13 +448,11 @@ impl<E: Element> Mul<u16> for ReactionSide<E> {
     fn mul(self, rhs: u16) -> ReactionSide<E> {
         let mut compounds = self.compounds.clone();
 
-        for mut compound in compounds.iter_mut() {
+        for mut compound in &mut compounds {
             compound.amount *= rhs;
         }
 
-        ReactionSide {
-            compounds: compounds
-        }
+        ReactionSide { compounds: compounds }
     }
 }
 
@@ -476,7 +465,14 @@ impl<E: Element> PartialEq for ReactionCompound<E> {
 }
 
 
-impl<E: Element> Properties for ElemReaction<E>  {
+impl<E: Element> Hash for ReactionCompound<E> {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.element.hash(state);
+    }
+}
+
+
+impl<E: Element> Properties for ElemReaction<E> {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -484,7 +480,7 @@ impl<E: Element> Properties for ElemReaction<E>  {
         symbol += self.reaction_sign();
         symbol += &self.rhs.symbol();
 
-        return symbol;
+        symbol
     }
 
 
@@ -495,7 +491,7 @@ impl<E: Element> Properties for ElemReaction<E>  {
         name += self.reaction_sign();
         name += &self.rhs.name();
 
-        return name;
+        name
     }
 
 
@@ -506,13 +502,13 @@ impl<E: Element> Properties for ElemReaction<E>  {
 }
 
 
-impl<E: Element> Properties for ReactionSide<E>  {
+impl<E: Element> Properties for ReactionSide<E> {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
         let mut first = true;
-        for reaction_compound in self.compounds.iter() {
-            if ! first {
+        for reaction_compound in &self.compounds {
+            if !first {
                 symbol += " + ";
             }
             first = false;
@@ -520,7 +516,7 @@ impl<E: Element> Properties for ReactionSide<E>  {
             symbol += &reaction_compound.symbol();
         }
 
-        return symbol;
+        symbol
     }
 
 
@@ -528,8 +524,8 @@ impl<E: Element> Properties for ReactionSide<E>  {
         let mut name = String::new();
 
         let mut first = true;
-        for reaction_compound in self.compounds.iter() {
-            if ! first {
+        for reaction_compound in &self.compounds {
+            if !first {
                 name += " + ";
             }
             first = false;
@@ -537,23 +533,23 @@ impl<E: Element> Properties for ReactionSide<E>  {
             name += &reaction_compound.name();
         }
 
-        return name;
+        name
     }
 
 
     fn mass(&self) -> AtomMass {
         let mut mass = 0.0;
 
-        for ref reaction_compound in self.compounds.iter() {
+        for reaction_compound in &self.compounds {
             mass += reaction_compound.mass();
         }
 
-        return mass;
+        mass
     }
 }
 
 
-impl<E: Element> Properties for ReactionCompound<E>  {
+impl<E: Element> Properties for ReactionCompound<E> {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -563,7 +559,7 @@ impl<E: Element> Properties for ReactionCompound<E>  {
 
         symbol += &self.element.symbol();
 
-        return symbol;
+        symbol
     }
 
 
@@ -577,12 +573,12 @@ impl<E: Element> Properties for ReactionCompound<E>  {
 
         name += &self.element.name();
 
-        return name;
+        name
     }
 
 
     fn mass(&self) -> AtomMass {
-        return (self.amount as AtomMass) * self.element.mass();
+        (self.amount as AtomMass) * self.element.mass()
     }
 }
 

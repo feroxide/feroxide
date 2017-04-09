@@ -4,7 +4,7 @@ extern crate toml;
 
 
 mod types;
-use types::{ AtomNumber, AtomGroup, AtomMass };
+use types::{AtomNumber, AtomGroup, AtomMass};
 
 use std::fs::File;
 use std::collections::HashMap;
@@ -13,7 +13,7 @@ use std::io::*;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct Config {
-    pub atoms: HashMap<String, Atom>
+    pub atoms: HashMap<String, Atom>,
 }
 
 
@@ -24,7 +24,7 @@ struct Atom {
     pub symbol: String,
     pub name: String,
     pub mass: AtomMass,
-    pub diatomic: bool
+    pub diatomic: bool,
 }
 
 
@@ -34,25 +34,26 @@ fn write(mut atoms_rs_file: &File) {
     let mut atoms: HashMap<String, Atom> = HashMap::new();
 
     // Add example atom
-    atoms.insert("hydrogen".to_owned(), Atom {
-        number: 1,
-        symbol: "H".to_owned(),
-        name: "hydrogen".to_owned(),
-        group: 1,
-        mass: 1.008,
-        diatomic: true
-    });
+    atoms.insert("hydrogen".to_owned(),
+                 Atom {
+                     number: 1,
+                     symbol: "H".to_owned(),
+                     name: "hydrogen".to_owned(),
+                     group: 1,
+                     mass: 1.008,
+                     diatomic: true,
+                 });
 
     // Generate config
-    let config = Config {
-        atoms: atoms
-    };
+    let config = Config { atoms: atoms };
 
     // Convert to TOML
     let config_string = toml::to_string(&config).unwrap();
 
     // Write TOML to file
-    atoms_rs_file.write_all( config_string.as_bytes() ).unwrap();
+    atoms_rs_file
+        .write_all(config_string.as_bytes())
+        .unwrap();
 }
 
 
@@ -67,8 +68,8 @@ fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {
     // Convert to config struct
     let config: Config;
     match toml::from_str(&atoms_toml) {
-        Ok(x) => { config = x },
-        Err(e) => { panic!("{:?}", e) }
+        Ok(x) => config = x,
+        Err(e) => panic!("{:?}", e),
     }
 
     // Write header to file
@@ -76,21 +77,36 @@ fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {
 
     // Convert items from TOML file to RS syntax
     for (capsname, atom) in config.atoms.clone().into_iter() {
-        let Atom { number, symbol, name, group, mass, diatomic } = atom;
+        let Atom {
+            number,
+            symbol,
+            name,
+            group,
+            mass,
+            diatomic,
+        } = atom;
 
         let rust_atom = format!("
 pub const {capsname}: Atom = Atom {{
-    number: {number}, mass: {mass:.5}, symbol: \"{symbol}\", name: \"{name}\", group: {group:?}, diatomic: {diatomic} }};
+    number: {number}, mass: {mass:.5}, symbol: \"{symbol}\",
+    name: \"{name}\", group: {group:?}, diatomic: {diatomic} }};
 ",
-    capsname = capsname, name = name, number = number, mass = mass,
-    symbol = symbol, group = group, diatomic = diatomic );
+                                capsname = capsname,
+                                name = name,
+                                number = number,
+                                mass = mass,
+                                symbol = symbol,
+                                group = group,
+                                diatomic = diatomic);
 
         // Append to file
-        atoms_rs_file.write_all( rust_atom.as_bytes() ).unwrap();
+        atoms_rs_file.write_all(rust_atom.as_bytes()).unwrap();
     }
 
 
-    atoms_rs_file.write_all(b"\npub const ALL_ATOMS: &'static[Atom] = &[").unwrap();
+    atoms_rs_file
+        .write_all(b"\npub const ALL_ATOMS: &'static[Atom] = &[")
+        .unwrap();
     for (i, (capsname, _)) in config.atoms.clone().iter().enumerate() {
         if i > 0 {
             atoms_rs_file.write_all(b", ").unwrap();

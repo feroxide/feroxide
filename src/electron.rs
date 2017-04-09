@@ -1,6 +1,6 @@
-use atom::{ Atom };
-use ion::{ Ion };
-use molecule::{ Molecule, MoleculeCompound };
+use atom::Atom;
+use ion::Ion;
+use molecule::{Molecule, MoleculeCompound};
 
 
 lazy_static! {

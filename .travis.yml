@@ -8,6 +8,14 @@ rust:
   - beta
   - nightly
 
+before_script:
+  - cargo install clippy
+  - cargo install rustfmt
+
+script:
+  - cargo test --verbose
+  - cargo clippy --verbose -- -D warnings
+
 matrix:
   allow_failures:
     - rust: nightly
