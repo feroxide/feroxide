@@ -1,13 +1,13 @@
 [package]
 name = "feroxide"
 version = "1.2.0"
-authors = ["C-Bouthoorn <cbouthoorn19@gmail.com>"]
+authors = ["feroxide"]
 build = "src/build.rs"
 
 description = "A basic chemistry simulator"
-documentation = "https://github.com/C-Bouthoorn/feroxide-gui"
-homepage = "https://github.com/C-Bouthoorn/feroxide-gui"
-repository = "https://github.com/C-Bouthoorn/feroxide-gui"
+documentation = "https://github.com/feroxide/feroxide"
+homepage = "https://feroxide.github.io/feroxide/"
+repository = "https://github.com/feroxide/feroxide"
 
 readme = "README.md"
 
@@ -17,12 +17,13 @@ categories = ["command-line-interface", "science"]
 license-file = "LICENSE"
 
 [badges]
-travis-ci = { repository = "C-Bouthoorn/feroxide", branch = "master" }
+travis-ci = { repository = "feroxide/feroxide", branch = "master" }
 
 
 [[bin]]
 name = "main"
 doc = false
+
 
 [dependencies]
 lazy_static = "0.2.4"

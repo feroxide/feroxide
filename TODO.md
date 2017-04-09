@@ -5,7 +5,7 @@
 
 
 - `atoms.rs`
-  * Names for special cases (-oxide etc)
+  * Names for special cases (-oxide etc.)
 
 - `reaction.rs`
   * Calculate the correct amount of Energy required

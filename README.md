@@ -7,7 +7,7 @@ A basic chemistry simulator.
   * Calculate mass of molecules
   * Generate (sometimes still incorrect) names of molecules
   * Check if reactions are valid
-  * Get Atoms/Molecules/Ions/Reactions by inputting a string respresentation
+  * Get Atoms/Molecules/Ions/Reactions by inputting a string representation
   * Get the Standard Electrode Potential for Redox reactions
 
 - Advanced functionality
@@ -17,5 +17,5 @@ A basic chemistry simulator.
 
 Before requesting a new feature, please check [the TODO list](./TODO.md) first.
 
-[travis-page]: https://travis-ci.org/C-Bouthoorn/feroxide
-[travis-badge]: https://travis-ci.org/C-Bouthoorn/feroxide.svg?branch=master
+[travis-page]: https://travis-ci.org/feroxide/feroxide
+[travis-badge]: https://travis-ci.org/feroxide/feroxide.svg?branch=master
