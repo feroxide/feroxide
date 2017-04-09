@@ -15,7 +15,13 @@ A basic chemistry simulator.
   * Apply reactions to containers
   * Redox reactions
 
-Before requesting a new feature, please check [the TODO list](./TODO.md) first.
+## GUI
+The GUI project can be found [here](https://github.com/feroxide/feroxide-gui).
+
+## Contributing
+Please check the [CONTRIBUTING](./CONTRIBUTING.md) file first.
+Before requesting a new feature, please check [the TODO list](./TODO.md).
+
 
 [travis-page]: https://travis-ci.org/feroxide/feroxide
 [travis-badge]: https://travis-ci.org/feroxide/feroxide.svg?branch=master
