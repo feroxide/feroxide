@@ -4,7 +4,7 @@
 /// should fit 1 to 18
 pub type AtomGroup = u8;
 
-/// sould fit 0.0 to 294.0+, with normal precision [ gram / mol ]
+/// should fit 0.0 to 294.0+, with normal precision [ gram / mol ]
 pub type AtomMass = f32;
 
 /// should fit 0 to 118+
