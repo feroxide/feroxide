@@ -19,7 +19,7 @@ A basic chemistry simulator.
 The GUI project can be found [here](https://github.com/feroxide/feroxide-gui).
 
 ## Rust docs
-The Rust docs can be found [here](./docs/index.html).
+The Rust docs can be found [here](./docs/feroxide/index.html).
 
 ## Contributing
 Please check the [CONTRIBUTING](./CONTRIBUTING.md) file first.
