@@ -1,4 +1,10 @@
 #!/bin/sh
 
+# Clean old files
+rm -R ./docs
+
+# Generate docs
 cargo doc --all --no-deps --release --all-features --color always
-cp -R ./target/doc/feroxide ./docs
+
+# Copy docs to root
+cp -R ./target/doc ./docs
