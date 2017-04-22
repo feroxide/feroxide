@@ -1,13 +1,18 @@
-Element number thirteen IS called aluminium.
+Thanks for wanting to contribute! This list states a few rules which we think
+are important to keep in mind when adding/editing code.
 
-ALWAYS run `cargo test` before pushing to master (please)
 
-Every particle HAS TO implement the `Properties` trait.
-Every element HAS TO implement the `Element` trait.
-Every struct and enum HAS TO derive the `Debug` trait.
+Before pushing / merging to master:
+- ALWAYS run tests (Travis)
+- ALWAYS rebuild rust-docs (``./generate_docs.sh`)
+
+Every particle type HAS TO implement the `Properties` trait.
+Every element type HAS TO implement the `Element` trait.
 
 Types MUST NOT be explicitly stated unless necessary.
 
-`return` IS NOT necessary, but IS allowed.
+Files SHOULD stay under the ninety (90) character horizontal limit.
 
-Files SHOULD stay under the ninety-character horizontal limit.
+Try to keep your code-style as close to the existing code as possible.
+
+Element number eleven (11) is called aluminium.

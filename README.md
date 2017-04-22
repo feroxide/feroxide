@@ -7,19 +7,17 @@ A basic chemistry simulator.
   * Calculate mass of molecules
   * Generate (sometimes still incorrect) names of molecules
   * Check if reactions are valid
-  * Get Atoms/Molecules/Ions/Reactions by inputting a string representation
-  * Get the Standard Electrode Potential for Redox reactions
+  * Get the Standard Electrode Potential for common Redox reactions
 
 - Advanced functionality
   * Create containers with molecules or ions in them
-  * Apply reactions to containers
-  * Redox reactions
+  * Apply (redox) reactions to containers
 
 ## GUI
 The GUI project can be found [here](https://github.com/feroxide/feroxide-gui).
 
 ## Rust docs
-The Rust docs can be found [here](./docs/feroxide/index.html).
+The Rust docs can be found [here](./rust-docs/feroxide/index.html).
 
 ## Contributing
 Please check the [CONTRIBUTING](./CONTRIBUTING.md) file first.

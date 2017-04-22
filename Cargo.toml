@@ -1,20 +1,21 @@
 [package]
 name = "feroxide"
 version = "1.2.0"
-authors = ["feroxide"]
-build = "src/build.rs"
+authors = [ "feroxide" ]
 
 description = "A basic chemistry simulator"
-documentation = "https://feroxide.github.io/feroxide/docs/feroxide"
+documentation = "https://feroxide.github.io/feroxide/rust-docs/feroxide"
 homepage = "https://feroxide.github.io/feroxide/"
 repository = "https://github.com/feroxide/feroxide"
 
+keywords = [ "chemistry", "simulator", "mit" ]
+categories = [ "command-line-interface", "science" ]
+
 readme = "README.md"
-
-keywords = ["chemistry", "simulator", "mit"]
-categories = ["command-line-interface", "science"]
-
 license-file = "LICENSE"
+
+build = "src/build.rs"
+
 
 [badges]
 travis-ci = { repository = "feroxide/feroxide", branch = "master" }

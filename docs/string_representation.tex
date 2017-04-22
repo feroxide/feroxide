@@ -1,0 +1,99 @@
+\documentclass[11pt]{article}
+
+\usepackage{bera}
+\def\code#1{\texttt{#1}}
+
+\title{String representation}
+\author{The feroxide team}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Feroxide works by nesting all kinds of elements. This is ideal for calculation
+purposes, but it can be a pain if you have to type it all out every time again.
+That is what the string representation was made for. With that, you are able
+to digitalise complex reactions in only a single line of code, instead of
+using tens of lines of code to achieve the same thing.
+
+The downside of using string representation is that it is a bit slower at
+runtime. That is also a reason why you should preferably only initialise
+a reaction once, instead of having it recreated in a loop. \\
+
+This paper is made to explain how the string representation of all
+elements should be created and parsed. It is described from the smallest
+parts to the biggest parts. Every bigger part depends on the smaller parts.
+
+\newpage
+
+\section{\code{Atom}}
+Atoms are as easy to represent as it can get. Simply enter the atom symbol to refer to the corresponding Atom.
+
+\subsection{Examples}
+\begin{itemize}
+  \item{\code{C} will result in Carbon}
+  \item{\code{Co} will result in Cobalt}
+  \item{\code{H} will result in Hydrogen}
+\end{itemize}
+
+
+\section{\code{MoleculeCompound}}
+MoleculeCompounds are basically atoms with an amount. This is entered by
+putting a number after the atom symbol. If a number is omitted, one (1) is assumed.
+
+\subsection{Examples}
+\begin{itemize}
+  \item{\code{H2} will result in $H_2$}
+  \item{\code{C3} will result in $C_3$. This may be used to form butane}
+  \item{\code{S} will result in $S_1$, or simply $S$}
+\end{itemize}
+
+
+\section{\code{Molecule}}
+Molecules are a combination of one or more MoleculeCompounds. It starts with
+an amount, which represents the amount of moles. If no amount is given,
+one (1) is assumed.
+
+\subsection{Examples}
+\begin{itemize}
+  \item{\code{H2O} will result in $1H_2O_1$, or simply $H_2O$}
+  \item{\code{5CH4} will result in $5C_1H_4$, or simply $5CH_4$}
+  \item{\code{H3C6H5O7} will result in $H_3C_6S_5$}
+\end{itemize}
+
+\subsection{Bugs}
+\begin{itemize}
+\item{Currently you can not add water molecules to the crystal structure of a molecule. For example, the following is \textbf{invalid}: \code{CuSO4.5H2O}}
+\item{Molecule structures are not yet implemented. This means isomers such as $CH_3CH_2CH_2OH$ (propan-1-ol) and $CH_3CHOHCH_3$ (propan-2-ol) are the same to feroxide, namely \code{C3H8O}.}
+\end{itemize}
+
+
+\section{\code{Ion}}
+Ions are molecules with charge. This charge is entered after the molecule, seperated with a semi-colon (\code{;}). Negative charges should have a dash (\code{-}) \textbf{after} the charge. Positive charges should \textbf{not} have a \code{+}, but only the number.
+
+\subsection{Special cases}
+\begin{itemize}
+  \item{If no semi-colon and thus no charge is given, a charge of zero (0) is assumed.}
+  \item{If only a semi-colon is given, a charge of one (1) is assumed.}
+  \item{If only a semi-colon and a dash are given, a charge of negative one (-1) is assumed.}
+  \item{If the "atom" is an electron (\code{e}), then a charge of negative one (-1) is assumed. Any given charge will be ignored.}
+\end{itemize}
+
+\subsection{Examples}
+\begin{itemize}
+  \item{\code{H2} will result in $H_2^0$, or simply $H_2$}
+  \item{\code{Fe;3} will result in $Fe^{3+}$}
+  \item{\code{SO4;2-} will result in $S_1O_4^{2-}$, or simply $SO_4^{2-}$}
+  \item{\code{OH;-} will result in $O_1H_1^{1-}$, or simply $OH^{-}$}
+  \item{\code{e} will result in $e_1^{1-}$, or simply $e^-$}
+  \item{\code{e;5} will \textbf{also} result in $e^-$}
+\end{itemize}
+
+\section{ReactionCompound}
+
+\section{ReactionSide}
+
+\section{Reaction}
+
+
+\end{document}
