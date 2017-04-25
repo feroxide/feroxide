@@ -1,7 +1,11 @@
 \documentclass[11pt]{article}
 
+\usepackage[utf8]{inputenc}
+
 \usepackage{bera}
 \def\code#1{\texttt{#1}}
+\def\equi{\rightleftharpoons}
+\def\rar{\rightarrow}
 
 \title{String representation}
 \author{The feroxide team}
@@ -22,7 +26,12 @@ a reaction once, instead of having it recreated in a loop. \\
 
 This paper is made to explain how the string representation of all
 elements should be created and parsed. It is described from the smallest
-parts to the biggest parts. Every bigger part depends on the smaller parts.
+parts to the biggest parts. Every bigger part depends on the smaller parts. \\
+
+\textbf{Note}: All whitespace is always ignored. This means that you can place spaces
+everywhere to increase readability. \\
+However, even though input such as \code{H  2O} is allowed and will succesfully result in $H_2O$, please
+do not place (misleading) spaces between MoleculeCompounds.
 
 \newpage
 
@@ -50,14 +59,12 @@ putting a number after the atom symbol. If a number is omitted, one (1) is assum
 
 
 \section{\code{Molecule}}
-Molecules are a combination of one or more MoleculeCompounds. It starts with
-an amount, which represents the amount of moles. If no amount is given,
-one (1) is assumed.
+Molecules are a combination of one or more MoleculeCompounds.
 
 \subsection{Examples}
 \begin{itemize}
-  \item{\code{H2O} will result in $1H_2O_1$, or simply $H_2O$}
-  \item{\code{5CH4} will result in $5C_1H_4$, or simply $5CH_4$}
+  \item{\code{H2O} will result in $H_2O_1$, or simply $H_2O$}
+  \item{\code{CH4} will result in $C_1H_4$, or simply $CH_4$}
   \item{\code{H3C6H5O7} will result in $H_3C_6S_5$}
 \end{itemize}
 
@@ -82,6 +89,7 @@ Ions are molecules with charge. This charge is entered after the molecule, seper
 \subsection{Examples}
 \begin{itemize}
   \item{\code{H2} will result in $H_2^0$, or simply $H_2$}
+  \item{\code{Na;} will result in $Na_1^{1+}$, or simply $Na^+$}
   \item{\code{Fe;3} will result in $Fe^{3+}$}
   \item{\code{SO4;2-} will result in $S_1O_4^{2-}$, or simply $SO_4^{2-}$}
   \item{\code{OH;-} will result in $O_1H_1^{1-}$, or simply $OH^{-}$}
@@ -90,10 +98,43 @@ Ions are molecules with charge. This charge is entered after the molecule, seper
 \end{itemize}
 
 \section{ReactionCompound}
+ReactionCompounds are Ions (or Molecules - which will be converted to Ions with 0 charge under the hood), but with an amount of moles given. This amount is given at the start. If no amount is given, one (1) is assumed.
+
+\subsection{Examples}
+\begin{itemize}
+  \item{\code{5H2O} will result in $5H_2O_1^0$, or simply $5H_2O$}
+  \item{\code{3PO4;3-} will result in $3P_1O_4^{3-}$, or simply $3PO_4^{3-}$}
+  \item{\code{Br;-} will result in $1Br_1^{1-}$, or simply $Br^-$}
+\end{itemize}
 
 \section{ReactionSide}
+A ReactionSide contains zero (0) or more ReactionCompounds, seperated by a plus(+) sign.
+
+\subsection{Examples}
+\begin{itemize}
+  \item{\code{2H2 + O2} will result in $2H_2^0 + 1O_2^0$, or simply $2H_2 + O_2$}
+  \item{\code{H2O + CO2} will result in $1H_2O_1^0 + 1C_1O_2^0$, or simply $H_2O + CO_2$}
+  \item{\code{Fe;3 + 3e} will result in $1Fe_1^{3+} + 3e_1^{1-}$, or simply $Fe^{3+} + 3e^-$}
+\end{itemize}
+
 
 \section{Reaction}
+A Reaction contains exactly two (2) ReactionSides, seperated by either $=>$ or $\rightarrow$ (\code{U+2192}) to show a one-side reaction (to the right), or $<=>$ or $\equi$ (\code{U+21CC}) to show an equilibrium.
 
+\newpage
+
+\subsection{Examples}
+\begin{itemize}
+  \item{\code{2H2 + O2 <=> 2H2O} will result in $2H_2^0 + 1O_2^0 \equi 2H_2O_1^0$, or simply $2H_2 + O_2 \equi 2H_2O$}
+  \item{\code{Fe;3 + 3e $\equi$ Fe} will result in $1Fe_1^{3+} + 3e_1^- \equi 1Fe_1^0$, or simply $Fe^{3+} + 3e^- \equi Fe$}
+\end{itemize}
+
+\subsection{Bugs}
+\begin{itemize}
+  \item{It is currently not possible to use \code{<=} or $\leftarrow$ (\code{U+2190}) to indicate a one-way reaction to the left.}
+  \item{Using \code{<} or \code{<=} as sign is equal to using \code{<=>}. This can lead to confusing errors.}
+  \item{\code{$\equi<>\rar\equi>\equi\rar<\equi=\rar=\equi=<\rar<\equi\equi>==\rar=$} is seen as a valid sign, equal to \code{<=>}}
+  \item{While the first (part of a) sign has to be between the two ReactionSides, any other (part of a) sign can be places everywhere to the right of it, and it will be ignored, except when it indicates an equilibrium, in which case the whole reaction will be converted to an equilibrium. \textit{i.e.} \code{H2 => 2H;1 + 2<=>e} will be equal to \code{H2 <=> 2H; + 2e}}
+\end{itemize}
 
 \end{document}
