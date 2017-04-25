@@ -52,6 +52,22 @@ impl Ion {
         let mut set_charge = false;
 
         for c in symbol.chars() {
+            if set_charge {
+                if c == '-' {
+                    is_negative = true;
+                    continue;
+                }
+
+                if ! is_number!(c) {
+                    return None;
+                }
+
+                charge *= 10;
+                charge += to_number!(c) as i8;
+                continue;
+            }
+
+
             if c == ';' {
                 // Electron
                 if token == "e" {
@@ -61,17 +77,6 @@ impl Ion {
                 molecule = Molecule::from_string(token);
                 token = String::new();
                 set_charge = true;
-                continue;
-            }
-
-            if set_charge {
-                if c == '-' {
-                    is_negative = true;
-                    continue;
-                }
-
-                charge *= 10;
-                charge += to_number!(c) as i8;
                 continue;
             }
 
