@@ -1,12 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 
 ## Just a small tool which I use to count the amount of LoC
 
 
-loc=0
+loc_total=0
 
-for f in `find src -type f | grep -v "data_atoms.rs\|atoms.rs.bak"`; do
-  loc=$(($loc + $(wc -l < "$f")));
+for f in `git ls-files | grep -Ev "rust-docs|\.pdf"`; do
+  lines=$(wc -l < "$f")
+  echo "$f: $lines"
+
+  loc_total=$(($loc_total + $lines));
 done
 
-echo "Lines of code: $loc"
+echo ""
+echo "Total lines of code: $loc_total"

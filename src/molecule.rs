@@ -181,7 +181,7 @@ impl Properties for MoleculeCompound {
 
 
 impl Element for Molecule {
-    fn get_charge(&self) -> Option<IonCharge> {
+    fn get_charge(&self) -> Option<AtomCharge> {
         Some(0)
     }
 

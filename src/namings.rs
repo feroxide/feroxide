@@ -197,7 +197,7 @@ pub fn superscript(n: u8) -> String {
 /// The difference with normal superscript notation is that the 1 is omitted,
 /// also, ionic superscript supports negative numbers (of which the sign
 /// is put at the end, instead of at the beginning)
-pub fn ion_superscript(n: IonCharge) -> String {
+pub fn ion_superscript(n: AtomCharge) -> String {
     if n == -1 {
         "⁻".to_owned()
     } else if n == 1 {

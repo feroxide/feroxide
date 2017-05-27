@@ -50,12 +50,12 @@
                    </a>
                </span><a class='srclink' href='../src/feroxide/trait_element.rs.html#8-15' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Element: <a class="trait" href="../feroxide/trait.Properties.html" title="trait feroxide::Properties">Properties</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html" title="trait core::hash::Hash">Hash</a> {
-    fn <a href='#tymethod.get_charge' class='fnname'>get_charge</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../feroxide/type.IonCharge.html" title="type feroxide::IonCharge">IonCharge</a>&gt;;
+    fn <a href='#tymethod.get_charge' class='fnname'>get_charge</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../feroxide/type.AtomCharge.html" title="type feroxide::AtomCharge">AtomCharge</a>&gt;;
     fn <a href='#tymethod.get_molecule' class='fnname'>get_molecule</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="struct" href="../feroxide/struct.Molecule.html" title="struct feroxide::Molecule">Molecule</a>&gt;;
 }</pre>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.get_charge' class='method'><span id='get_charge.v' class='invisible'><code>fn <a href='#tymethod.get_charge' class='fnname'>get_charge</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../feroxide/type.IonCharge.html" title="type feroxide::IonCharge">IonCharge</a>&gt;</code></span></h3><div class='docblock'><p>Get the charge of the current Element</p>
+        <h3 id='tymethod.get_charge' class='method'><span id='get_charge.v' class='invisible'><code>fn <a href='#tymethod.get_charge' class='fnname'>get_charge</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../feroxide/type.AtomCharge.html" title="type feroxide::AtomCharge">AtomCharge</a>&gt;</code></span></h3><div class='docblock'><p>Get the charge of the current Element</p>
 </div><h3 id='tymethod.get_molecule' class='method'><span id='get_molecule.v' class='invisible'><code>fn <a href='#tymethod.get_molecule' class='fnname'>get_molecule</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="struct" href="../feroxide/struct.Molecule.html" title="struct feroxide::Molecule">Molecule</a>&gt;</code></span></h3><div class='docblock'><p>Get the molecule associated with the current Element</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
@@ -123,7 +123,6 @@
         window.rootPath = "../";
         window.currentCrate = "feroxide";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

@@ -20,9 +20,9 @@ macro_rules! fmt {
 }
 
 
-macro_rules! fmt_lifetime {
+macro_rules! fmt_type {
     ($x:tt) => (
-        impl<'lifetime> Display for $x<'lifetime> {
+        impl<E: Element> Display for $x<E> {
             fn fmt(&self, formatter: &mut Formatter) -> Result {
                 write!(formatter, "{}", self.stringify())
             }
@@ -31,9 +31,10 @@ macro_rules! fmt_lifetime {
 }
 
 
-macro_rules! fmt_type {
+/*
+macro_rules! fmt_lifetime {
     ($x:tt) => (
-        impl<E: Element> Display for $x<E> {
+        impl<'lifetime> Display for $x<'lifetime> {
             fn fmt(&self, formatter: &mut Formatter) -> Result {
                 write!(formatter, "{}", self.stringify())
             }
@@ -51,6 +52,7 @@ macro_rules! fmt_lifetime_type {
         }
     )
 }
+*/
 
 
 fmt!(Atom);

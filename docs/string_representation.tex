@@ -76,12 +76,13 @@ Molecules are a combination of one or more MoleculeCompounds.
 
 
 \section{\code{Ion}}
-Ions are molecules with charge. This charge is entered after the molecule, seperated with a semi-colon (\code{;}). Negative charges should have a dash (\code{-}) \textbf{after} the charge. Positive charges should \textbf{not} have a \code{+}, but only the number.
+Ions are molecules with charge. This charge is entered after the molecule, seperated with a semi-colon (\code{;}). Negative charges should have a dash (\code{-}) \textbf{after} the charge. Positive charges can optionally have a plus-sign (\code{+}).
 
 \subsection{Special cases}
 \begin{itemize}
   \item{If no semi-colon and thus no charge is given, a charge of zero (0) is assumed.}
-  \item{If only a semi-colon is given, a charge of one (1) is assumed.}
+  \item{If only a semi-colon is given, a charge of zero (0) is assumed.}
+  \item{If only a semi-colon and a plus-sign are given, a charge of positive one (+1) is assumed.}
   \item{If only a semi-colon and a dash are given, a charge of negative one (-1) is assumed.}
   \item{If the "atom" is an electron (\code{e}), then a charge of negative one (-1) is assumed. Any given charge will be ignored.}
 \end{itemize}
@@ -89,7 +90,7 @@ Ions are molecules with charge. This charge is entered after the molecule, seper
 \subsection{Examples}
 \begin{itemize}
   \item{\code{H2} will result in $H_2^0$, or simply $H_2$}
-  \item{\code{Na;} will result in $Na_1^{1+}$, or simply $Na^+$}
+  \item{\code{Na;+} will result in $Na_1^{1+}$, or simply $Na^+$}
   \item{\code{Fe;3} will result in $Fe^{3+}$}
   \item{\code{SO4;2-} will result in $S_1O_4^{2-}$, or simply $SO_4^{2-}$}
   \item{\code{OH;-} will result in $O_1H_1^{1-}$, or simply $OH^{-}$}

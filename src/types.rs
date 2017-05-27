@@ -14,7 +14,7 @@ pub type AtomNumber = u8;
 pub type Energy = f64;
 
 /// should fit -7 to 7
-pub type IonCharge = i8;
+pub type AtomCharge = i8;
 
 /// should fit 0.0 to 1e5+, with high precision [ gram ]
 pub type Mass = f64;

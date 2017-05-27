@@ -863,7 +863,7 @@
 
 
     <span class="doccomment">/// Calculate the total charge of this reaction side</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">total_charge</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">IonCharge</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">total_charge</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">AtomCharge</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">total_charge</span> <span class="op">=</span> <span class="number">0</span>;
 
         <span class="kw">for</span> <span class="ident">compound</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">compounds</span> {
@@ -1225,7 +1225,7 @@
 
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">E</span>: <span class="ident">Element</span><span class="op">&gt;</span> <span class="ident">Element</span> <span class="kw">for</span> <span class="ident">ReactionCompound</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">get_charge</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IonCharge</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">get_charge</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">AtomCharge</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">element</span>.<span class="ident">get_charge</span>()
     }
 
@@ -1292,7 +1292,6 @@
         window.rootPath = "../../";
         window.currentCrate = "feroxide";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

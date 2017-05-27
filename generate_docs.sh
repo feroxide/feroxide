@@ -1,34 +1,40 @@
-#!/bin/sh
-
-## Latex docs
-cd docs
-mkdir -p build
-
-pdflatex -interaction nonstopmode -halt-on-error -output-directory build *.tex *.latex
-
-mv build/*.pdf .
-
-rm -r build
-
-cd ..
+#!/bin/bash
 
 
-while true; do
-    read -p "Do you want to regenerate Rust docs too? [Yn]" yn
-    case $yn in
-        [Yy]* ) break;;
-        [Nn]* ) exit;;
-    esac
-done
+build_latex_docs() {
+  cd docs
+  ./build.sh *.tex
+  cd ..
+}
 
 
-## Rust-docs
+build_rust_docs() {
+  # Clean old files, if available
+  if [ -e rust-docs ]; then
+    rm -R ./rust-docs
+  fi
 
-# Clean old files
-rm -R ./rust-docs
+  # Generate docs
+  cargo doc --all --no-deps --release --all-features --color always
 
-# Generate docs
-cargo doc --all --no-deps --release --all-features --color always
+  # Copy docs to root directory
+  cp -R ./target/doc ./rust-docs
+}
 
-# Copy docs to root directory
-cp -R ./target/doc ./rust-docs
+
+echo ""
+read -p ">> Do you want to (re)generate Latex docs? [Yn]" yn
+case $yn in
+    [Nn]* ) ;;
+        * ) build_latex_docs;;
+esac
+
+
+echo ""
+read -p ">> Do you want to (re)generate Rust docs? [Yn]" yn
+case $yn in
+    [Nn]* ) ;;
+        * ) build_rust_docs;;
+esac
+
+exit 0

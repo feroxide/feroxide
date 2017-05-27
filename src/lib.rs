@@ -16,7 +16,7 @@ macro_rules! molecule_from_atom {
 #[macro_export]
 macro_rules! ion_from_molecule {
     ($molecule:expr) => (
-        Ion { molecule: $molecule, charge: Some(0) }
+        Ion { molecule: $molecule, charge: None }
     )
 }
 
@@ -67,6 +67,17 @@ pub mod display_impls;
 
 
 // tests \\
+#[test]
+fn ion_calculate_charge_from_string() {
+    use trait_element::*;
+
+    assert_eq!(-1,
+               Ion::from_string("OH".to_owned())
+                   .unwrap()
+                   .get_charge()
+                   .unwrap());
+}
+
 
 #[test]
 fn reaction_from_string() {
@@ -230,13 +241,13 @@ fn container_add_and_remove_elements() {
 
     // Remove 6 moles of hydrogen and 3 moles of oxygen (all contents)
     container.remove_elements(&vec![ContainerCompound {
-                                        element: molecule_from_atom!(HYDROGEN),
-                                        moles: 6.0,
-                                    },
-                                    ContainerCompound {
-                                        element: molecule_from_atom!(OXYGEN),
-                                        moles: 3.0,
-                                    }]);
+                                       element: molecule_from_atom!(HYDROGEN),
+                                       moles: 6.0,
+                                   },
+                                   ContainerCompound {
+                                       element: molecule_from_atom!(OXYGEN),
+                                       moles: 3.0,
+                                   }]);
 
     // Now it should be empty
     assert_eq!(0, container.contents.len());

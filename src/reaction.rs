@@ -222,7 +222,7 @@ impl<E: Element> ReactionSide<E> {
 
 
     /// Calculate the total charge of this reaction side
-    pub fn total_charge(&self) -> IonCharge {
+    pub fn total_charge(&self) -> AtomCharge {
         let mut total_charge = 0;
 
         for compound in &self.compounds {
@@ -584,7 +584,7 @@ impl<E: Element> Properties for ReactionCompound<E> {
 
 
 impl<E: Element> Element for ReactionCompound<E> {
-    fn get_charge(&self) -> Option<IonCharge> {
+    fn get_charge(&self) -> Option<AtomCharge> {
         self.element.get_charge()
     }
 

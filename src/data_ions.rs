@@ -1,56 +1,8 @@
-use data_atoms::*;
 use ion::Ion;
-use molecule::{Molecule, MoleculeCompound};
 
 
 lazy_static! {
-    pub static ref HYDROXIDE: Ion = Ion {
-        molecule: Molecule { compounds: vec! {
-            MoleculeCompound {
-                atom: OXYGEN,
-                amount: 1
-            },
-
-            MoleculeCompound {
-                atom: HYDROGEN,
-                amount: 1
-            }
-        }},
-
-        charge: None
-    };
-
-
-    pub static ref AMMONIUM: Ion = Ion {
-        molecule: Molecule { compounds: vec! {
-            MoleculeCompound {
-                atom: NITROGEN,
-                amount: 1
-            },
-
-            MoleculeCompound {
-                atom: HYDROGEN,
-                amount: 4
-            }
-        }},
-
-        charge: None
-    };
-
-
-    pub static ref SULPHATE: Ion = Ion {
-        molecule: Molecule { compounds: vec! {
-            MoleculeCompound {
-                atom: SULFUR,
-                amount: 1
-            },
-
-            MoleculeCompound {
-                atom: OXYGEN,
-                amount: 4
-            }
-        }},
-
-        charge: None
-    };
+    pub static ref HYDROXIDE: Ion = Ion::from_string("OH;-".to_owned()).unwrap();
+    pub static ref AMMONIUM: Ion = Ion::from_string("NH4;1+".to_owned()).unwrap();
+    pub static ref SULPHATE: Ion = Ion::from_string("SO4;2-".to_owned()).unwrap();
 }

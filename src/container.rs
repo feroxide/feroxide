@@ -39,6 +39,7 @@ pub fn rc_to_cc<E: Element>(rc: ReactionCompound<E>) -> ContainerCompound<E> {
 }
 
 
+
 impl<E: Element> Container<E> {
     /// Applies given `Reaction` to `Container`
     /// Removing the elements on the left-hand side
@@ -93,7 +94,7 @@ impl<E: Element> Container<E> {
 
     /// Check if the container has all given elements
     pub fn has_elements(&mut self, elements: &[ContainerCompound<E>]) -> bool {
-        'outer: for element in elements {
+        for element in elements {
             // Find element in self.contents
             if let Some(position) = self.contents.iter().position(|comp| comp == element) {
                 let compound = &self.contents[position];
@@ -103,7 +104,7 @@ impl<E: Element> Container<E> {
                     return false;
                 }
 
-                continue 'outer;
+                continue;
             }
 
             // Element is not available
@@ -202,13 +203,13 @@ impl<E: Element> PartialEq for ContainerCompound<E> {
 
 impl<E: Element> Hash for ContainerCompound<E> {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        self.element.hash(state);
+        self.element.hash(state)
     }
 }
 
 
 impl<E: Element> Element for ContainerCompound<E> {
-    fn get_charge(&self) -> Option<IonCharge> {
+    fn get_charge(&self) -> Option<AtomCharge> {
         self.element.get_charge()
     }
 
@@ -239,6 +240,6 @@ impl<E: Element> Properties for ContainerCompound<E> {
 
 
     fn mass(&self) -> AtomMass {
-        self.element.mass()
+        (self.moles as AtomMass) * self.element.mass()
     }
 }

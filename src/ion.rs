@@ -1,4 +1,3 @@
-use atom::Atom;
 use electron::ELECTRON;
 use namings::{ion_superscript, number_to_roman};
 use molecule::Molecule;
@@ -14,30 +13,7 @@ pub struct Ion {
     pub molecule: Molecule,
 
     /// The charge of this ion
-    pub charge: Option<IonCharge>,
-}
-
-
-/// Get the charge an atom has based on its group
-pub fn charge_of_atom(atom: &Atom) -> Option<IonCharge> {
-    let group = atom.group;
-    let number = atom.number;
-
-    if group == 1 {
-        Some(1)
-    } else if group == 2 {
-        Some(2)
-    } else if group == 15 && number <= 15 {
-        Some(-3)
-    } else if group == 16 && number <= 34 {
-        Some(-2)
-    } else if group == 17 && number <= 53 {
-        Some(-1)
-    } else if group == 18 {
-        Some(0)
-    } else {
-        None
-    }
+    pub charge: Option<AtomCharge>,
 }
 
 
@@ -45,8 +21,9 @@ impl Ion {
     /// Convert a string representation of an `Ion` into one
     pub fn from_string(symbol: String) -> Option<Ion> {
         let mut molecule = None;
-        let mut charge: IonCharge = 0;
+        let mut charge = 0;
         let mut is_negative = false;
+        let mut is_positive = true;
 
         let mut token = String::new();
         let mut set_charge = false;
@@ -58,8 +35,14 @@ impl Ion {
                     continue;
                 }
 
-                if ! is_number!(c) {
-                    return None;
+                if c == '+' {
+                    is_positive = true;
+                    continue;
+                }
+
+                if !is_number!(c) {
+                    panic!("Expected charge, but got {}", c);
+                    // return None;
                 }
 
                 charge *= 10;
@@ -102,10 +85,17 @@ impl Ion {
             }
         }
 
+        if is_positive && charge == 0 {
+            // assume + to mean +1
+            charge = 1;
+        }
+
+        let charge_option = if set_charge { Some(charge) } else { None };
+
         if let Some(molecule) = molecule {
             Some(Ion {
                      molecule: molecule,
-                     charge: Some(charge),
+                     charge: charge_option,
                  })
         } else {
             None
@@ -123,12 +113,12 @@ impl Ion {
 
 
     /// Calculate the charge of this `Ion`
-    pub fn calculate_charge(&self) -> Option<IonCharge> {
+    pub fn calculate_charge(&self) -> Option<AtomCharge> {
         let mut charge = 0;
 
         for molecule_compound in &self.molecule.compounds {
-            if let Some(atom_charge) = charge_of_atom(&molecule_compound.atom) {
-                let mol_charge = (molecule_compound.amount as IonCharge) * atom_charge;
+            if let Some(atom_charge) = molecule_compound.atom.charge_by_group() {
+                let mol_charge = (molecule_compound.amount as AtomCharge) * atom_charge;
 
                 charge += mol_charge;
             }
@@ -143,7 +133,8 @@ impl Ion {
 
 
 impl Element for Ion {
-    fn get_charge(&self) -> Option<IonCharge> {
+    // Make sure that the charge is calculated when required
+    fn get_charge(&self) -> Option<AtomCharge> {
         if let Some(charge) = self.charge {
             Some(charge)
         } else {

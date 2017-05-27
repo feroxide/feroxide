@@ -51,9 +51,7 @@ fn write(mut atoms_rs_file: &File) {
     let config_string = toml::to_string(&config).unwrap();
 
     // Write TOML to file
-    atoms_rs_file
-        .write_all(config_string.as_bytes())
-        .unwrap();
+    atoms_rs_file.write_all(config_string.as_bytes()).ok();
 }
 
 

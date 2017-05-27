@@ -1,7 +1,5 @@
-#!/bin/sh
+#!/bin/bash
 
-# Needs when-changed and pdflatex
-## when-changed can be installed via pip
-## pdflatex is available on the Linux repos
+## Needs when-changed, which can be installed via pip
 
-when-changed *.tex  "pdflatex -interaction nonstopmode -halt-on-error -output-directory build %f"
+when-changed *.tex "./build.sh '%f'"

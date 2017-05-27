@@ -455,7 +455,7 @@
 <span class="doccomment">/// The difference with normal superscript notation is that the 1 is omitted,</span>
 <span class="doccomment">/// also, ionic superscript supports negative numbers (of which the sign</span>
 <span class="doccomment">/// is put at the end, instead of at the beginning)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ion_superscript</span>(<span class="ident">n</span>: <span class="ident">IonCharge</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ion_superscript</span>(<span class="ident">n</span>: <span class="ident">AtomCharge</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
     <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="op">-</span><span class="number">1</span> {
         <span class="string">&quot;⁻&quot;</span>.<span class="ident">to_owned</span>()
     } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">1</span> {
@@ -526,7 +526,6 @@
         window.rootPath = "../../";
         window.currentCrate = "feroxide";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

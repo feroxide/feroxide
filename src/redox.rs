@@ -52,22 +52,14 @@ impl<E: Element> Reaction<E> for RedoxReaction<E> {
                 .rhs
                 .compounds
                 .iter()
-                .position(|x| {
-                              x.element.get_molecule().unwrap().compounds[0]
-                                  .atom
-                                  .number == 0
-                          }) {
+                .position(|x| x.element.get_molecule().unwrap().compounds[0].atom.number == 0) {
             red_charge = self.reductor.rhs.compounds[red_elec_pos].amount;
         } else if let Some(red_elec_pos) =
             self.reductor
                 .lhs
                 .compounds
                 .iter()
-                .position(|x| {
-                              x.element.get_molecule().unwrap().compounds[0]
-                                  .atom
-                                  .number == 0
-                          }) {
+                .position(|x| x.element.get_molecule().unwrap().compounds[0].atom.number == 0) {
             red_charge = self.reductor.lhs.compounds[red_elec_pos].amount;
         } else {
             panic!("Reductor has no electrons!");
@@ -80,22 +72,14 @@ impl<E: Element> Reaction<E> for RedoxReaction<E> {
                 .lhs
                 .compounds
                 .iter()
-                .position(|x| {
-                              x.element.get_molecule().unwrap().compounds[0]
-                                  .atom
-                                  .number == 0
-                          }) {
+                .position(|x| x.element.get_molecule().unwrap().compounds[0].atom.number == 0) {
             oxi_charge = self.oxidator.lhs.compounds[oxi_elec_pos].amount;
         } else if let Some(oxi_elec_pos) =
             self.oxidator
                 .rhs
                 .compounds
                 .iter()
-                .position(|x| {
-                              x.element.get_molecule().unwrap().compounds[0]
-                                  .atom
-                                  .number == 0
-                          }) {
+                .position(|x| x.element.get_molecule().unwrap().compounds[0].atom.number == 0) {
             oxi_charge = self.oxidator.rhs.compounds[oxi_elec_pos].amount;
         } else {
             panic!("Oxidator has no electrons!");
