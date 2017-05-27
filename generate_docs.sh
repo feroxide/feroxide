@@ -11,7 +11,10 @@ build_latex_docs() {
 build_rust_docs() {
   # Clean old files, if available
   if [ -e rust-docs ]; then
-    rm -R ./rust-docs
+    rm -r rust-docs
+  fi
+  if [ -e target/doc ]; then
+    rm -r target/doc
   fi
 
   # Generate docs
