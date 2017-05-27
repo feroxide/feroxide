@@ -68,12 +68,6 @@ impl Properties for Atom {
 
 
     fn name(&self) -> String {
-        // NOTE: This case is temporary
-        if self.name == "oxygen" {
-            // Special suffix
-            return "oxide".to_owned();
-        }
-
         self.name.to_owned()
     }
 

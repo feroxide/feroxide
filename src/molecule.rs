@@ -125,6 +125,8 @@ impl Properties for Molecule {
     fn name(&self) -> String {
         let mut name = String::new();
 
+        // TODO: Add special cases
+        // NOTE: https://www.youtube.com/watch?v=mlRhLicNo8Q
         for compound in &self.compounds {
             name += &compound.name();
         }
