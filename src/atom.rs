@@ -31,6 +31,7 @@ pub struct Atom {
 impl Atom {
     /// Convert a string representation to an `Atom`
     pub fn from_string(symbol: String) -> Option<Atom> {
+        // TODO: Make this more efficient
         for atom in ALL_ATOMS {
             if atom.symbol == symbol {
                 return Some(atom.clone());

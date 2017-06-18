@@ -2,24 +2,26 @@
 extern crate feroxide;
 
 
-use feroxide::{Ion, Molecule, MoleculeCompound, Container, ContainerCompound, ElemReaction,
-               ReactionSide, ReactionCompound, RedoxReaction, Properties, Reaction};
-
+use feroxide::*;
 use feroxide::data_atoms::*;
 use feroxide::data_molecules::*;
 use feroxide::data_sep::*;
 
 
 fn main() {
-    // You can create digital molecules with ease
-    let carbondioxide = Molecule {
+    // You can create digital molecules with ease on two ways:
+    // ... the easy way
+    let carbondioxide = Molecule::from_string("CO2".to_owned()).unwrap();
+
+    // ... and the fast way
+    let carbonmonoxide = Molecule {
         compounds: vec![MoleculeCompound {
                             atom: CARBON,
                             amount: 1,
                         },
                         MoleculeCompound {
                             atom: OXYGEN,
-                            amount: 2,
+                            amount: 1,
                         }],
     };
 
@@ -38,13 +40,10 @@ fn main() {
     // To get your data
     println!("10 moles of {} weigh {} gram(s).", symbol, weight);
 
-    // If you don't want to type a lot, you could also use strings
-    let carbonic_acid = Molecule::from_string("H2CO3".to_owned()).unwrap();
-
     // Throw a bunch of molecules together in a container with a bit of energy
     let mut container = Container {
         contents: vec![ContainerCompound {
-                           element: ion_from_molecule!(carbondioxide.clone()),
+                           element: ion_from_molecule!(carbonmonoxide.clone()),
                            moles: 1000.0,
                        },
 
@@ -54,9 +53,10 @@ fn main() {
                        },
 
                        ContainerCompound {
-                           element: Ion::from_string("SO4;2-".to_owned()).unwrap(),
-                           moles: 100.0,
-                       }],
+                           element: ion_from_atom!(OXYGEN.clone()),
+                           moles: 1000.0,
+                       },
+                      ],
 
         available_energy: 100_000f64, // in Joules
     };
@@ -66,19 +66,19 @@ fn main() {
     let reaction = ElemReaction {
         lhs: ReactionSide {
             compounds: vec![ReactionCompound {
-                                element: ion_from_molecule!(WATER.clone()),
+                                element: ion_from_atom!(OXYGEN.clone()),
                                 amount: 1,
                             },
                             ReactionCompound {
-                                element: ion_from_molecule!(carbondioxide.clone()),
-                                amount: 1,
+                                element: ion_from_molecule!(carbonmonoxide.clone()),
+                                amount: 2,
                             }],
         },
 
         rhs: ReactionSide {
             compounds: vec![ReactionCompound {
-                                element: ion_from_molecule!(carbonic_acid.clone()),
-                                amount: 1,
+                                element: ion_from_molecule!(carbondioxide.clone()),
+                                amount: 2,
                             }],
         },
 
@@ -111,7 +111,7 @@ fn main() {
     }
 
 
-    // Redox is possible, but to save you from a lot of typing, I recommend using strings here
+    // Redox reactions are also possible
     let redox = RedoxReaction {
         oxidator: ElemReaction::<Ion>::ion_from_string("F2 + 2e <> 2F;1-".to_owned()).unwrap(),
         reductor: ElemReaction::<Ion>::ion_from_string("Fe <> Fe;3 + 3e".to_owned()).unwrap(),
@@ -122,7 +122,7 @@ fn main() {
     assert!(redox.equalise());
     assert!(redox.is_valid());
 
-    // Print the symbol version
+    // Print the symbol representation
     println!("{}", redox.symbol());
 
     // Print the SEP values

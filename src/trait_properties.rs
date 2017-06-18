@@ -1,9 +1,8 @@
 use types::*;
 
-use std::fmt::Debug;
+use std::fmt;
 
-
-pub trait Properties: Debug + Eq + PartialEq + Clone {
+pub trait Properties: Eq + PartialEq + Clone + fmt::Debug {
     /// Get the symbol of the current item
     fn symbol(&self) -> String;
 

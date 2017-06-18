@@ -1,37 +1,9 @@
-use data_atoms::*;
-use molecule::{Molecule, MoleculeCompound};
+use molecule::Molecule;
 
 
 lazy_static! {
-    pub static ref WATER: Molecule = Molecule {
-        compounds: vec! {
-            MoleculeCompound { atom: HYDROGEN, amount: 2 },
-            MoleculeCompound { atom: OXYGEN, amount: 1 }
-        }
-    };
-
-
-    pub static ref CO2: Molecule = Molecule {
-        compounds: vec! {
-            MoleculeCompound { atom: CARBON, amount: 1 },
-            MoleculeCompound { atom: OXYGEN, amount: 2 }
-        }
-    };
-
-
-    pub static ref AMMONIA: Molecule = Molecule {
-        compounds: vec! {
-            MoleculeCompound { atom: NITROGEN, amount: 1 },
-            MoleculeCompound { atom: HYDROGEN, amount: 3 }
-        }
-    };
-
-
-    pub static ref SUGAR: Molecule = Molecule {
-        compounds: vec! {
-            MoleculeCompound { atom: CARBON, amount: 12 },
-            MoleculeCompound { atom: HYDROGEN, amount: 22 },
-            MoleculeCompound { atom: OXYGEN, amount: 11 }
-        }
-    };
+    pub static ref WATER: Molecule = Molecule::from_string("H2O".to_owned()).unwrap();
+    pub static ref CO2: Molecule = Molecule::from_string("CO2".to_owned()).unwrap();
+    pub static ref AMMONIA: Molecule = Molecule::from_string("NH3".to_owned()).unwrap();
+    pub static ref SUGAR: Molecule = Molecule::from_string("C12H22O11".to_owned()).unwrap();
 }

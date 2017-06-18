@@ -1,12 +1,12 @@
 use atom::Atom;
-use container::{Container, ContainerCompound};
+use container::*;
 use ion::Ion;
 use molecule::Molecule;
-use reaction::{ElemReaction, ReactionSide, ReactionCompound};
+use reaction::*;
 use trait_element::Element;
 use trait_properties::Properties;
 
-use std::fmt::{Display, Formatter, Result};
+use std::fmt::*;
 
 
 macro_rules! fmt {
@@ -29,30 +29,6 @@ macro_rules! fmt_type {
         }
     )
 }
-
-
-/*
-macro_rules! fmt_lifetime {
-    ($x:tt) => (
-        impl<'lifetime> Display for $x<'lifetime> {
-            fn fmt(&self, formatter: &mut Formatter) -> Result {
-                write!(formatter, "{}", self.stringify())
-            }
-        }
-    )
-}
-
-
-macro_rules! fmt_lifetime_type {
-    ($x:tt) => (
-        impl<'lifetime, E: Element> Display for $x<'lifetime, E> {
-            fn fmt(&self, formatter: &mut Formatter) -> Result {
-                write!(formatter, "{}", self.stringify())
-            }
-        }
-    )
-}
-*/
 
 
 fmt!(Atom);

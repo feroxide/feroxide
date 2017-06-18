@@ -6,7 +6,7 @@ use trait_reaction::Reaction;
 use types::*;
 
 use std::collections::HashMap;
-use std::hash::{Hash, Hasher};
+use std::hash::*;
 use std::mem;
 use std::ops::*;
 
@@ -46,7 +46,7 @@ pub struct ReactionCompound<E: Element> {
 
 
 impl<E: Element> ElemReaction<E> {
-    /// Convert a string representation of a reaction into one
+    /// Convert a string representation of an elementary reaction into one
     pub fn ion_from_string(string: String) -> Option<ElemReaction<Ion>> {
         let mut token = String::new();
 

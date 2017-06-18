@@ -60,9 +60,9 @@ fn last_char(word: &str) -> char {
 pub fn number_to_greek(n: u8) -> String {
     if n <= 12 || n == 20 || n == 30 {
         basic_number_to_greek(n, false)
-    } else if n >= 13 && n < 20 {
-        basic_number_to_greek(n - 10, true) + "deca"
-    } else if n > 20 && n < 30 {
+    } else if n < 20 {
+        basic_number_to_greek(n - 10, true) + &basic_number_to_greek(10, false)
+    } else if n < 30 {
         let prefix = basic_number_to_greek(n - 20, true);
         let suffix = if is_vowel!(last_char(&prefix)) {
             "cosa"
@@ -71,16 +71,17 @@ pub fn number_to_greek(n: u8) -> String {
         };
 
         prefix + suffix
-    } else if n > 30 && n < 40 {
-        basic_number_to_greek(n - 30, true) + "triaconta"
-    } else if n >= 40 && n < 100 {
+    } else if n < 40 {
+        basic_number_to_greek(n - 30, true) + &basic_number_to_greek(30, true)
+    } else if n < 100 {
         let factor_ten: u8 = n / 10;
 
         if n == factor_ten * 10 {
             basic_number_to_greek(factor_ten, true) + "conta"
         } else {
-            basic_number_to_greek(n - factor_ten * 10, true) +
-            &basic_number_to_greek(factor_ten, true) + "conta"
+            basic_number_to_greek(n - factor_ten * 10, true)
+            + &basic_number_to_greek(factor_ten, true)
+            + "conta"
         }
     } else {
         panic!(n.to_string().to_owned() + " uncalculatable");
@@ -93,6 +94,7 @@ pub fn number_to_roman(n: i8) -> String {
     if n < 0 {
         "-".to_owned() + &number_to_roman(-n)
     } else if n == 0 {
+        // The romans didn't even have a 0, but for this purpose:
         "0".to_owned()
     } else if n == 1 {
         "I".to_owned()
@@ -127,7 +129,7 @@ pub fn number_to_roman(n: i8) -> String {
     } else if n == 16 {
         "XVI".to_owned()
     } else {
-        panic!(n.to_string().to_owned() + " uncalculatable");
+        panic!(n.to_string() + " uncalculatable");
     }
 }
 
@@ -157,7 +159,7 @@ pub fn subscript(n: u8) -> String {
     } else if n == 9 {
         "₉".to_owned()
     } else {
-        panic!(n.to_string().to_owned() + " can't be converted to subscript.");
+        panic!(n.to_string() + " can't be converted to subscript.");
     }
 }
 
@@ -188,7 +190,7 @@ pub fn superscript(n: u8) -> String {
     } else if n >= 10 {
         superscript(n / 10) + &superscript(n % 10)
     } else {
-        panic!(n.to_string().to_owned() + " can't be converted to superscript.");
+        panic!(n.to_string() + " can't be converted to superscript.");
     }
 }
 
@@ -197,16 +199,17 @@ pub fn superscript(n: u8) -> String {
 /// The difference with normal superscript notation is that the 1 is omitted,
 /// also, ionic superscript supports negative numbers (of which the sign
 /// is put at the end, instead of at the beginning)
+/// For positive numbers, a plus-sign is appended too
 pub fn ion_superscript(n: AtomCharge) -> String {
     if n == -1 {
         "⁻".to_owned()
     } else if n == 1 {
         "⁺".to_owned()
     } else if n < 0 {
-        superscript((-n) as u8) + &"⁻".to_owned()
+        superscript((-n) as u8) + &ion_superscript(-1)
     } else if n > 0 {
-        superscript(n as u8) + &"⁺".to_owned()
-    } else {
+        superscript(n as u8) + &ion_superscript(1)
+    } else { // n == 0
         superscript(n as u8)
     }
 }

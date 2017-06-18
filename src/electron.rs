@@ -1,9 +1,14 @@
 use atom::Atom;
 use ion::Ion;
-use molecule::{Molecule, MoleculeCompound};
+use molecule::*;
 
 
 lazy_static! {
+
+    // NOTE: Since Ion::from_string depends on ELECTRON being available,
+    // NOTE: the following will result in an infinite loop:
+    // pub static ref ELECTRON: Ion = Ion::from_string("e".to_owned()).unwrap();
+
     pub static ref ELECTRON: Ion = Ion {
         molecule: Molecule {
             compounds: vec! {

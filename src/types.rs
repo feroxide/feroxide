@@ -1,19 +1,19 @@
 #![allow(dead_code)]
 
 
-/// should fit 1 to 18
+/// should fit 1 to 18 [  ]
 pub type AtomGroup = u8;
 
 /// should fit 0.0 to 294.0+, with normal precision [ gram / mol ]
 pub type AtomMass = f32;
 
-/// should fit 0 to 118+
+/// should fit 0 to 118+ [  ]
 pub type AtomNumber = u8;
 
 /// should fit 0.0 to 1e5+, with high precision [ Joule ]
 pub type Energy = f64;
 
-/// should fit -7 to 7
+/// should fit -7 to 7 [  ]
 pub type AtomCharge = i8;
 
 /// should fit 0.0 to 1e5+, with high precision [ gram ]

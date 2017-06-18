@@ -1,5 +1,5 @@
 use electron::ELECTRON;
-use namings::{ion_superscript, number_to_roman};
+use namings::*;
 use molecule::Molecule;
 use trait_element::Element;
 use trait_properties::Properties;

@@ -1,5 +1,5 @@
 use atom::Atom;
-use namings::{number_to_greek, subscript};
+use namings::*;
 use trait_element::Element;
 use trait_properties::Properties;
 use types::*;

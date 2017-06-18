@@ -47,6 +47,7 @@ macro_rules! is_vowel {
 
 
 #[macro_export]
+/// converts a single char into a number
 macro_rules! to_number {
     ($c: expr) => {
         ($c as u8) - ('0' as u8)
