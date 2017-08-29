@@ -1,5 +1,6 @@
 # feroxide
 ## [![Travis Build Status][travis-badge]][travis-page]
+## [![Code Climate][codeclimate-badge]][codeclimate-page]
 A basic chemistry simulator.
 
 ## Currently includes
@@ -26,3 +27,6 @@ Before requesting a new feature, please check [the TODO list](./TODO.md).
 
 [travis-page]: https://travis-ci.org/feroxide/feroxide
 [travis-badge]: https://travis-ci.org/feroxide/feroxide.svg?branch=master
+
+[codeclimate-badge]: https://codeclimate.com/github/feroxide/feroxide/badges/gpa.svg
+[codeclimate-page]: https://codeclimate.com/github/feroxide/feroxide
