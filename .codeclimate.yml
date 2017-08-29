@@ -1,3 +1,25 @@
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - rust
+
+  fixme:
+    enabled: true
+
+  markdownlint:
+    enabled: true
+
+  shellcheck:
+    enabled: true
+
+ratings:
+  paths:
+    - "**.rs"
+    - "**.sh"
+    - "**.md"
+
 exclude_paths:
-  - "docs/"
-  - "rust-docs/"
+- "docs/"
+- "rust-docs/"
