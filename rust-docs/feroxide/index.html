@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/feroxide/lib.rs.html#3-677' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/feroxide/lib.rs.html#3-685' title='goto source code'>[src]</a></span></h1>
 <h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
@@ -82,6 +82,13 @@
                        <tr class=' module-item'>
                            <td><a class="mod" href="display_impls/index.html"
                                   title='mod feroxide::display_impls'>display_impls</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="parse_macros/index.html"
+                                  title='mod feroxide::parse_macros'>parse_macros</a></td>
                            <td class='docblock-short'>
                                 
                            </td>
@@ -154,7 +161,7 @@
                            <td><a class="macro" href="macro.to_number.html"
                                   title='macro feroxide::to_number'>to_number</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>converts a single char into a number</p>
                            </td>
                        </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
@@ -163,6 +170,34 @@
                                   title='struct feroxide::Atom'>Atom</a></td>
                            <td class='docblock-short'>
                                 <p>An atom</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.AtomCharge.html"
+                                  title='struct feroxide::AtomCharge'>AtomCharge</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.AtomGroup.html"
+                                  title='struct feroxide::AtomGroup'>AtomGroup</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.AtomMass.html"
+                                  title='struct feroxide::AtomMass'>AtomMass</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.AtomNumber.html"
+                                  title='struct feroxide::AtomNumber'>AtomNumber</a></td>
+                           <td class='docblock-short'>
+                                
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -194,10 +229,24 @@
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Energy.html"
+                                  title='struct feroxide::Energy'>Energy</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class="struct" href="struct.Ion.html"
                                   title='struct feroxide::Ion'>Ion</a></td>
                            <td class='docblock-short'>
                                 <p>An <code>Ion</code></p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Mass.html"
+                                  title='struct feroxide::Mass'>Mass</a></td>
+                           <td class='docblock-short'>
+                                
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -212,6 +261,13 @@
                                   title='struct feroxide::MoleculeCompound'>MoleculeCompound</a></td>
                            <td class='docblock-short'>
                                 <p>A compound of a molecule</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Moles.html"
+                                  title='struct feroxide::Moles'>Moles</a></td>
+                           <td class='docblock-short'>
+                                
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -233,6 +289,13 @@
                                   title='struct feroxide::RedoxReaction'>RedoxReaction</a></td>
                            <td class='docblock-short'>
                                 <p>A Redox reaction</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.SEP.html"
+                                  title='struct feroxide::SEP'>SEP</a></td>
+                           <td class='docblock-short'>
+                                
                            </td>
                        </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
@@ -272,7 +335,8 @@
                                 <p>Convert a number to ionic superscript notation
 The difference with normal superscript notation is that the 1 is omitted,
 also, ionic superscript supports negative numbers (of which the sign
-is put at the end, instead of at the beginning)</p>
+is put at the end, instead of at the beginning)
+For positive numbers, a plus-sign is appended too</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -313,57 +377,57 @@ See also <code>ion_superscript</code></p>
                        </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class="type" href="type.AtomCharge.html"
-                                  title='type feroxide::AtomCharge'>AtomCharge</a></td>
+                           <td><a class="type" href="type.AtomCharge_type.html"
+                                  title='type feroxide::AtomCharge_type'>AtomCharge_type</a></td>
                            <td class='docblock-short'>
-                                <p>should fit -7 to 7</p>
+                                <p>should fit -7 to 7 [  ]</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class="type" href="type.AtomGroup.html"
-                                  title='type feroxide::AtomGroup'>AtomGroup</a></td>
+                           <td><a class="type" href="type.AtomGroup_type.html"
+                                  title='type feroxide::AtomGroup_type'>AtomGroup_type</a></td>
                            <td class='docblock-short'>
-                                <p>should fit 1 to 18</p>
+                                <p>should fit 1 to 18 [  ]</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class="type" href="type.AtomMass.html"
-                                  title='type feroxide::AtomMass'>AtomMass</a></td>
+                           <td><a class="type" href="type.AtomMass_type.html"
+                                  title='type feroxide::AtomMass_type'>AtomMass_type</a></td>
                            <td class='docblock-short'>
                                 <p>should fit 0.0 to 294.0+, with normal precision [ gram / mol ]</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class="type" href="type.AtomNumber.html"
-                                  title='type feroxide::AtomNumber'>AtomNumber</a></td>
+                           <td><a class="type" href="type.AtomNumber_type.html"
+                                  title='type feroxide::AtomNumber_type'>AtomNumber_type</a></td>
                            <td class='docblock-short'>
-                                <p>should fit 0 to 118+</p>
+                                <p>should fit 0 to 118+ [  ]</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class="type" href="type.Energy.html"
-                                  title='type feroxide::Energy'>Energy</a></td>
+                           <td><a class="type" href="type.Energy_type.html"
+                                  title='type feroxide::Energy_type'>Energy_type</a></td>
                            <td class='docblock-short'>
                                 <p>should fit 0.0 to 1e5+, with high precision [ Joule ]</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class="type" href="type.Mass.html"
-                                  title='type feroxide::Mass'>Mass</a></td>
+                           <td><a class="type" href="type.Mass_type.html"
+                                  title='type feroxide::Mass_type'>Mass_type</a></td>
                            <td class='docblock-short'>
                                 <p>should fit 0.0 to 1e5+, with high precision [ gram ]</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class="type" href="type.Moles.html"
-                                  title='type feroxide::Moles'>Moles</a></td>
+                           <td><a class="type" href="type.Moles_type.html"
+                                  title='type feroxide::Moles_type'>Moles_type</a></td>
                            <td class='docblock-short'>
                                 <p>should fit 0.0 to 1e5+, with high precision [ mol ]</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class="type" href="type.SEP.html"
-                                  title='type feroxide::SEP'>SEP</a></td>
+                           <td><a class="type" href="type.SEP_type.html"
+                                  title='type feroxide::SEP_type'>SEP_type</a></td>
                            <td class='docblock-short'>
                                 <p>should fit -5.0 to 5.0, with normal precision [ volt ]</p>
                            </td>

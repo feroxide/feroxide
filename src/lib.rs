@@ -79,11 +79,13 @@ fn display_types_equals_value() {
 fn ion_calculate_charge_from_string() {
     use trait_element::*;
 
-    assert_eq!(AtomCharge::from(-1),
-               Ion::from_string("OH".to_owned())
-                   .unwrap()
-                   .get_charge()
-                   .unwrap());
+    assert_eq!(
+        AtomCharge::from(-1),
+        Ion::from_string("OH".to_owned())
+            .unwrap()
+            .get_charge()
+            .unwrap()
+    );
 }
 
 
@@ -95,29 +97,32 @@ fn reaction_from_string() {
 
     let reaction = ElemReaction {
         lhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: ion_from_atom!(HYDROGEN),
-                                amount: 2,
-                            },
-
-                            ReactionCompound {
-                                element: ion_from_atom!(OXYGEN),
-                                amount: 1,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: ion_from_atom!(HYDROGEN),
+                    amount: 2,
+                },
+                ReactionCompound {
+                    element: ion_from_atom!(OXYGEN),
+                    amount: 1,
+                },
+            ],
         },
 
         rhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: ion_from_molecule!(WATER.clone()),
-                                amount: 2,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: ion_from_molecule!(WATER.clone()),
+                    amount: 2,
+                },
+            ],
         },
 
         is_equilibrium: true,
     };
 
-    let reaction_from_string = ElemReaction::<Ion>::ion_from_string("2H2 + O2 <> 2H2O".to_owned())
-        .unwrap();
+    let reaction_from_string =
+        ElemReaction::<Ion>::ion_from_string("2H2 + O2 <> 2H2O".to_owned()).unwrap();
 
     assert_eq!(reaction, reaction_from_string);
 
@@ -145,12 +150,18 @@ fn atom_from_string() {
 fn molecule_from_string() {
     use data_molecules::*;
 
-    assert_eq!(WATER.clone(),
-               Molecule::from_string("H2O".to_owned()).unwrap());
-    assert_eq!(CO2.clone(),
-               Molecule::from_string("CO2".to_owned()).unwrap());
-    assert_eq!(SUGAR.clone(),
-               Molecule::from_string("C12H22O11".to_owned()).unwrap());
+    assert_eq!(
+        WATER.clone(),
+        Molecule::from_string("H2O".to_owned()).unwrap()
+    );
+    assert_eq!(
+        CO2.clone(),
+        Molecule::from_string("CO2".to_owned()).unwrap()
+    );
+    assert_eq!(
+        SUGAR.clone(),
+        Molecule::from_string("C12H22O11".to_owned()).unwrap()
+    );
 }
 
 
@@ -169,15 +180,16 @@ fn total_atoms() {
     use data_molecules::*;
 
     let side = ReactionSide {
-        compounds: vec![ReactionCompound {
-                            element: WATER.clone(),
-                            amount: 8,
-                        },
-
-                        ReactionCompound {
-                            element: molecule_from_atom!(OXYGEN),
-                            amount: 5,
-                        }],
+        compounds: vec![
+            ReactionCompound {
+                element: WATER.clone(),
+                amount: 8,
+            },
+            ReactionCompound {
+                element: molecule_from_atom!(OXYGEN),
+                amount: 5,
+            },
+        ],
     };
 
     // 16 Hydrogen atoms
@@ -195,10 +207,12 @@ fn container_add_and_remove_elements() {
 
 
     let mut container = Container {
-        contents: vec![ContainerCompound {
-                           element: WATER.clone(),
-                           moles: Moles::from(6.0),
-                       }],
+        contents: vec![
+            ContainerCompound {
+                element: WATER.clone(),
+                moles: Moles::from(6.0),
+            },
+        ],
 
         available_energy: Energy::from(1e5), // Should be enough
     };
@@ -206,21 +220,25 @@ fn container_add_and_remove_elements() {
 
     let reaction = ElemReaction {
         lhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: WATER.clone(),
-                                amount: 2,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: WATER.clone(),
+                    amount: 2,
+                },
+            ],
         },
 
         rhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: molecule_from_atom!(HYDROGEN),
-                                amount: 2,
-                            },
-                            ReactionCompound {
-                                element: molecule_from_atom!(OXYGEN),
-                                amount: 1,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: molecule_from_atom!(HYDROGEN),
+                    amount: 2,
+                },
+                ReactionCompound {
+                    element: molecule_from_atom!(OXYGEN),
+                    amount: 1,
+                },
+            ],
         },
 
         is_equilibrium: false,
@@ -248,14 +266,16 @@ fn container_add_and_remove_elements() {
     assert!(!container.react(&reaction));
 
     // Remove 6 moles of hydrogen and 3 moles of oxygen (all contents)
-    container.remove_elements(&vec![ContainerCompound {
-                                       element: molecule_from_atom!(HYDROGEN),
-                                       moles: Moles::from(6.0),
-                                   },
-                                   ContainerCompound {
-                                       element: molecule_from_atom!(OXYGEN),
-                                       moles: Moles::from(3.0),
-                                   }]);
+    container.remove_elements(&vec![
+        ContainerCompound {
+            element: molecule_from_atom!(HYDROGEN),
+            moles: Moles::from(6.0),
+        },
+        ContainerCompound {
+            element: molecule_from_atom!(OXYGEN),
+            moles: Moles::from(3.0),
+        },
+    ]);
 
     // Now it should be empty
     assert_eq!(0, container.contents.len());
@@ -277,7 +297,9 @@ fn check_display() {
         element: SUGAR.clone(),
     };
 
-    let reactionside = ReactionSide { compounds: vec![reactioncompound.clone()] };
+    let reactionside = ReactionSide {
+        compounds: vec![reactioncompound.clone()],
+    };
 
     let reaction = ElemReaction {
         lhs: reactionside.clone(),
@@ -318,14 +340,16 @@ fn container_reaction_cost() {
 
 
     let mut container = Container {
-        contents: vec![ContainerCompound {
-                           moles: Moles::from(100.0),
-                           element: hydrogen.clone(),
-                       },
-                       ContainerCompound {
-                           moles: Moles::from(200.0),
-                           element: oxygen.clone(),
-                       }],
+        contents: vec![
+            ContainerCompound {
+                moles: Moles::from(100.0),
+                element: hydrogen.clone(),
+            },
+            ContainerCompound {
+                moles: Moles::from(200.0),
+                element: oxygen.clone(),
+            },
+        ],
 
         available_energy: Energy::from(1000.0),
     };
@@ -333,21 +357,25 @@ fn container_reaction_cost() {
 
     let reaction = ElemReaction {
         lhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                amount: 2,
-                                element: hydrogen.clone(),
-                            },
-                            ReactionCompound {
-                                amount: 1,
-                                element: oxygen.clone(),
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    amount: 2,
+                    element: hydrogen.clone(),
+                },
+                ReactionCompound {
+                    amount: 1,
+                    element: oxygen.clone(),
+                },
+            ],
         },
 
         rhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: WATER.clone(),
-                                amount: 2,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: WATER.clone(),
+                    amount: 2,
+                },
+            ],
         },
 
         is_equilibrium: false, // actually true, but false for this test
@@ -378,10 +406,12 @@ fn ion_notation_check() {
     #[allow(non_snake_case)]
     let P4 = Ion {
         molecule: Molecule {
-            compounds: vec![MoleculeCompound {
-                                atom: PHOSPHORUS,
-                                amount: 4,
-                            }],
+            compounds: vec![
+                MoleculeCompound {
+                    atom: PHOSPHORUS,
+                    amount: 4,
+                },
+            ],
         },
 
         charge: Some(AtomCharge::from(-2)),
@@ -497,21 +527,25 @@ fn reaction_check() {
 
     let good_reaction = ElemReaction {
         lhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                amount: 1,
-                                element: molecule_from_atom!(CARBON),
-                            },
-                            ReactionCompound {
-                                amount: 1,
-                                element: molecule_from_atom!(OXYGEN),
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    amount: 1,
+                    element: molecule_from_atom!(CARBON),
+                },
+                ReactionCompound {
+                    amount: 1,
+                    element: molecule_from_atom!(OXYGEN),
+                },
+            ],
         },
 
         rhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                amount: 1,
-                                element: CO2.clone(),
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    amount: 1,
+                    element: CO2.clone(),
+                },
+            ],
         },
 
         is_equilibrium: false,
@@ -520,21 +554,25 @@ fn reaction_check() {
 
     let wrong_reaction_0 = ElemReaction {
         lhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                amount: 9,
-                                element: molecule_from_atom!(CARBON),
-                            },
-                            ReactionCompound {
-                                amount: 5,
-                                element: molecule_from_atom!(OXYGEN),
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    amount: 9,
+                    element: molecule_from_atom!(CARBON),
+                },
+                ReactionCompound {
+                    amount: 5,
+                    element: molecule_from_atom!(OXYGEN),
+                },
+            ],
         },
 
         rhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                amount: 3,
-                                element: CO2.clone(),
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    amount: 3,
+                    element: CO2.clone(),
+                },
+            ],
         },
 
         is_equilibrium: false,
@@ -543,17 +581,21 @@ fn reaction_check() {
 
     let wrong_reaction_1 = ElemReaction {
         lhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                amount: 1,
-                                element: molecule_from_atom!(LITHIUM),
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    amount: 1,
+                    element: molecule_from_atom!(LITHIUM),
+                },
+            ],
         },
 
         rhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                amount: 3,
-                                element: molecule_from_atom!(HYDROGEN),
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    amount: 3,
+                    element: molecule_from_atom!(HYDROGEN),
+                },
+            ],
         },
 
         is_equilibrium: false,
@@ -562,22 +604,28 @@ fn reaction_check() {
 
     let equilibrium_reaction = ElemReaction {
         lhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                amount: 1,
-                                element: molecule_from_atom!(HYDROGEN),
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    amount: 1,
+                    element: molecule_from_atom!(HYDROGEN),
+                },
+            ],
         },
 
         rhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                amount: 2,
-                                element: Molecule {
-                                    compounds: vec![MoleculeCompound {
-                                                        atom: HYDROGEN,
-                                                        amount: 1,
-                                                    }],
-                                },
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    amount: 2,
+                    element: Molecule {
+                        compounds: vec![
+                            MoleculeCompound {
+                                atom: HYDROGEN,
+                                amount: 1,
+                            },
+                        ],
+                    },
+                },
+            ],
         },
 
         is_equilibrium: true,
@@ -604,21 +652,25 @@ fn equalise() {
 
     let water_reaction = ElemReaction {
         lhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: molecule_from_atom!(HYDROGEN),
-                                amount: 0,
-                            },
-                            ReactionCompound {
-                                element: molecule_from_atom!(OXYGEN),
-                                amount: 0,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: molecule_from_atom!(HYDROGEN),
+                    amount: 0,
+                },
+                ReactionCompound {
+                    element: molecule_from_atom!(OXYGEN),
+                    amount: 0,
+                },
+            ],
         },
 
         rhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: WATER.clone(),
-                                amount: 0,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: WATER.clone(),
+                    amount: 0,
+                },
+            ],
         },
 
         is_equilibrium: false,
@@ -637,17 +689,21 @@ fn only_compare_similiar_elements() {
 
     let _ = ElemReaction {
         lhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: WATER.clone(),
-                                amount: 1,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: WATER.clone(),
+                    amount: 1,
+                },
+            ],
         },
 
         rhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: CO2.clone(),
-                                amount: 1,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: CO2.clone(),
+                    amount: 1,
+                },
+            ],
         },
 
         is_equilibrium: true,
@@ -656,17 +712,21 @@ fn only_compare_similiar_elements() {
 
     let _ = ElemReaction {
         lhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: AMMONIUM.clone(),
-                                amount: 1,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: AMMONIUM.clone(),
+                    amount: 1,
+                },
+            ],
         },
 
         rhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: SULPHATE.clone(),
-                                amount: 1,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: SULPHATE.clone(),
+                    amount: 1,
+                },
+            ],
         },
 
         is_equilibrium: true,

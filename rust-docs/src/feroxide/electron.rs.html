@@ -70,13 +70,25 @@
 <span id="25">25</span>
 <span id="26">26</span>
 <span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">atom</span>::<span class="ident">Atom</span>;
 <span class="kw">use</span> <span class="ident">ion</span>::<span class="ident">Ion</span>;
-<span class="kw">use</span> <span class="ident">molecule</span>::{<span class="ident">Molecule</span>, <span class="ident">MoleculeCompound</span>};
+<span class="kw">use</span> <span class="ident">molecule</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">types</span>::<span class="kw-2">*</span>;
 
 
 <span class="macro">lazy_static</span><span class="macro">!</span> {
+
+    <span class="comment">// NOTE: Since Ion::from_string depends on ELECTRON being available,</span>
+    <span class="comment">// NOTE: the following will result in an infinite loop:</span>
+    <span class="comment">// pub static ref ELECTRON: Ion = Ion::from_string(&quot;e&quot;.to_owned()).unwrap();</span>
+
     <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">ELECTRON</span>: <span class="ident">Ion</span> <span class="op">=</span> <span class="ident">Ion</span> {
         <span class="ident">molecule</span>: <span class="ident">Molecule</span> {
             <span class="ident">compounds</span>: <span class="macro">vec</span><span class="macro">!</span> {
@@ -84,9 +96,9 @@
                     <span class="ident">atom</span>: <span class="ident">Atom</span> {
                         <span class="ident">name</span>: <span class="string">&quot;electron&quot;</span>,
                         <span class="ident">symbol</span>: <span class="string">&quot;e&quot;</span>,
-                        <span class="ident">number</span>: <span class="number">0</span>,
-                        <span class="ident">group</span>: <span class="number">0</span>,
-                        <span class="ident">mass</span>: <span class="number">0.0</span>,
+                        <span class="ident">number</span>: <span class="ident">AtomNumber</span>::<span class="ident">from</span>(<span class="number">0</span>),
+                        <span class="ident">group</span>: <span class="ident">AtomGroup</span>::<span class="ident">from</span>(<span class="number">0</span>),
+                        <span class="ident">mass</span>: <span class="ident">AtomMass</span>::<span class="ident">from</span>(<span class="number">0.0</span>),
                         <span class="ident">diatomic</span>: <span class="bool-val">false</span>
                     },
 
@@ -95,7 +107,7 @@
             }
         },
 
-        <span class="ident">charge</span>: <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">1</span>)
+        <span class="ident">charge</span>: <span class="prelude-val">Some</span>(<span class="ident">AtomCharge</span>::<span class="ident">from</span>(<span class="op">-</span><span class="number">1</span>))
     };
 }
 </pre>

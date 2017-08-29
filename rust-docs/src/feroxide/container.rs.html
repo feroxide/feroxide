@@ -325,7 +325,7 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rc_to_cc</span><span class="op">&lt;</span><span class="ident">E</span>: <span class="ident">Element</span><span class="op">&gt;</span>(<span class="ident">rc</span>: <span class="ident">ReactionCompound</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ContainerCompound</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
     <span class="ident">ContainerCompound</span> {
         <span class="ident">element</span>: <span class="ident">rc</span>.<span class="ident">element</span>,
-        <span class="ident">moles</span>: <span class="ident">rc</span>.<span class="ident">amount</span> <span class="kw">as</span> <span class="ident">Moles</span>,
+        <span class="ident">moles</span>: <span class="ident">Moles</span>::<span class="ident">from</span>(<span class="ident">rc</span>.<span class="ident">amount</span> <span class="kw">as</span> <span class="ident">Moles_type</span>),
     }
 }
 
@@ -413,7 +413,7 @@
 
             <span class="comment">// Find element in self.contents</span>
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">position</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">contents</span>.<span class="ident">iter</span>().<span class="ident">position</span>(<span class="op">|</span><span class="ident">comp</span><span class="op">|</span> <span class="ident">comp</span> <span class="op">==</span> <span class="ident">element</span>) {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">compound</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">contents</span>[<span class="ident">position</span>];
+                <span class="kw">let</span> <span class="ident">compound</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">contents</span>[<span class="ident">position</span>];
 
                 <span class="comment">// Check if we have enough</span>
                 <span class="kw">if</span> <span class="ident">compound</span>.<span class="ident">moles</span> <span class="op">&lt;</span> <span class="ident">element</span>.<span class="ident">moles</span> {
@@ -421,14 +421,14 @@
                 }
 
                 <span class="comment">// Remove amount</span>
-                <span class="ident">compound</span>.<span class="ident">moles</span> <span class="op">-=</span> <span class="ident">element</span>.<span class="ident">moles</span>;
+                <span class="ident">compound</span>.<span class="ident">moles</span> <span class="op">-=</span> <span class="ident">element</span>.<span class="ident">moles</span>.<span class="ident">clone</span>();
 
                 <span class="comment">// If none is available anymore, let element be removed from container</span>
-                <span class="kw">if</span> <span class="ident">compound</span>.<span class="ident">moles</span> <span class="op">==</span> <span class="number">0.0</span> {
+                <span class="kw">if</span> <span class="ident">compound</span>.<span class="ident">moles</span> <span class="op">==</span> <span class="ident">Moles</span>::<span class="ident">from</span>(<span class="number">0.0</span>) {
                     <span class="ident">to_remove</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">position</span>);
                 }
             } <span class="kw">else</span> {
-                <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Can&#39;t remove element {} (not found)&quot;</span>, <span class="ident">element</span>.<span class="ident">symbol</span>());
+                <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Can&#39;t remove element {} (not found)&quot;</span>, <span class="ident">element</span>.<span class="ident">symbol</span>());
             }
 
             <span class="comment">// Remove element if needed</span>
@@ -444,10 +444,10 @@
         <span class="kw">for</span> <span class="ident">element</span> <span class="kw">in</span> <span class="ident">elements</span> {
             <span class="comment">// Find element in self.contents</span>
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">position</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">contents</span>.<span class="ident">iter</span>().<span class="ident">position</span>(<span class="op">|</span><span class="ident">comp</span><span class="op">|</span> <span class="ident">comp</span> <span class="op">==</span> <span class="ident">element</span>) {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">compound</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">contents</span>[<span class="ident">position</span>];
+                <span class="kw">let</span> <span class="ident">compound</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">contents</span>[<span class="ident">position</span>];
 
                 <span class="comment">// Add amount</span>
-                <span class="ident">compound</span>.<span class="ident">moles</span> <span class="op">+=</span> <span class="ident">element</span>.<span class="ident">moles</span>;
+                <span class="ident">compound</span>.<span class="ident">moles</span> <span class="op">+=</span> <span class="ident">element</span>.<span class="ident">moles</span>.<span class="ident">clone</span>();
             } <span class="kw">else</span> {
                 <span class="comment">// If the element is not found in the container, add it</span>
                 <span class="self">self</span>.<span class="ident">contents</span>.<span class="ident">push</span>(<span class="ident">element</span>.<span class="ident">clone</span>());
@@ -462,7 +462,7 @@
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">first</span> <span class="op">=</span> <span class="bool-val">true</span>;
         <span class="kw">for</span> <span class="ident">compound</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">contents</span> {
-            <span class="kw">if</span> <span class="ident">compound</span>.<span class="ident">moles</span> <span class="op">&gt;</span> <span class="number">0.0</span> {
+            <span class="kw">if</span> <span class="ident">compound</span>.<span class="ident">moles</span> <span class="op">&gt;</span> <span class="ident">Moles</span>::<span class="ident">from</span>(<span class="number">0.0</span>) {
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">first</span> {
                     <span class="ident">string</span> <span class="op">+=</span> <span class="string">&quot; + &quot;</span>;
                 }
@@ -531,7 +531,7 @@
 
 
     <span class="kw">fn</span> <span class="ident">mass</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">AtomMass</span> {
-        (<span class="self">self</span>.<span class="ident">moles</span> <span class="kw">as</span> <span class="ident">AtomMass</span>) <span class="op">*</span> <span class="self">self</span>.<span class="ident">element</span>.<span class="ident">mass</span>()
+        <span class="self">self</span>.<span class="ident">element</span>.<span class="ident">mass</span>() <span class="op">*</span> (<span class="self">self</span>.<span class="ident">moles</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">AtomMass_type</span>)
     }
 }
 </pre>

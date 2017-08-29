@@ -4,7 +4,7 @@ extern crate toml;
 
 
 mod types;
-use types::{AtomNumber_type, AtomGroup_type, AtomMass_type};
+use types::{AtomGroup_type, AtomMass_type, AtomNumber_type};
 
 use std::fs::File;
 use std::collections::HashMap;
@@ -34,15 +34,17 @@ fn write(mut atoms_rs_file: &File) {
     let mut atoms: HashMap<String, Atom> = HashMap::new();
 
     // Add example atom
-    atoms.insert("hydrogen".to_owned(),
-                 Atom {
-                     number: 1,
-                     symbol: "H".to_owned(),
-                     name: "hydrogen".to_owned(),
-                     group: 1,
-                     mass: 1.008,
-                     diatomic: true,
-                 });
+    atoms.insert(
+        "hydrogen".to_owned(),
+        Atom {
+            number: 1,
+            symbol: "H".to_owned(),
+            name: "hydrogen".to_owned(),
+            group: 1,
+            mass: 1.008,
+            diatomic: true,
+        },
+    );
 
     // Generate config
     let config = Config { atoms: atoms };
@@ -72,7 +74,9 @@ fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {
 
     // Write header to file
     atoms_rs_file.write_all(b"use atom::Atom;\n").ok();
-    atoms_rs_file.write_all(b"use types::{ AtomNumber, AtomMass, AtomGroup };\n").ok();
+    atoms_rs_file
+        .write_all(b"use types::{ AtomNumber, AtomMass, AtomGroup };\n")
+        .ok();
 
     // Convert items from TOML file to RS syntax
     for (capsname, atom) in config.atoms.clone().into_iter() {
@@ -85,18 +89,20 @@ fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {
             diatomic,
         } = atom;
 
-        let rust_atom = format!("
+        let rust_atom = format!(
+            "
 pub const {capsname}: Atom = Atom {{
     number: AtomNumber{{0:{number}}}, mass: AtomMass{{0:{mass:.5}}}, symbol: \"{symbol}\",
     name: \"{name}\", group: AtomGroup{{0:{group:?}}}, diatomic: {diatomic} }};
 ",
-                                capsname = capsname,
-                                name = name,
-                                number = number,
-                                mass = mass,
-                                symbol = symbol,
-                                group = group,
-                                diatomic = diatomic);
+            capsname = capsname,
+            name = name,
+            number = number,
+            mass = mass,
+            symbol = symbol,
+            group = group,
+            diatomic = diatomic
+        );
 
         // Append to file
         atoms_rs_file.write_all(rust_atom.as_bytes()).ok();

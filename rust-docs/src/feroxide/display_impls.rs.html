@@ -84,40 +84,16 @@
 <span id="39">39</span>
 <span id="40">40</span>
 <span id="41">41</span>
-<span id="42">42</span>
-<span id="43">43</span>
-<span id="44">44</span>
-<span id="45">45</span>
-<span id="46">46</span>
-<span id="47">47</span>
-<span id="48">48</span>
-<span id="49">49</span>
-<span id="50">50</span>
-<span id="51">51</span>
-<span id="52">52</span>
-<span id="53">53</span>
-<span id="54">54</span>
-<span id="55">55</span>
-<span id="56">56</span>
-<span id="57">57</span>
-<span id="58">58</span>
-<span id="59">59</span>
-<span id="60">60</span>
-<span id="61">61</span>
-<span id="62">62</span>
-<span id="63">63</span>
-<span id="64">64</span>
-<span id="65">65</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">atom</span>::<span class="ident">Atom</span>;
-<span class="kw">use</span> <span class="ident">container</span>::{<span class="ident">Container</span>, <span class="ident">ContainerCompound</span>};
+<span class="kw">use</span> <span class="ident">container</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">ion</span>::<span class="ident">Ion</span>;
 <span class="kw">use</span> <span class="ident">molecule</span>::<span class="ident">Molecule</span>;
-<span class="kw">use</span> <span class="ident">reaction</span>::{<span class="ident">ElemReaction</span>, <span class="ident">ReactionSide</span>, <span class="ident">ReactionCompound</span>};
+<span class="kw">use</span> <span class="ident">reaction</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">trait_element</span>::<span class="ident">Element</span>;
 <span class="kw">use</span> <span class="ident">trait_properties</span>::<span class="ident">Properties</span>;
 
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::{<span class="ident">Display</span>, <span class="ident">Formatter</span>, <span class="prelude-ty">Result</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="kw-2">*</span>;
 
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">fmt</span> {
@@ -140,30 +116,6 @@
         }
     )
 }
-
-
-<span class="comment">/*
-macro_rules! fmt_lifetime {
-    ($x:tt) =&gt; (
-        impl&lt;&#39;lifetime&gt; Display for $x&lt;&#39;lifetime&gt; {
-            fn fmt(&amp;self, formatter: &amp;mut Formatter) -&gt; Result {
-                write!(formatter, &quot;{}&quot;, self.stringify())
-            }
-        }
-    )
-}
-
-
-macro_rules! fmt_lifetime_type {
-    ($x:tt) =&gt; (
-        impl&lt;&#39;lifetime, E: Element&gt; Display for $x&lt;&#39;lifetime, E&gt; {
-            fn fmt(&amp;self, formatter: &amp;mut Formatter) -&gt; Result {
-                write!(formatter, &quot;{}&quot;, self.stringify())
-            }
-        }
-    )
-}
-*/</span>
 
 
 <span class="macro">fmt</span><span class="macro">!</span>(<span class="ident">Atom</span>);

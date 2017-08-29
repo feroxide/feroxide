@@ -1,31 +1,31 @@
 #!/bin/bash
 
-export TRAVIS_RUST_VERSION="nightly"
-
 total_exit_code=0
 
-echo "Setting Rust build to nightly"
-rustup default nightly
-total_exit_code=$((total_exit_code + $?))
+export RUSTUP_NIGHTLY="yes"
+
+CARGO="rustup run nightly cargo"
 
 echo "Updating rust"
 rustup update
 total_exit_code=$((total_exit_code + $?))
 
 echo "Updating Cargo.toml"
-cargo update
+$CARGO update
 total_exit_code=$((total_exit_code + $?))
 
 echo "Formatting code"
-cargo fmt
+$CARGO install rustfmt-nightly
+$CARGO fmt
 total_exit_code=$((total_exit_code + $?))
 
 echo "Running clippy"
+./clippy.sh install
 ./clippy.sh test
 total_exit_code=$((total_exit_code + $?))
 
 echo "Running tests"
-cargo test
+$CARGO test
 total_exit_code=$((total_exit_code + $?))
 
 echo "Generating documentation"

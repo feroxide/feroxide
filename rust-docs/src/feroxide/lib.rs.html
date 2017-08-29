@@ -720,6 +720,14 @@
 <span id="675">675</span>
 <span id="676">676</span>
 <span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
 </pre><pre class="rust ">
 <span class="comment">// macros \\</span>
 
@@ -791,10 +799,18 @@
 
 <span class="comment">// tests \\</span>
 <span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">display_types_equals_value</span>() {
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">AtomNumber</span>::<span class="ident">from</span>(<span class="number">1</span>)), <span class="string">&quot;1&quot;</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">AtomNumber</span>::<span class="ident">from</span>(<span class="number">2</span>)), <span class="string">&quot;2&quot;</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">Energy</span>::<span class="ident">from</span>(<span class="number">1.23</span>)), <span class="string">&quot;1.23&quot;</span>);
+}
+
+
+<span class="attribute">#[<span class="ident">test</span>]</span>
 <span class="kw">fn</span> <span class="ident">ion_calculate_charge_from_string</span>() {
     <span class="kw">use</span> <span class="ident">trait_element</span>::<span class="kw-2">*</span>;
 
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">-</span><span class="number">1</span>,
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AtomCharge</span>::<span class="ident">from</span>(<span class="op">-</span><span class="number">1</span>),
                <span class="ident">Ion</span>::<span class="ident">from_string</span>(<span class="string">&quot;OH&quot;</span>.<span class="ident">to_owned</span>())
                    .<span class="ident">unwrap</span>()
                    .<span class="ident">get_charge</span>()
@@ -896,10 +912,10 @@
     };
 
     <span class="comment">// 16 Hydrogen atoms</span>
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">16</span>, <span class="kw-2">*</span><span class="ident">side</span>.<span class="ident">total_atoms</span>().<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="number">1</span>).<span class="ident">unwrap</span>());
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">16</span>, <span class="kw-2">*</span><span class="ident">side</span>.<span class="ident">total_atoms</span>().<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">AtomNumber</span>::<span class="ident">from</span>(<span class="number">1</span>)).<span class="ident">unwrap</span>());
 
     <span class="comment">// 8 + 10 = 18 Oxygen atoms</span>
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">18</span>, <span class="kw-2">*</span><span class="ident">side</span>.<span class="ident">total_atoms</span>().<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="number">8</span>).<span class="ident">unwrap</span>());
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">18</span>, <span class="kw-2">*</span><span class="ident">side</span>.<span class="ident">total_atoms</span>().<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">AtomNumber</span>::<span class="ident">from</span>(<span class="number">8</span>)).<span class="ident">unwrap</span>());
 }
 
 
@@ -912,10 +928,10 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">container</span> <span class="op">=</span> <span class="ident">Container</span> {
         <span class="ident">contents</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ContainerCompound</span> {
                            <span class="ident">element</span>: <span class="ident">WATER</span>.<span class="ident">clone</span>(),
-                           <span class="ident">moles</span>: <span class="number">6.0</span>,
+                           <span class="ident">moles</span>: <span class="ident">Moles</span>::<span class="ident">from</span>(<span class="number">6.0</span>),
                        }],
 
-        <span class="ident">available_energy</span>: <span class="number">1e5</span>, <span class="comment">// Should be enough</span>
+        <span class="ident">available_energy</span>: <span class="ident">Energy</span>::<span class="ident">from</span>(<span class="number">1e5</span>), <span class="comment">// Should be enough</span>
     };
 
 
@@ -965,11 +981,11 @@
     <span class="comment">// Remove 6 moles of hydrogen and 3 moles of oxygen (all contents)</span>
     <span class="ident">container</span>.<span class="ident">remove_elements</span>(<span class="kw-2">&amp;</span><span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ContainerCompound</span> {
                                        <span class="ident">element</span>: <span class="macro">molecule_from_atom</span><span class="macro">!</span>(<span class="ident">HYDROGEN</span>),
-                                       <span class="ident">moles</span>: <span class="number">6.0</span>,
+                                       <span class="ident">moles</span>: <span class="ident">Moles</span>::<span class="ident">from</span>(<span class="number">6.0</span>),
                                    },
                                    <span class="ident">ContainerCompound</span> {
                                        <span class="ident">element</span>: <span class="macro">molecule_from_atom</span><span class="macro">!</span>(<span class="ident">OXYGEN</span>),
-                                       <span class="ident">moles</span>: <span class="number">3.0</span>,
+                                       <span class="ident">moles</span>: <span class="ident">Moles</span>::<span class="ident">from</span>(<span class="number">3.0</span>),
                                    }]);
 
     <span class="comment">// Now it should be empty</span>
@@ -1006,7 +1022,7 @@
 
     <span class="kw">let</span> <span class="ident">container</span> <span class="op">=</span> <span class="ident">Container</span> {
         <span class="ident">contents</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">containercompound</span>.<span class="ident">clone</span>()],
-        <span class="ident">available_energy</span>: <span class="number">0.0</span>,
+        <span class="ident">available_energy</span>: <span class="ident">Energy</span>::<span class="ident">from</span>(<span class="number">0.0</span>),
     };
 
 
@@ -1034,15 +1050,15 @@
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">container</span> <span class="op">=</span> <span class="ident">Container</span> {
         <span class="ident">contents</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ContainerCompound</span> {
-                           <span class="ident">moles</span>: <span class="number">100.0</span>,
+                           <span class="ident">moles</span>: <span class="ident">Moles</span>::<span class="ident">from</span>(<span class="number">100.0</span>),
                            <span class="ident">element</span>: <span class="ident">hydrogen</span>.<span class="ident">clone</span>(),
                        },
                        <span class="ident">ContainerCompound</span> {
-                           <span class="ident">moles</span>: <span class="number">200.0</span>,
+                           <span class="ident">moles</span>: <span class="ident">Moles</span>::<span class="ident">from</span>(<span class="number">200.0</span>),
                            <span class="ident">element</span>: <span class="ident">oxygen</span>.<span class="ident">clone</span>(),
                        }],
 
-        <span class="ident">available_energy</span>: <span class="number">1000.0</span>,
+        <span class="ident">available_energy</span>: <span class="ident">Energy</span>::<span class="ident">from</span>(<span class="number">1000.0</span>),
     };
 
 
@@ -1069,19 +1085,19 @@
     };
 
 
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1000.0</span>, <span class="ident">container</span>.<span class="ident">available_energy</span>);
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">100.0</span>, <span class="ident">reaction</span>.<span class="ident">energy_cost</span>());
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Energy</span>::<span class="ident">from</span>(<span class="number">1000.0</span>), <span class="ident">container</span>.<span class="ident">available_energy</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Energy</span>::<span class="ident">from</span>(<span class="number">100.0</span>), <span class="ident">reaction</span>.<span class="ident">energy_cost</span>());
 
     <span class="comment">// Repeadably try this reaction</span>
 
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">container</span>.<span class="ident">react</span>(<span class="kw-2">&amp;</span><span class="ident">reaction</span>));
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">900.0</span>, <span class="ident">container</span>.<span class="ident">available_energy</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Energy</span>::<span class="ident">from</span>(<span class="number">900.0</span>), <span class="ident">container</span>.<span class="ident">available_energy</span>);
 
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">container</span>.<span class="ident">react</span>(<span class="kw-2">&amp;</span><span class="ident">reaction</span>));
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">800.0</span>, <span class="ident">container</span>.<span class="ident">available_energy</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Energy</span>::<span class="ident">from</span>(<span class="number">800.0</span>), <span class="ident">container</span>.<span class="ident">available_energy</span>);
 
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">container</span>.<span class="ident">react</span>(<span class="kw-2">&amp;</span><span class="ident">reaction</span>));
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">700.0</span>, <span class="ident">container</span>.<span class="ident">available_energy</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Energy</span>::<span class="ident">from</span>(<span class="number">700.0</span>), <span class="ident">container</span>.<span class="ident">available_energy</span>);
 }
 
 <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1099,7 +1115,7 @@
                             }],
         },
 
-        <span class="ident">charge</span>: <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">2</span>),
+        <span class="ident">charge</span>: <span class="prelude-val">Some</span>(<span class="ident">AtomCharge</span>::<span class="ident">from</span>(<span class="op">-</span><span class="number">2</span>)),
     };
 
 
@@ -1113,9 +1129,9 @@
     <span class="kw">use</span> <span class="ident">data_ions</span>::<span class="kw-2">*</span>;
 
 
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">-</span><span class="number">2</span>, <span class="ident">SULPHATE</span>.<span class="ident">get_charge</span>().<span class="ident">unwrap</span>());
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">-</span><span class="number">1</span>, <span class="ident">HYDROXIDE</span>.<span class="ident">get_charge</span>().<span class="ident">unwrap</span>());
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">AMMONIUM</span>.<span class="ident">get_charge</span>().<span class="ident">unwrap</span>());
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AtomCharge</span>::<span class="ident">from</span>(<span class="op">-</span><span class="number">2</span>), <span class="ident">SULPHATE</span>.<span class="ident">get_charge</span>().<span class="ident">unwrap</span>());
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AtomCharge</span>::<span class="ident">from</span>(<span class="op">-</span><span class="number">1</span>), <span class="ident">HYDROXIDE</span>.<span class="ident">get_charge</span>().<span class="ident">unwrap</span>());
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AtomCharge</span>::<span class="ident">from</span>(<span class="number">1</span>), <span class="ident">AMMONIUM</span>.<span class="ident">get_charge</span>().<span class="ident">unwrap</span>());
 }
 
 
@@ -1124,7 +1140,7 @@
     <span class="kw">use</span> <span class="ident">electron</span>::<span class="kw-2">*</span>;
 
 
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">-</span><span class="number">1</span>, <span class="ident">ELECTRON</span>.<span class="ident">get_charge</span>().<span class="ident">unwrap</span>());
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AtomCharge</span>::<span class="ident">from</span>(<span class="op">-</span><span class="number">1</span>), <span class="ident">ELECTRON</span>.<span class="ident">get_charge</span>().<span class="ident">unwrap</span>());
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;e⁻&quot;</span>, <span class="ident">ELECTRON</span>.<span class="ident">symbol</span>());
 }
 
@@ -1153,10 +1169,10 @@
     <span class="kw">use</span> <span class="ident">data_atoms</span>::<span class="kw-2">*</span>;
 
 
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">HYDROGEN</span>.<span class="ident">number</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AtomNumber</span>::<span class="ident">from</span>(<span class="number">1</span>), <span class="ident">HYDROGEN</span>.<span class="ident">number</span>);
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;oxygen&quot;</span>, <span class="ident">OXYGEN</span>.<span class="ident">name</span>);
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;He&quot;</span>, <span class="ident">HELIUM</span>.<span class="ident">symbol</span>);
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">35.45</span>, <span class="ident">CHLORINE</span>.<span class="ident">mass</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AtomMass</span>::<span class="ident">from</span>(<span class="number">35.45</span>), <span class="ident">CHLORINE</span>.<span class="ident">mass</span>);
 
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">HYDROGEN</span>.<span class="ident">diatomic</span>);
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">OXYGEN</span>.<span class="ident">diatomic</span>);
@@ -1394,9 +1410,9 @@
     <span class="kw">use</span> <span class="ident">data_molecules</span>::<span class="kw-2">*</span>;
 
 
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">18.015</span>, <span class="ident">WATER</span>.<span class="ident">mass</span>());
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">342.297</span>, <span class="ident">SUGAR</span>.<span class="ident">mass</span>());
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">44.009</span>, <span class="ident">CO2</span>.<span class="ident">mass</span>());
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AtomMass</span>::<span class="ident">from</span>(<span class="number">18.015</span>), <span class="ident">WATER</span>.<span class="ident">mass</span>());
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AtomMass</span>::<span class="ident">from</span>(<span class="number">342.297</span>), <span class="ident">SUGAR</span>.<span class="ident">mass</span>());
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AtomMass</span>::<span class="ident">from</span>(<span class="number">44.009</span>), <span class="ident">CO2</span>.<span class="ident">mass</span>());
 }
 </pre>
 </section>

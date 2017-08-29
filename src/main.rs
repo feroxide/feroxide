@@ -15,14 +15,16 @@ fn main() {
 
     // ... and the fast way
     let carbonmonoxide = Molecule {
-        compounds: vec![MoleculeCompound {
-                            atom: CARBON,
-                            amount: 1,
-                        },
-                        MoleculeCompound {
-                            atom: OXYGEN,
-                            amount: 1,
-                        }],
+        compounds: vec![
+            MoleculeCompound {
+                atom: CARBON,
+                amount: 1,
+            },
+            MoleculeCompound {
+                atom: OXYGEN,
+                amount: 1,
+            },
+        ],
     };
 
     // Of which you can generate the name
@@ -42,21 +44,20 @@ fn main() {
 
     // Throw a bunch of molecules together in a container with a bit of energy
     let mut container = Container {
-        contents: vec![ContainerCompound {
-                           element: ion_from_molecule!(carbonmonoxide.clone()),
-                           moles: Moles::from(1000.0),
-                       },
-
-                       ContainerCompound {
-                           element: ion_from_molecule!(WATER.clone()),
-                           moles: Moles::from(1000.0),
-                       },
-
-                       ContainerCompound {
-                           element: ion_from_atom!(OXYGEN.clone()),
-                           moles: Moles::from(1000.0),
-                       },
-                      ],
+        contents: vec![
+            ContainerCompound {
+                element: ion_from_molecule!(carbonmonoxide.clone()),
+                moles: Moles::from(1000.0),
+            },
+            ContainerCompound {
+                element: ion_from_molecule!(WATER.clone()),
+                moles: Moles::from(1000.0),
+            },
+            ContainerCompound {
+                element: ion_from_atom!(OXYGEN.clone()),
+                moles: Moles::from(1000.0),
+            },
+        ],
 
         available_energy: Energy::from(100_000f64), // in Joules
     };
@@ -65,21 +66,25 @@ fn main() {
     // H₂O + CO₂ ⇌ H₂CO₃
     let reaction = ElemReaction {
         lhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: ion_from_atom!(OXYGEN.clone()),
-                                amount: 1,
-                            },
-                            ReactionCompound {
-                                element: ion_from_molecule!(carbonmonoxide.clone()),
-                                amount: 2,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: ion_from_atom!(OXYGEN.clone()),
+                    amount: 1,
+                },
+                ReactionCompound {
+                    element: ion_from_molecule!(carbonmonoxide.clone()),
+                    amount: 2,
+                },
+            ],
         },
 
         rhs: ReactionSide {
-            compounds: vec![ReactionCompound {
-                                element: ion_from_molecule!(carbondioxide.clone()),
-                                amount: 2,
-                            }],
+            compounds: vec![
+                ReactionCompound {
+                    element: ion_from_molecule!(carbondioxide.clone()),
+                    amount: 2,
+                },
+            ],
         },
 
         is_equilibrium: true,

@@ -56,7 +56,9 @@ impl Molecule {
 
 
         if !compounds.is_empty() {
-            Some(Molecule { compounds: compounds })
+            Some(Molecule {
+                compounds: compounds,
+            })
         } else {
             None
         }
@@ -89,9 +91,9 @@ impl MoleculeCompound {
 
         if let Some(atom) = Atom::from_string(token) {
             Some(MoleculeCompound {
-                     atom: atom,
-                     amount: amount,
-                 })
+                atom: atom,
+                amount: amount,
+            })
         } else {
             None
         }

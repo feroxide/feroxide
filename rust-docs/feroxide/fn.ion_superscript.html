@@ -48,11 +48,12 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/feroxide/namings.rs.html#200-212' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn ion_superscript(n: <a class="type" href="../feroxide/type.AtomCharge.html" title="type feroxide::AtomCharge">AtomCharge</a>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/collections/string/struct.String.html" title="struct collections::string::String">String</a></pre><div class='docblock'><p>Convert a number to ionic superscript notation
+               </span><a class='srclink' href='../src/feroxide/namings.rs.html#203-217' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn ion_superscript(ac: &amp;<a class="struct" href="../feroxide/struct.AtomCharge.html" title="struct feroxide::AtomCharge">AtomCharge</a>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a></pre><div class='docblock'><p>Convert a number to ionic superscript notation
 The difference with normal superscript notation is that the 1 is omitted,
 also, ionic superscript supports negative numbers (of which the sign
-is put at the end, instead of at the beginning)</p>
+is put at the end, instead of at the beginning)
+For positive numbers, a plus-sign is appended too</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 

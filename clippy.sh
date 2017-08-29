@@ -2,15 +2,21 @@
 
 mode="$1"
 
-if [ "$TRAVIS_RUST_VERSION" != "nightly" ]; then
+if [ "$TRAVIS_RUST_VERSION" != "nightly" ] && [ "$RUSTUP_NIGHTLY" != "yes" ]; then
   exit 0
 fi
 
+CARGO="cargo"
+
+if [ "$RUSTUP_NIGHTLY" = "yes" ]; then
+  CARGO="rustup run nightly cargo"
+fi
+
 if [ "$mode" = "install" ]; then
-  cargo install clippy --verbose
+  $CARGO install clippy --verbose
   exit $?
 elif [ "$mode" = "test" ]; then
-  cargo clippy --verbose -- -D warnings
+  $CARGO clippy --verbose -- -D warnings
   exit $?
 else
   echo "Mode not specified or unknown" >&2

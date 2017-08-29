@@ -26,7 +26,7 @@ build_rust_docs() {
 
 
 echo ""
-read -pr ">> Do you want to (re)generate Latex docs? [Yn]" yn
+read -r -p ">> Do you want to (re)generate Latex docs? [Yn]" yn
 case $yn in
     [Nn]* ) ;;
         * ) build_latex_docs;;
@@ -34,7 +34,7 @@ esac
 
 
 echo ""
-read -pr ">> Do you want to (re)generate Rust docs? [Yn]" yn
+read -r -p ">> Do you want to (re)generate Rust docs? [Yn]" yn
 case $yn in
     [Nn]* ) ;;
         * ) build_rust_docs;;

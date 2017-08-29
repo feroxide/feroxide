@@ -97,6 +97,7 @@
 <span id="52">52</span>
 <span id="53">53</span>
 <span id="54">54</span>
+<span id="55">55</span>
 </pre><pre class="rust ">
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">is_upper</span> {
@@ -147,6 +148,7 @@
 
 
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="doccomment">/// converts a single char into a number</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">to_number</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">c</span>: <span class="ident">expr</span>) <span class="op">=&gt;</span> {
         (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">c</span> <span class="kw">as</span> <span class="ident">u8</span>) <span class="op">-</span> (<span class="string">&#39;0&#39;</span> <span class="kw">as</span> <span class="ident">u8</span>)

@@ -78,10 +78,10 @@ impl<E: Element> ElemReaction<E> {
 
         if let (Some(lhs), Some(rhs)) = (lhs, rhs) {
             Some(ElemReaction {
-                     lhs: lhs,
-                     rhs: rhs,
-                     is_equilibrium: is_equilibrium,
-                 })
+                lhs: lhs,
+                rhs: rhs,
+                is_equilibrium: is_equilibrium,
+            })
         } else {
             None
         }
@@ -120,10 +120,10 @@ impl<E: Element> ElemReaction<E> {
 
         if let (Some(lhs), Some(rhs)) = (lhs, rhs) {
             Some(ElemReaction {
-                     lhs: lhs,
-                     rhs: rhs,
-                     is_equilibrium: is_equilibrium,
-                 })
+                lhs: lhs,
+                rhs: rhs,
+                is_equilibrium: is_equilibrium,
+            })
         } else {
             None
         }
@@ -178,7 +178,9 @@ impl<E: Element> ReactionSide<E> {
 
 
         if !compounds.is_empty() {
-            Some(ReactionSide { compounds: compounds })
+            Some(ReactionSide {
+                compounds: compounds,
+            })
         } else {
             None
         }
@@ -214,7 +216,9 @@ impl<E: Element> ReactionSide<E> {
 
 
         if !compounds.is_empty() {
-            Some(ReactionSide { compounds: compounds })
+            Some(ReactionSide {
+                compounds: compounds,
+            })
         } else {
             None
         }
@@ -250,8 +254,6 @@ impl<E: Element> ReactionSide<E> {
         for reaction_compound in &self.compounds {
             if let Some(molecule) = reaction_compound.element.get_molecule() {
                 for molecule_compound in &molecule.compounds {
-
-
                     let atom_number = molecule_compound.atom.number.clone();
 
                     if atom_number == AtomNumber::from(0) {
@@ -309,9 +311,9 @@ impl<E: Element> ReactionCompound<E> {
 
         if let Some(element) = element {
             Some(ReactionCompound {
-                     amount: amount,
-                     element: element,
-                 })
+                amount: amount,
+                element: element,
+            })
         } else {
             None
         }
@@ -348,9 +350,9 @@ impl<E: Element> ReactionCompound<E> {
 
         if let Some(element) = element {
             Some(ReactionCompound {
-                     amount: amount,
-                     element: element,
-                 })
+                amount: amount,
+                element: element,
+            })
         } else {
             None
         }
@@ -412,7 +414,7 @@ impl<E: Element> Reaction<E> for ElemReaction<E> {
 
     fn is_valid(&self) -> bool {
         self.lhs.total_atoms() == self.rhs.total_atoms() &&
-        self.lhs.total_charge() == self.lhs.total_charge()
+            self.lhs.total_charge() == self.lhs.total_charge()
     }
 
 
@@ -435,7 +437,9 @@ impl<E: Element> Add for ReactionSide<E> {
         let mut compounds = self.compounds.clone();
         compounds.append(&mut rhs.compounds);
 
-        ReactionSide { compounds: compounds }
+        ReactionSide {
+            compounds: compounds,
+        }
     }
 }
 
@@ -452,7 +456,9 @@ impl<E: Element> Mul<u16> for ReactionSide<E> {
             compound.amount *= rhs;
         }
 
-        ReactionSide { compounds: compounds }
+        ReactionSide {
+            compounds: compounds,
+        }
     }
 }
 

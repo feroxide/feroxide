@@ -79,9 +79,8 @@ pub fn number_to_greek(n: u8) -> String {
         if n == factor_ten * 10 {
             basic_number_to_greek(factor_ten, true) + "conta"
         } else {
-            basic_number_to_greek(n - factor_ten * 10, true)
-            + &basic_number_to_greek(factor_ten, true)
-            + "conta"
+            basic_number_to_greek(n - factor_ten * 10, true) +
+                &basic_number_to_greek(factor_ten, true) + "conta"
         }
     } else {
         panic!(n.to_string().to_owned() + " uncalculatable");
@@ -211,7 +210,8 @@ pub fn ion_superscript(ac: &AtomCharge) -> String {
         superscript((-n) as u8) + &ion_superscript(&AtomCharge::from(-1))
     } else if n > 0 {
         superscript(n as u8) + &ion_superscript(&AtomCharge::from(1))
-    } else { // n == 0
+    } else {
+        // n == 0
         superscript(n as u8)
     }
 }

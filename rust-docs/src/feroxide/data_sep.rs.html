@@ -197,6 +197,11 @@
 <span id="152">152</span>
 <span id="153">153</span>
 <span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">ion</span>::<span class="ident">Ion</span>;
 <span class="kw">use</span> <span class="ident">reaction</span>::<span class="ident">ElemReaction</span>;
@@ -206,11 +211,11 @@
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">hash_map</span>::<span class="ident">DefaultHasher</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">hash</span>::{<span class="ident">Hash</span>, <span class="ident">Hasher</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">hash</span>::<span class="kw-2">*</span>;
 
 
 <span class="comment">// Reference: https://en.wikipedia.org/wiki/Standard_electrode_potential_(data_page)</span>
-<span class="comment">// At doubt: Reference: Binas 6th edition, table 49</span>
+<span class="comment">// In doubt: Reference: Binas 6th edition, table 49</span>
 
 
 <span class="doccomment">/// Get the hash of a reaction</span>
@@ -224,16 +229,16 @@
 <span class="doccomment">/// Get the Standerd Electrode Potential (SEP) of a reaction</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_sep</span><span class="op">&lt;</span><span class="ident">E</span>: <span class="ident">Element</span><span class="op">&gt;</span>(<span class="ident">elem_reaction</span>: <span class="kw-2">&amp;</span><span class="ident">ElemReaction</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SEP</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">sep</span>) <span class="op">=</span> <span class="ident">SEPMAP</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">reaction_to_hash</span>(<span class="ident">elem_reaction</span>)) {
-        <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">sep</span>)
+        <span class="prelude-val">Some</span>((<span class="kw-2">*</span><span class="ident">sep</span>).<span class="ident">clone</span>())
     } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">sep</span>) <span class="op">=</span> <span class="ident">SEPMAP</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">reaction_to_hash</span>(<span class="kw-2">&amp;</span><span class="ident">elem_reaction</span>.<span class="ident">clone</span>().<span class="ident">swap</span>())) {
-        <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="ident">sep</span>)
+        <span class="prelude-val">Some</span>((<span class="kw-2">*</span><span class="ident">sep</span>).<span class="ident">clone</span>())
     } <span class="kw">else</span> {
         <span class="prelude-val">None</span>
     }
 }
 
 
-<span class="comment">// Macro to make it easier to add reactions to the SEPMAP</span>
+<span class="comment">// This is mainly used for debugging purposes, to make sure no invalid reaction are added</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">react_str_hash</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {
         <span class="ident">reaction_to_hash</span>(
@@ -246,6 +251,12 @@
                 )
             )
         )
+    }
+}
+
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">add_str_reaction</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">map</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sep</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {
+        <span class="macro-nonterminal">$</span><span class="macro-nonterminal">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">r</span>), <span class="ident">SEP</span>::<span class="ident">from</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">sep</span>))
     }
 }
 
@@ -262,7 +273,6 @@
 
 <span class="doccomment">/// Check if the reaction is defined, then unwrap. Otherwise: panic!</span>
 <span class="kw">fn</span> <span class="ident">safe_unwrap_reaction</span><span class="op">&lt;</span><span class="ident">E</span>: <span class="ident">Element</span><span class="op">&gt;</span>(<span class="ident">reaction</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ElemReaction</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;&gt;</span>, <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">ElemReaction</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
-
     <span class="kw">if</span> <span class="ident">reaction</span> <span class="op">==</span> <span class="prelude-val">None</span> {
         <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Reaction failed to create: {}&quot;</span>, <span class="ident">s</span>);
     }
@@ -275,77 +285,77 @@
     <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">SEPMAP</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">u64</span>, <span class="ident">SEP</span><span class="op">&gt;</span> <span class="op">=</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">HashMap</span>::<span class="ident">new</span>();
 
-        <span class="comment">// NOTE: These are the common ones, I think</span>
+        <span class="comment">// NOTE: These are all the common ones</span>
 
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Ca;1 + e &lt;&gt; Ca&quot;</span>), <span class="op">-</span><span class="number">3.8</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Li;1 + e &lt;&gt; Li&quot;</span>), <span class="op">-</span><span class="number">3.0401</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Cs;1 + e &lt;&gt; Cs&quot;</span>), <span class="op">-</span><span class="number">3.026</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Rb;1 + e &lt;&gt; Rb&quot;</span>), <span class="op">-</span><span class="number">2.98</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;K;1 + e &lt;&gt; K&quot;</span>), <span class="op">-</span><span class="number">2.931</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Ba;2 + 2e &lt;&gt; Ba&quot;</span>), <span class="op">-</span><span class="number">2.912</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Fr;1 + e &lt;&gt; Fr&quot;</span>), <span class="op">-</span><span class="number">2.9</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Ca;2 + 2e &lt;&gt; Ca&quot;</span>), <span class="op">-</span><span class="number">2.899</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Na;1 + e &lt;&gt; Na&quot;</span>), <span class="op">-</span><span class="number">2.71</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Mg;1 + e &lt;&gt; Mg&quot;</span>), <span class="op">-</span><span class="number">2.70</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Mg;2 + 2e &lt;&gt; Mg&quot;</span>), <span class="op">-</span><span class="number">2.372</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;H2 + 2e &lt;&gt; 2H;-&quot;</span>), <span class="op">-</span><span class="number">2.23</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Be;2 + 2e &lt;&gt; Be&quot;</span>), <span class="op">-</span><span class="number">1.847</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Al;3 + 3e &lt;&gt; Al&quot;</span>), <span class="op">-</span><span class="number">1.662</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Mn;2 + 2e &lt;&gt; Mn&quot;</span>), <span class="op">-</span><span class="number">1.185</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Sn + 4H;1 + 4e &lt;&gt; SnH4&quot;</span>), <span class="op">-</span><span class="number">1.07</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;2H2O + 2e &lt;&gt; H2 + 2OH;-&quot;</span>), <span class="op">-</span><span class="number">0.8277</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Zn;2 + 2e &lt;&gt; Zn&quot;</span>), <span class="op">-</span><span class="number">0.7618</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Fe;2 + 2e &lt;&gt; Fe&quot;</span>), <span class="op">-</span><span class="number">0.44</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Cr;3 + e &lt;&gt; Cr;2&quot;</span>), <span class="op">-</span><span class="number">0.42</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Sn;2 + 2e &lt;&gt; Sn&quot;</span>), <span class="op">-</span><span class="number">0.13</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Fe;3 + 3e &lt;&gt; Fe&quot;</span>), <span class="op">-</span><span class="number">0.04</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Ca;1 + e &lt;&gt; Ca&quot;</span>, <span class="op">-</span><span class="number">3.8</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Li;1 + e &lt;&gt; Li&quot;</span>, <span class="op">-</span><span class="number">3.0401</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Cs;1 + e &lt;&gt; Cs&quot;</span>, <span class="op">-</span><span class="number">3.026</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Rb;1 + e &lt;&gt; Rb&quot;</span>, <span class="op">-</span><span class="number">2.98</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;K;1 + e &lt;&gt; K&quot;</span>, <span class="op">-</span><span class="number">2.931</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Ba;2 + 2e &lt;&gt; Ba&quot;</span>, <span class="op">-</span><span class="number">2.912</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Fr;1 + e &lt;&gt; Fr&quot;</span>, <span class="op">-</span><span class="number">2.9</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Ca;2 + 2e &lt;&gt; Ca&quot;</span>, <span class="op">-</span><span class="number">2.899</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Na;1 + e &lt;&gt; Na&quot;</span>, <span class="op">-</span><span class="number">2.71</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Mg;1 + e &lt;&gt; Mg&quot;</span>, <span class="op">-</span><span class="number">2.70</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Mg;2 + 2e &lt;&gt; Mg&quot;</span>, <span class="op">-</span><span class="number">2.372</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;H2 + 2e &lt;&gt; 2H;-&quot;</span>, <span class="op">-</span><span class="number">2.23</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Be;2 + 2e &lt;&gt; Be&quot;</span>, <span class="op">-</span><span class="number">1.847</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Al;3 + 3e &lt;&gt; Al&quot;</span>, <span class="op">-</span><span class="number">1.662</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Mn;2 + 2e &lt;&gt; Mn&quot;</span>, <span class="op">-</span><span class="number">1.185</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Sn + 4H;1 + 4e &lt;&gt; SnH4&quot;</span>, <span class="op">-</span><span class="number">1.07</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;2H2O + 2e &lt;&gt; H2 + 2OH;-&quot;</span>, <span class="op">-</span><span class="number">0.8277</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Zn;2 + 2e &lt;&gt; Zn&quot;</span>, <span class="op">-</span><span class="number">0.7618</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Fe;2 + 2e &lt;&gt; Fe&quot;</span>, <span class="op">-</span><span class="number">0.44</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Cr;3 + e &lt;&gt; Cr;2&quot;</span>, <span class="op">-</span><span class="number">0.42</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Sn;2 + 2e &lt;&gt; Sn&quot;</span>, <span class="op">-</span><span class="number">0.13</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Fe;3 + 3e &lt;&gt; Fe&quot;</span>, <span class="op">-</span><span class="number">0.04</span>);
 
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;2H;1 + 2e &lt;&gt; H2&quot;</span>), <span class="number">0.0000</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;2H;1 + 2e &lt;&gt; H2&quot;</span>, <span class="number">0.0000</span>);
 
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;S4O6;2- + 2e &lt;&gt; 2S2O3;2-&quot;</span>), <span class="number">0.08</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;S + 2H;1 + 2e &lt;&gt; H2S&quot;</span>), <span class="number">0.14</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Sn;4 + 2e &lt;&gt; Sn;2&quot;</span>), <span class="number">0.15</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Cu;2 + e &lt;&gt; Cu;1&quot;</span>), <span class="number">0.159</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;HSO4;- + 3H;1 + 2e &lt;&gt; SO2 + 2H2O&quot;</span>), <span class="number">0.16</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;SO4;- + 4H;1 + 2e &lt;&gt; SO2 + 2H2O&quot;</span>), <span class="number">0.17</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Cu;2 + 2e &lt;&gt; Cu&quot;</span>), <span class="number">0.337</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;SO2 + 4H;1 + 4e &lt;&gt; S + 2H2O&quot;</span>), <span class="number">0.50</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Cu;1 + e &lt;&gt; Cu&quot;</span>), <span class="number">0.520</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;I3;- + 2e &lt;&gt; 3I;-&quot;</span>), <span class="number">0.53</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;I2 + 2e &lt;&gt; 2I;-&quot;</span>), <span class="number">0.54</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;S2O3;2- + 6H;1 + 4e &lt;&gt; 2S + 3H2O&quot;</span>), <span class="number">0.60</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;O2 + 2H;1 + 2e &lt;&gt; H2O2&quot;</span>), <span class="number">0.70</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Fe;3 + e &lt;&gt; Fe;2&quot;</span>), <span class="number">0.77</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Ag;1 + e &lt;&gt; Ag&quot;</span>), <span class="number">0.7996</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;NO3;- + 2H;1 + e &lt;&gt; NO2 + H2O&quot;</span>), <span class="number">0.80</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;MnO4;- + H;1 + e &lt;&gt; HMnO4;-&quot;</span>), <span class="number">0.90</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;MnO2 + 4H;1 + e &lt;&gt; Mn;3 + 2H2O&quot;</span>), <span class="number">0.95</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;NO3;- + 4H;1 + 3e &lt;&gt; NO + 2H2O&quot;</span>), <span class="number">0.958</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;O2 + 4H;1 + 4e &lt;&gt; 2H2O&quot;</span>), <span class="number">1.229</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;MnO2 + 4H;1 + 2e &lt;&gt; Mn;2 + 2H2O&quot;</span>), <span class="number">1.23</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Cr2O7;2- + 14H;1 + 6e &lt;&gt; 2Cr;3 + 7H2O&quot;</span>), <span class="number">1.33</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Cl2 + 2e &lt;&gt; 2Cl;-&quot;</span>), <span class="number">1.36</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;MnO4;- + 8H;1 + 5e &lt;&gt; Mn;2 + 4H2O&quot;</span>), <span class="number">1.51</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Au;3 + 3e &lt;&gt; Au&quot;</span>), <span class="number">1.52</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Pb;4 + 2e &lt;&gt; Pb;2&quot;</span>), <span class="number">1.69</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;MnO4;- + 4H;1 + 3e &lt;&gt; MnO2 + 2H2O&quot;</span>), <span class="number">1.70</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;H2O2 + 2H;1 + 2e &lt;&gt; 2H2O&quot;</span>), <span class="number">1.78</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Co;3 + e &lt;&gt; Co;2&quot;</span>), <span class="number">1.82</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Au;1 + e &lt;&gt; Au&quot;</span>), <span class="number">1.83</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;Ag;2 + e &lt;&gt; Ag;1&quot;</span>), <span class="number">1.98</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;S2O8;2- + 2e &lt;&gt; 2SO4;2-&quot;</span>), <span class="number">2.010</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;HMnO4;- + 3H;1 + 2e &lt;&gt; MnO2 + 2H2O&quot;</span>), <span class="number">2.09</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;FeO4;2- + 3e + 8H;1 &lt;&gt; Fe;3 + 4H2O&quot;</span>), <span class="number">2.20</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;F2 + 2e &lt;&gt; 2F;-&quot;</span>), <span class="number">2.87</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;F2 + 2H;1 + 2e &lt;&gt; 2HF&quot;</span>), <span class="number">3.05</span>);
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;KrF2 + 2e &lt;&gt; Kr + 2F;-&quot;</span>), <span class="number">3.27</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;S4O6;2- + 2e &lt;&gt; 2S2O3;2-&quot;</span>, <span class="number">0.08</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;S + 2H;1 + 2e &lt;&gt; H2S&quot;</span>, <span class="number">0.14</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Sn;4 + 2e &lt;&gt; Sn;2&quot;</span>, <span class="number">0.15</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Cu;2 + e &lt;&gt; Cu;1&quot;</span>, <span class="number">0.159</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;HSO4;- + 3H;1 + 2e &lt;&gt; SO2 + 2H2O&quot;</span>, <span class="number">0.16</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;SO4;- + 4H;1 + 2e &lt;&gt; SO2 + 2H2O&quot;</span>, <span class="number">0.17</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Cu;2 + 2e &lt;&gt; Cu&quot;</span>, <span class="number">0.337</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;SO2 + 4H;1 + 4e &lt;&gt; S + 2H2O&quot;</span>, <span class="number">0.50</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Cu;1 + e &lt;&gt; Cu&quot;</span>, <span class="number">0.520</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;I3;- + 2e &lt;&gt; 3I;-&quot;</span>, <span class="number">0.53</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;I2 + 2e &lt;&gt; 2I;-&quot;</span>, <span class="number">0.54</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;S2O3;2- + 6H;1 + 4e &lt;&gt; 2S + 3H2O&quot;</span>, <span class="number">0.60</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;O2 + 2H;1 + 2e &lt;&gt; H2O2&quot;</span>, <span class="number">0.70</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Fe;3 + e &lt;&gt; Fe;2&quot;</span>, <span class="number">0.77</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Ag;1 + e &lt;&gt; Ag&quot;</span>, <span class="number">0.7996</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;NO3;- + 2H;1 + e &lt;&gt; NO2 + H2O&quot;</span>, <span class="number">0.80</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;MnO4;- + H;1 + e &lt;&gt; HMnO4;-&quot;</span>, <span class="number">0.90</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;MnO2 + 4H;1 + e &lt;&gt; Mn;3 + 2H2O&quot;</span>, <span class="number">0.95</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;NO3;- + 4H;1 + 3e &lt;&gt; NO + 2H2O&quot;</span>, <span class="number">0.958</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;O2 + 4H;1 + 4e &lt;&gt; 2H2O&quot;</span>, <span class="number">1.229</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;MnO2 + 4H;1 + 2e &lt;&gt; Mn;2 + 2H2O&quot;</span>, <span class="number">1.23</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Cr2O7;2- + 14H;1 + 6e &lt;&gt; 2Cr;3 + 7H2O&quot;</span>, <span class="number">1.33</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Cl2 + 2e &lt;&gt; 2Cl;-&quot;</span>, <span class="number">1.36</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;MnO4;- + 8H;1 + 5e &lt;&gt; Mn;2 + 4H2O&quot;</span>, <span class="number">1.51</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Au;3 + 3e &lt;&gt; Au&quot;</span>, <span class="number">1.52</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Pb;4 + 2e &lt;&gt; Pb;2&quot;</span>, <span class="number">1.69</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;MnO4;- + 4H;1 + 3e &lt;&gt; MnO2 + 2H2O&quot;</span>, <span class="number">1.70</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;H2O2 + 2H;1 + 2e &lt;&gt; 2H2O&quot;</span>, <span class="number">1.78</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Co;3 + e &lt;&gt; Co;2&quot;</span>, <span class="number">1.82</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Au;1 + e &lt;&gt; Au&quot;</span>, <span class="number">1.83</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;Ag;2 + e &lt;&gt; Ag;1&quot;</span>, <span class="number">1.98</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;S2O8;2- + 2e &lt;&gt; 2SO4;2-&quot;</span>, <span class="number">2.010</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;HMnO4;- + 3H;1 + 2e &lt;&gt; MnO2 + 2H2O&quot;</span>, <span class="number">2.09</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;FeO4;2- + 3e + 8H;1 &lt;&gt; Fe;3 + 4H2O&quot;</span>, <span class="number">2.20</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;F2 + 2e &lt;&gt; 2F;-&quot;</span>, <span class="number">2.87</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;F2 + 2H;1 + 2e &lt;&gt; 2HF&quot;</span>, <span class="number">3.05</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;KrF2 + 2e &lt;&gt; Kr + 2F;-&quot;</span>, <span class="number">3.27</span>);
 
 
         <span class="comment">// NOTE: The Wikipedia reference says something different,</span>
         <span class="comment">// yet according to the Binas this is the right one.</span>
         <span class="comment">// Since the value on the Wikipedia page (1.692) does not look &quot;in-place&quot;,</span>
         <span class="comment">// I assumed the Binas one is correct here.</span>
-        <span class="ident">map</span>.<span class="ident">insert</span>(<span class="macro">react_str_hash</span><span class="macro">!</span>(<span class="string">&quot;MnO4;- + 2H2O + 3e &lt;&gt; MnO2 + 4OH;-&quot;</span>), <span class="number">0.60</span>);
+        <span class="macro">add_str_reaction</span><span class="macro">!</span>(<span class="ident">map</span>, <span class="string">&quot;MnO4;- + 2H2O + 3e &lt;&gt; MnO2 + 4OH;-&quot;</span>, <span class="number">0.60</span>);
 
 
 

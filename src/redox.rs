@@ -1,6 +1,6 @@
 use data_sep::*;
 use math::gcd;
-use reaction::{ ElemReaction, ReactionSide };
+use reaction::{ElemReaction, ReactionSide};
 use trait_element::Element;
 use trait_properties::Properties;
 use trait_reaction::Reaction;
@@ -43,11 +43,13 @@ impl<E: Element> Reaction<E> for RedoxReaction<E> {
         let oxi_charge;
 
 
-        fn electrons_by_reactionside<T>(rs: &ReactionSide<T>) -> Option<usize> where T: Element {
-            rs
-            .compounds
-            .iter()
-            .position(|x| x.element.get_molecule().unwrap().compounds[0].atom.number == AtomNumber::from(0))
+        fn electrons_by_reactionside<T>(rs: &ReactionSide<T>) -> Option<usize>
+        where
+            T: Element,
+        {
+            rs.compounds.iter().position(|x| {
+                x.element.get_molecule().unwrap().compounds[0].atom.number == AtomNumber::from(0)
+            })
         }
 
 
@@ -102,7 +104,11 @@ impl<E: Element> Properties for RedoxReaction<E> {
 
 
     fn name(&self) -> String {
-        format!("oxidator: {}\nreductor: {}", self.oxidator.name(), self.reductor.name())
+        format!(
+            "oxidator: {}\nreductor: {}",
+            self.oxidator.name(),
+            self.reductor.name()
+        )
     }
 
 

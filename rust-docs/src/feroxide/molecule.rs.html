@@ -237,7 +237,7 @@
 <span id="192">192</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">atom</span>::<span class="ident">Atom</span>;
-<span class="kw">use</span> <span class="ident">namings</span>::{<span class="ident">number_to_greek</span>, <span class="ident">subscript</span>};
+<span class="kw">use</span> <span class="ident">namings</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">trait_element</span>::<span class="ident">Element</span>;
 <span class="kw">use</span> <span class="ident">trait_properties</span>::<span class="ident">Properties</span>;
 <span class="kw">use</span> <span class="ident">types</span>::<span class="kw-2">*</span>;
@@ -374,10 +374,10 @@
 
 
     <span class="kw">fn</span> <span class="ident">mass</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">AtomMass</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mass</span> <span class="op">=</span> <span class="number">0.0</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mass</span> <span class="op">=</span> <span class="ident">AtomMass</span>::<span class="ident">from</span>(<span class="number">0.0</span>);
 
         <span class="kw">for</span> <span class="ident">compound</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">compounds</span> {
-            <span class="ident">mass</span> <span class="op">+=</span> <span class="ident">compound</span>.<span class="ident">mass</span>();
+            <span class="ident">mass</span> <span class="op">+=</span> <span class="ident">AtomMass</span>::<span class="ident">from</span>(<span class="ident">compound</span>.<span class="ident">mass</span>());
         }
 
         <span class="ident">mass</span>
@@ -413,14 +413,14 @@
 
 
     <span class="kw">fn</span> <span class="ident">mass</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">AtomMass</span> {
-        (<span class="self">self</span>.<span class="ident">amount</span> <span class="kw">as</span> <span class="ident">AtomMass</span>) <span class="op">*</span> <span class="self">self</span>.<span class="ident">atom</span>.<span class="ident">mass</span>
+        <span class="self">self</span>.<span class="ident">atom</span>.<span class="ident">mass</span>.<span class="ident">clone</span>() <span class="op">*</span> (<span class="self">self</span>.<span class="ident">amount</span> <span class="kw">as</span> <span class="ident">AtomMass_type</span>)
     }
 }
 
 
 <span class="kw">impl</span> <span class="ident">Element</span> <span class="kw">for</span> <span class="ident">Molecule</span> {
     <span class="kw">fn</span> <span class="ident">get_charge</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">AtomCharge</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Some</span>(<span class="number">0</span>)
+        <span class="prelude-val">Some</span>(<span class="ident">AtomCharge</span>::<span class="ident">from</span>(<span class="number">0</span>))
     }
 
 
