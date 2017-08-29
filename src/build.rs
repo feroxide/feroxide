@@ -4,7 +4,7 @@ extern crate toml;
 
 
 mod types;
-use types::{AtomNumber, AtomGroup, AtomMass};
+use types::{AtomNumber_type, AtomGroup_type, AtomMass_type};
 
 use std::fs::File;
 use std::collections::HashMap;
@@ -19,11 +19,11 @@ struct Config {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct Atom {
-    pub number: AtomNumber,
-    pub group: AtomGroup,
+    pub number: AtomNumber_type,
+    pub group: AtomGroup_type,
     pub symbol: String,
     pub name: String,
-    pub mass: AtomMass,
+    pub mass: AtomMass_type,
     pub diatomic: bool,
 }
 
@@ -71,7 +71,8 @@ fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {
     }
 
     // Write header to file
-    atoms_rs_file.write_all(b"use atom::Atom;").ok();
+    atoms_rs_file.write_all(b"use atom::Atom;\n").ok();
+    atoms_rs_file.write_all(b"use types::{ AtomNumber, AtomMass, AtomGroup };\n").ok();
 
     // Convert items from TOML file to RS syntax
     for (capsname, atom) in config.atoms.clone().into_iter() {
@@ -86,8 +87,8 @@ fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {
 
         let rust_atom = format!("
 pub const {capsname}: Atom = Atom {{
-    number: {number}, mass: {mass:.5}, symbol: \"{symbol}\",
-    name: \"{name}\", group: {group:?}, diatomic: {diatomic} }};
+    number: AtomNumber{{0:{number}}}, mass: AtomMass{{0:{mass:.5}}}, symbol: \"{symbol}\",
+    name: \"{name}\", group: AtomGroup{{0:{group:?}}}, diatomic: {diatomic} }};
 ",
                                 capsname = capsname,
                                 name = name,

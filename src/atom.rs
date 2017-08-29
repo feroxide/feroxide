@@ -44,21 +44,21 @@ impl Atom {
 
     /// Get the charge an atom has based on its group
     pub fn charge_by_group(&self) -> Option<AtomCharge> {
-        let group = self.group;
-        let number = self.number;
+        let group = self.group.0;
+        let number = self.number.0;
 
         if group == 1 {
-            Some(1)
+            Some(AtomCharge::from(1))
         } else if group == 2 {
-            Some(2)
+            Some(AtomCharge::from(2))
         } else if group == 15 && number <= 15 {
-            Some(-3)
+            Some(AtomCharge::from(-3))
         } else if group == 16 && number <= 34 {
-            Some(-2)
+            Some(AtomCharge::from(-2))
         } else if group == 17 && number <= 53 {
-            Some(-1)
+            Some(AtomCharge::from(-1))
         } else if group == 18 {
-            Some(0)
+            Some(AtomCharge::from(0))
         } else {
             None
         }
@@ -80,7 +80,7 @@ impl PartialEq for Atom {
 impl Hash for Atom {
     fn hash<H: Hasher>(&self, state: &mut H) {
         // Only the `AtomNumber` determines the hash
-        self.number.hash(state)
+        self.number.0.hash(state)
     }
 }
 
@@ -97,6 +97,6 @@ impl Properties for Atom {
 
 
     fn mass(&self) -> AtomMass {
-        self.mass
+        self.mass.clone()
     }
 }

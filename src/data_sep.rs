@@ -24,9 +24,9 @@ pub fn reaction_to_hash<E: Element>(reaction: &ElemReaction<E>) -> u64 {
 /// Get the Standerd Electrode Potential (SEP) of a reaction
 pub fn get_sep<E: Element>(elem_reaction: &ElemReaction<E>) -> Option<SEP> {
     if let Some(sep) = SEPMAP.get(&reaction_to_hash(elem_reaction)) {
-        Some(*sep)
+        Some((*sep).clone())
     } else if let Some(sep) = SEPMAP.get(&reaction_to_hash(&elem_reaction.clone().swap())) {
-        Some(*sep)
+        Some((*sep).clone())
     } else {
         None
     }
@@ -51,7 +51,7 @@ macro_rules! react_str_hash {
 
 macro_rules! add_str_reaction {
     ($map:expr, $r:expr, $sep:expr) => {
-        $map.insert(react_str_hash!($r), $sep)
+        $map.insert(react_str_hash!($r), SEP::from($sep))
     }
 }
 

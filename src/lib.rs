@@ -68,10 +68,18 @@ pub mod display_impls;
 
 // tests \\
 #[test]
+fn display_types_equals_value() {
+    assert_eq!(format!("{}", AtomNumber::from(1)), "1");
+    assert_eq!(format!("{}", AtomNumber::from(2)), "2");
+    assert_eq!(format!("{}", Energy::from(1.23)), "1.23");
+}
+
+
+#[test]
 fn ion_calculate_charge_from_string() {
     use trait_element::*;
 
-    assert_eq!(-1,
+    assert_eq!(AtomCharge::from(-1),
                Ion::from_string("OH".to_owned())
                    .unwrap()
                    .get_charge()
@@ -173,10 +181,10 @@ fn total_atoms() {
     };
 
     // 16 Hydrogen atoms
-    assert_eq!(16, *side.total_atoms().get(&1).unwrap());
+    assert_eq!(16, *side.total_atoms().get(&AtomNumber::from(1)).unwrap());
 
     // 8 + 10 = 18 Oxygen atoms
-    assert_eq!(18, *side.total_atoms().get(&8).unwrap());
+    assert_eq!(18, *side.total_atoms().get(&AtomNumber::from(8)).unwrap());
 }
 
 
@@ -189,10 +197,10 @@ fn container_add_and_remove_elements() {
     let mut container = Container {
         contents: vec![ContainerCompound {
                            element: WATER.clone(),
-                           moles: 6.0,
+                           moles: Moles::from(6.0),
                        }],
 
-        available_energy: 1e5, // Should be enough
+        available_energy: Energy::from(1e5), // Should be enough
     };
 
 
@@ -242,11 +250,11 @@ fn container_add_and_remove_elements() {
     // Remove 6 moles of hydrogen and 3 moles of oxygen (all contents)
     container.remove_elements(&vec![ContainerCompound {
                                        element: molecule_from_atom!(HYDROGEN),
-                                       moles: 6.0,
+                                       moles: Moles::from(6.0),
                                    },
                                    ContainerCompound {
                                        element: molecule_from_atom!(OXYGEN),
-                                       moles: 3.0,
+                                       moles: Moles::from(3.0),
                                    }]);
 
     // Now it should be empty
@@ -283,7 +291,7 @@ fn check_display() {
 
     let container = Container {
         contents: vec![containercompound.clone()],
-        available_energy: 0.0,
+        available_energy: Energy::from(0.0),
     };
 
 
@@ -311,15 +319,15 @@ fn container_reaction_cost() {
 
     let mut container = Container {
         contents: vec![ContainerCompound {
-                           moles: 100.0,
+                           moles: Moles::from(100.0),
                            element: hydrogen.clone(),
                        },
                        ContainerCompound {
-                           moles: 200.0,
+                           moles: Moles::from(200.0),
                            element: oxygen.clone(),
                        }],
 
-        available_energy: 1000.0,
+        available_energy: Energy::from(1000.0),
     };
 
 
@@ -346,19 +354,19 @@ fn container_reaction_cost() {
     };
 
 
-    assert_eq!(1000.0, container.available_energy);
-    assert_eq!(100.0, reaction.energy_cost());
+    assert_eq!(Energy::from(1000.0), container.available_energy);
+    assert_eq!(Energy::from(100.0), reaction.energy_cost());
 
     // Repeadably try this reaction
 
     assert!(container.react(&reaction));
-    assert_eq!(900.0, container.available_energy);
+    assert_eq!(Energy::from(900.0), container.available_energy);
 
     assert!(container.react(&reaction));
-    assert_eq!(800.0, container.available_energy);
+    assert_eq!(Energy::from(800.0), container.available_energy);
 
     assert!(container.react(&reaction));
-    assert_eq!(700.0, container.available_energy);
+    assert_eq!(Energy::from(700.0), container.available_energy);
 }
 
 #[test]
@@ -376,7 +384,7 @@ fn ion_notation_check() {
                             }],
         },
 
-        charge: Some(-2),
+        charge: Some(AtomCharge::from(-2)),
     };
 
 
@@ -390,9 +398,9 @@ fn ion_charge_calculation() {
     use data_ions::*;
 
 
-    assert_eq!(-2, SULPHATE.get_charge().unwrap());
-    assert_eq!(-1, HYDROXIDE.get_charge().unwrap());
-    assert_eq!(1, AMMONIUM.get_charge().unwrap());
+    assert_eq!(AtomCharge::from(-2), SULPHATE.get_charge().unwrap());
+    assert_eq!(AtomCharge::from(-1), HYDROXIDE.get_charge().unwrap());
+    assert_eq!(AtomCharge::from(1), AMMONIUM.get_charge().unwrap());
 }
 
 
@@ -401,7 +409,7 @@ fn electron_data() {
     use electron::*;
 
 
-    assert_eq!(-1, ELECTRON.get_charge().unwrap());
+    assert_eq!(AtomCharge::from(-1), ELECTRON.get_charge().unwrap());
     assert_eq!("e⁻", ELECTRON.symbol());
 }
 
@@ -430,10 +438,10 @@ fn atoms_database_check() {
     use data_atoms::*;
 
 
-    assert_eq!(1, HYDROGEN.number);
+    assert_eq!(AtomNumber::from(1), HYDROGEN.number);
     assert_eq!("oxygen", OXYGEN.name);
     assert_eq!("He", HELIUM.symbol);
-    assert_eq!(35.45, CHLORINE.mass);
+    assert_eq!(AtomMass::from(35.45), CHLORINE.mass);
 
     assert!(HYDROGEN.diatomic);
     assert!(OXYGEN.diatomic);
@@ -671,7 +679,7 @@ fn molecule_mass_calculation() {
     use data_molecules::*;
 
 
-    assert_eq!(18.015, WATER.mass());
-    assert_eq!(342.297, SUGAR.mass());
-    assert_eq!(44.009, CO2.mass());
+    assert_eq!(AtomMass::from(18.015), WATER.mass());
+    assert_eq!(AtomMass::from(342.297), SUGAR.mass());
+    assert_eq!(AtomMass::from(44.009), CO2.mass());
 }

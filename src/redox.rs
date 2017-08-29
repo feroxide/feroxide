@@ -1,6 +1,6 @@
 use data_sep::*;
 use math::gcd;
-use reaction::ElemReaction;
+use reaction::{ ElemReaction, ReactionSide };
 use trait_element::Element;
 use trait_properties::Properties;
 use trait_reaction::Reaction;
@@ -37,29 +37,24 @@ impl<E: Element> Reaction<E> for RedoxReaction<E> {
 
 
     fn elem_reaction(&self) -> ElemReaction<E> {
-        // Assuming .rhs and .lhs are equalised
+        // NOTE: Assuming .rhs and .lhs are equalised
 
         let red_charge;
         let oxi_charge;
 
 
-        // ehm... let me explain these two
-        // FIXME: Cleanup
+        fn electrons_by_reactionside<T>(rs: &ReactionSide<T>) -> Option<usize> where T: Element {
+            rs
+            .compounds
+            .iter()
+            .position(|x| x.element.get_molecule().unwrap().compounds[0].atom.number == AtomNumber::from(0))
+        }
+
 
         // Get reductor charge by searching for the electron, then getting that amount
-        if let Some(red_elec_pos) =
-            self.reductor
-                .rhs
-                .compounds
-                .iter()
-                .position(|x| x.element.get_molecule().unwrap().compounds[0].atom.number == 0) {
+        if let Some(red_elec_pos) = electrons_by_reactionside(&self.reductor.rhs) {
             red_charge = self.reductor.rhs.compounds[red_elec_pos].amount;
-        } else if let Some(red_elec_pos) =
-            self.reductor
-                .lhs
-                .compounds
-                .iter()
-                .position(|x| x.element.get_molecule().unwrap().compounds[0].atom.number == 0) {
+        } else if let Some(red_elec_pos) = electrons_by_reactionside(&self.reductor.lhs) {
             red_charge = self.reductor.lhs.compounds[red_elec_pos].amount;
         } else {
             panic!("Reductor has no electrons!");
@@ -67,19 +62,9 @@ impl<E: Element> Reaction<E> for RedoxReaction<E> {
 
 
         // Get oxidator charge by searching for the electron, then getting that amount
-        if let Some(oxi_elec_pos) =
-            self.oxidator
-                .lhs
-                .compounds
-                .iter()
-                .position(|x| x.element.get_molecule().unwrap().compounds[0].atom.number == 0) {
+        if let Some(oxi_elec_pos) = electrons_by_reactionside(&self.oxidator.lhs) {
             oxi_charge = self.oxidator.lhs.compounds[oxi_elec_pos].amount;
-        } else if let Some(oxi_elec_pos) =
-            self.oxidator
-                .rhs
-                .compounds
-                .iter()
-                .position(|x| x.element.get_molecule().unwrap().compounds[0].atom.number == 0) {
+        } else if let Some(oxi_elec_pos) = electrons_by_reactionside(&self.oxidator.rhs) {
             oxi_charge = self.oxidator.rhs.compounds[oxi_elec_pos].amount;
         } else {
             panic!("Oxidator has no electrons!");
@@ -117,20 +102,12 @@ impl<E: Element> Properties for RedoxReaction<E> {
 
 
     fn name(&self) -> String {
-        let mut name = String::new();
-
-        name += "oxidator: ";
-        name += &self.oxidator.name();
-        name += "\n";
-        name += "reductor: ";
-        name += &self.reductor.name();
-
-        name
+        format!("oxidator: {}\nreductor: {}", self.oxidator.name(), self.reductor.name())
     }
 
 
     fn mass(&self) -> AtomMass {
         // Law of Conservation of Mass
-        0.0
+        AtomMass::from(0.0)
     }
 }

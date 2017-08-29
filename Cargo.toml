@@ -24,6 +24,7 @@ travis-ci = { repository = "feroxide/feroxide", branch = "master" }
 [[bin]]
 name = "main"
 doc = false
+path = "src/main.rs"
 
 
 [dependencies]

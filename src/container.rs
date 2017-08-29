@@ -34,7 +34,7 @@ pub struct ContainerCompound<E: Element> {
 pub fn rc_to_cc<E: Element>(rc: ReactionCompound<E>) -> ContainerCompound<E> {
     ContainerCompound {
         element: rc.element,
-        moles: rc.amount as Moles,
+        moles: Moles::from(rc.amount as Moles_type),
     }
 }
 
@@ -122,7 +122,7 @@ impl<E: Element> Container<E> {
 
             // Find element in self.contents
             if let Some(position) = self.contents.iter().position(|comp| comp == element) {
-                let mut compound = &mut self.contents[position];
+                let compound = &mut self.contents[position];
 
                 // Check if we have enough
                 if compound.moles < element.moles {
@@ -130,14 +130,14 @@ impl<E: Element> Container<E> {
                 }
 
                 // Remove amount
-                compound.moles -= element.moles;
+                compound.moles -= element.moles.clone();
 
                 // If none is available anymore, let element be removed from container
-                if compound.moles == 0.0 {
+                if compound.moles == Moles::from(0.0) {
                     to_remove = Some(position);
                 }
             } else {
-                println!("Can't remove element {} (not found)", element.symbol());
+                panic!("Can't remove element {} (not found)", element.symbol());
             }
 
             // Remove element if needed
@@ -153,10 +153,10 @@ impl<E: Element> Container<E> {
         for element in elements {
             // Find element in self.contents
             if let Some(position) = self.contents.iter().position(|comp| comp == element) {
-                let mut compound = &mut self.contents[position];
+                let compound = &mut self.contents[position];
 
                 // Add amount
-                compound.moles += element.moles;
+                compound.moles += element.moles.clone();
             } else {
                 // If the element is not found in the container, add it
                 self.contents.push(element.clone());
@@ -171,7 +171,7 @@ impl<E: Element> Container<E> {
 
         let mut first = true;
         for compound in &self.contents {
-            if compound.moles > 0.0 {
+            if compound.moles > Moles::from(0.0) {
                 if !first {
                     string += " + ";
                 }
@@ -240,6 +240,6 @@ impl<E: Element> Properties for ContainerCompound<E> {
 
 
     fn mass(&self) -> AtomMass {
-        (self.moles as AtomMass) * self.element.mass()
+        self.element.mass() * (self.moles.0 as AtomMass_type)
     }
 }

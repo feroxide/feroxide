@@ -90,7 +90,11 @@ impl Ion {
             charge = 1;
         }
 
-        let charge_option = if set_charge { Some(charge) } else { None };
+        let charge_option = if set_charge {
+            Some(AtomCharge::from(charge))
+        } else {
+            None
+        };
 
         if let Some(molecule) = molecule {
             Some(Ion {
@@ -114,11 +118,14 @@ impl Ion {
 
     /// Calculate the charge of this `Ion`
     pub fn calculate_charge(&self) -> Option<AtomCharge> {
-        let mut charge = 0;
+        let mut charge = AtomCharge::from(0);
 
         for molecule_compound in &self.molecule.compounds {
             if let Some(atom_charge) = molecule_compound.atom.charge_by_group() {
-                let mol_charge = (molecule_compound.amount as AtomCharge) * atom_charge;
+                let mol_charge = AtomCharge::from(
+                    // NOTE: Can't multiply u8 and i8, so they need to be casted first
+                    (molecule_compound.amount as AtomCharge_type) * (atom_charge.0 as AtomCharge_type)
+                );
 
                 charge += mol_charge;
             }
@@ -135,7 +142,7 @@ impl Ion {
 impl Element for Ion {
     // Make sure that the charge is calculated when required
     fn get_charge(&self) -> Option<AtomCharge> {
-        if let Some(charge) = self.charge {
+        if let Some(charge) = self.charge.clone() {
             Some(charge)
         } else {
             self.calculate_charge()
@@ -156,7 +163,7 @@ impl Properties for Ion {
         symbol += &self.molecule.symbol();
 
         if let Some(charge) = self.get_charge() {
-            if charge != 0 {
+            if charge != AtomCharge::from(0) {
                 symbol += &ion_superscript(charge);
             }
         }
@@ -171,9 +178,9 @@ impl Properties for Ion {
         name += &self.molecule.name();
 
         if let Some(charge) = self.get_charge() {
-            if charge != 0 {
+            if charge != AtomCharge::from(0) {
                 name += "(";
-                name += &number_to_roman(charge);
+                name += &number_to_roman(charge.0);
                 name += ")";
             }
         }

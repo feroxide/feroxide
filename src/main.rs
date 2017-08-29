@@ -44,21 +44,21 @@ fn main() {
     let mut container = Container {
         contents: vec![ContainerCompound {
                            element: ion_from_molecule!(carbonmonoxide.clone()),
-                           moles: 1000.0,
+                           moles: Moles::from(1000.0),
                        },
 
                        ContainerCompound {
                            element: ion_from_molecule!(WATER.clone()),
-                           moles: 1000.0,
+                           moles: Moles::from(1000.0),
                        },
 
                        ContainerCompound {
                            element: ion_from_atom!(OXYGEN.clone()),
-                           moles: 1000.0,
+                           moles: Moles::from(1000.0),
                        },
                       ],
 
-        available_energy: 100_000f64, // in Joules
+        available_energy: Energy::from(100_000f64), // in Joules
     };
 
     // Specify the reaction that will occur

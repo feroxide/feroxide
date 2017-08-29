@@ -136,10 +136,10 @@ impl Properties for Molecule {
 
 
     fn mass(&self) -> AtomMass {
-        let mut mass = 0.0;
+        let mut mass = AtomMass::from(0.0);
 
         for compound in &self.compounds {
-            mass += compound.mass();
+            mass += AtomMass::from(compound.mass());
         }
 
         mass
@@ -175,14 +175,14 @@ impl Properties for MoleculeCompound {
 
 
     fn mass(&self) -> AtomMass {
-        (self.amount as AtomMass) * self.atom.mass
+        self.atom.mass.clone() * (self.amount as AtomMass_type)
     }
 }
 
 
 impl Element for Molecule {
     fn get_charge(&self) -> Option<AtomCharge> {
-        Some(0)
+        Some(AtomCharge::from(0))
     }
 
 

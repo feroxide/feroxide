@@ -223,7 +223,7 @@ impl<E: Element> ReactionSide<E> {
 
     /// Calculate the total charge of this reaction side
     pub fn total_charge(&self) -> AtomCharge {
-        let mut total_charge = 0;
+        let mut total_charge = AtomCharge::from(0);
 
         for compound in &self.compounds {
             if let Some(charge) = compound.element.get_charge() {
@@ -238,7 +238,7 @@ impl<E: Element> ReactionSide<E> {
     /// Calculate the energy this side has
     pub fn energy(&self) -> Energy {
         // FIXME: Calculate actual energy
-        1_000.0 - (self.compounds.len() as f64) * 100.0
+        Energy::from(1_000.0) - Energy::from(100.0) * (self.compounds.len() as Energy_type)
     }
 
 
@@ -252,9 +252,9 @@ impl<E: Element> ReactionSide<E> {
                 for molecule_compound in &molecule.compounds {
 
 
-                    let atom_number = molecule_compound.atom.number;
+                    let atom_number = molecule_compound.atom.number.clone();
 
-                    if atom_number == 0 {
+                    if atom_number == AtomNumber::from(0) {
                         // Ignore electrons in the atom count
                         continue;
                     }
@@ -448,7 +448,7 @@ impl<E: Element> Mul<u16> for ReactionSide<E> {
     fn mul(self, rhs: u16) -> ReactionSide<E> {
         let mut compounds = self.compounds.clone();
 
-        for mut compound in &mut compounds {
+        for compound in &mut compounds {
             compound.amount *= rhs;
         }
 
@@ -497,7 +497,7 @@ impl<E: Element> Properties for ElemReaction<E> {
 
     fn mass(&self) -> AtomMass {
         // Law of Conservation of Mass
-        0.0
+        AtomMass::from(0.0)
     }
 }
 
@@ -538,7 +538,7 @@ impl<E: Element> Properties for ReactionSide<E> {
 
 
     fn mass(&self) -> AtomMass {
-        let mut mass = 0.0;
+        let mut mass = AtomMass::from(0.0);
 
         for reaction_compound in &self.compounds {
             mass += reaction_compound.mass();
@@ -578,7 +578,7 @@ impl<E: Element> Properties for ReactionCompound<E> {
 
 
     fn mass(&self) -> AtomMass {
-        (self.amount as AtomMass) * self.element.mass()
+        self.element.mass() * (self.amount as AtomMass_type)
     }
 }
 

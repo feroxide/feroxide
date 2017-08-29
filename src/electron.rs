@@ -1,6 +1,7 @@
 use atom::Atom;
 use ion::Ion;
 use molecule::*;
+use types::*;
 
 
 lazy_static! {
@@ -16,9 +17,9 @@ lazy_static! {
                     atom: Atom {
                         name: "electron",
                         symbol: "e",
-                        number: 0,
-                        group: 0,
-                        mass: 0.0,
+                        number: AtomNumber::from(0),
+                        group: AtomGroup::from(0),
+                        mass: AtomMass::from(0.0),
                         diatomic: false
                     },
 
@@ -27,6 +28,6 @@ lazy_static! {
             }
         },
 
-        charge: Some(-1)
+        charge: Some(AtomCharge::from(-1))
     };
 }
