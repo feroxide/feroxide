@@ -1,11 +1,11 @@
 Thanks for wanting to contribute! This list states a few rules which we think
 are important to keep in mind when changing code.
 
-
 Before pushing / merging to master, please:
-- ALWAYS run tests (Travis)
-- ALWAYS run the `precommit.sh` script
-- ALWAYS build docs (`yes | precommit.sh` or run `generate_docs` manually)
+
+* ALWAYS run tests (Travis)
+* ALWAYS run the `precommit.sh` script
+* ALWAYS build docs (`yes | precommit.sh` or run `generate_docs` manually)
 
 Every particle type HAS TO implement the `Properties` trait.
 Every element type HAS TO implement the `Element` trait.
