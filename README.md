@@ -1,6 +1,8 @@
 # feroxide
-## [![Travis Build Status][travis-badge]][travis-page]
-## [![Code Climate][codeclimate-badge]][codeclimate-page]
+
+[![Travis Build Status][travis-badge]][travis-page]
+[![Code Climate][codeclimate-badge]][codeclimate-page]
+
 A basic chemistry simulator.
 
 ## Currently includes
