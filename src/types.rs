@@ -25,12 +25,10 @@ macro_rules! overload_operators {
             fn cmp(&self, rhs: &Self) -> cmp::Ordering {
                 if self.0 < rhs.0 {
                     cmp::Ordering::Less
-                } else if self.0 == rhs.0 {
-                    cmp::Ordering::Equal
                 } else if self.0 > rhs.0 {
                     cmp::Ordering::Greater
                 } else {
-                    panic!("Failed to compare")
+                    cmp::Ordering::Equal
                 }
             }
         }

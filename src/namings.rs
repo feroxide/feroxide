@@ -200,7 +200,7 @@ pub fn superscript(n: u8) -> String {
 /// also, ionic superscript supports negative numbers (of which the sign
 /// is put at the end, instead of at the beginning)
 /// For positive numbers, a plus-sign is appended too
-pub fn ion_superscript(ac: AtomCharge) -> String {
+pub fn ion_superscript(ac: &AtomCharge) -> String {
     let n = ac.0;
 
     if n == -1 {
@@ -208,9 +208,9 @@ pub fn ion_superscript(ac: AtomCharge) -> String {
     } else if n == 1 {
         "⁺".to_owned()
     } else if n < 0 {
-        superscript((-n) as u8) + &ion_superscript(AtomCharge::from(-1))
+        superscript((-n) as u8) + &ion_superscript(&AtomCharge::from(-1))
     } else if n > 0 {
-        superscript(n as u8) + &ion_superscript(AtomCharge::from(1))
+        superscript(n as u8) + &ion_superscript(&AtomCharge::from(1))
     } else { // n == 0
         superscript(n as u8)
     }

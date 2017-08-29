@@ -164,7 +164,7 @@ impl Properties for Ion {
 
         if let Some(charge) = self.get_charge() {
             if charge != AtomCharge::from(0) {
-                symbol += &ion_superscript(charge);
+                symbol += &ion_superscript(&charge);
             }
         }
 
