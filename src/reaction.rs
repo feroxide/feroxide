@@ -131,11 +131,21 @@ impl<E: Element> ElemReaction<E> {
 
 
     /// Get the sign of the equation ( → or ⇌ ), depending whether it is an equilibrium or not
+    #[cfg(not(feature = "no_utf"))]
     pub fn reaction_sign(&self) -> &str {
         if self.is_equilibrium {
             " ⇌ "
         } else {
             " → "
+        }
+    }
+
+    #[cfg(feature = "no_utf")]
+    pub fn reaction_sign(&self) -> &str {
+        if self.is_equilibrium {
+            " <> "
+        } else {
+            " -> "
         }
     }
 
@@ -242,7 +252,7 @@ impl<E: Element> ReactionSide<E> {
     /// Calculate the energy this side has
     pub fn energy(&self) -> Energy {
         // FIXME: Calculate actual energy
-        Energy::from(1_000.0) - Energy::from(100.0) * (self.compounds.len() as Energy_type)
+        Energy::from(100.0) * (self.compounds.len() as Energy_type)
     }
 
 

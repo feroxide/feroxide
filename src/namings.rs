@@ -134,6 +134,7 @@ pub fn number_to_roman(n: i8) -> String {
 
 
 /// Convert a number to subscript notation
+#[cfg(not(feature = "no_utf"))]
 pub fn subscript(n: u8) -> String {
     if n >= 10 {
         subscript(n / 10) + &subscript(n % 10)
@@ -163,8 +164,15 @@ pub fn subscript(n: u8) -> String {
 }
 
 
+#[cfg(feature = "no_utf")]
+pub fn subscript(n: u8) -> String {
+    format!("_{}", n)
+}
+
+
 /// Convert a number to superscript notation
 /// See also `ion_superscript`
+#[cfg(not(feature = "no_utf"))]
 pub fn superscript(n: u8) -> String {
     if n == 0 {
         "⁰".to_owned()
@@ -193,12 +201,18 @@ pub fn superscript(n: u8) -> String {
     }
 }
 
+#[cfg(feature = "no_utf")]
+pub fn superscript(n: u8) -> String {
+    format!("^{}", n)
+}
+
 
 /// Convert a number to ionic superscript notation
 /// The difference with normal superscript notation is that the 1 is omitted,
 /// also, ionic superscript supports negative numbers (of which the sign
 /// is put at the end, instead of at the beginning)
 /// For positive numbers, a plus-sign is appended too
+#[cfg(not(feature = "no_utf"))]
 pub fn ion_superscript(ac: &AtomCharge) -> String {
     let n = ac.0;
 
@@ -206,6 +220,25 @@ pub fn ion_superscript(ac: &AtomCharge) -> String {
         "⁻".to_owned()
     } else if n == 1 {
         "⁺".to_owned()
+    } else if n < 0 {
+        superscript((-n) as u8) + &ion_superscript(&AtomCharge::from(-1))
+    } else if n > 0 {
+        superscript(n as u8) + &ion_superscript(&AtomCharge::from(1))
+    } else {
+        // n == 0
+        superscript(n as u8)
+    }
+}
+
+
+#[cfg(feature = "no_utf")]
+pub fn ion_superscript(ac: &AtomCharge) -> String {
+    let n = ac.0;
+
+    if n == -1 {
+        "-".to_owned()
+    } else if n == 1 {
+        "+".to_owned()
     } else if n < 0 {
         superscript((-n) as u8) + &ion_superscript(&AtomCharge::from(-1))
     } else if n > 0 {
