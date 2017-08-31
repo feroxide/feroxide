@@ -270,7 +270,7 @@ impl<E: Element> ReactionSide<E> {
                         amount = 0;
                     }
 
-                    amount += (molecule_compound.amount as u16) * reaction_compound.amount;
+                    amount += u16::from(molecule_compound.amount) * reaction_compound.amount;
 
                     atoms.insert(atom_number, amount);
                 }
@@ -294,7 +294,7 @@ impl<E: Element> ReactionCompound<E> {
         for c in symbol.chars() {
             if set_amount && is_number!(c) {
                 amount *= 10;
-                amount += to_number!(c) as u16;
+                amount += u16::from(to_number!(c));
                 continue;
             } else {
                 set_amount = false;
@@ -333,7 +333,7 @@ impl<E: Element> ReactionCompound<E> {
         for c in symbol.chars() {
             if set_amount && is_number!(c) {
                 amount *= 10;
-                amount += to_number!(c) as u16;
+                amount += u16::from(to_number!(c));
                 continue;
             } else {
                 set_amount = false;
@@ -582,7 +582,7 @@ impl<E: Element> Properties for ReactionCompound<E> {
 
 
     fn mass(&self) -> AtomMass {
-        self.element.mass() * (self.amount as AtomMass_type)
+        self.element.mass() * (AtomMass_type::from(self.amount))
     }
 }
 

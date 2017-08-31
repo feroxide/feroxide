@@ -175,7 +175,7 @@ impl Properties for MoleculeCompound {
 
 
     fn mass(&self) -> AtomMass {
-        self.atom.mass.clone() * (self.amount as AtomMass_type)
+        self.atom.mass.clone() * (AtomMass_type::from(self.amount))
     }
 }
 

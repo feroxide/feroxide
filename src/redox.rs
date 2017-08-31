@@ -74,7 +74,7 @@ impl<E: Element> Reaction<E> for RedoxReaction<E> {
 
 
         // Make sure that 4/2 or 2/4 gets converted to 2/1 or 1/2 first
-        let gcd = gcd(red_charge as i32, oxi_charge as i32) as u16;
+        let gcd = gcd(i32::from(red_charge), i32::from(oxi_charge)) as u16;
         let red_mult = oxi_charge / gcd;
         let oxi_mult = red_charge / gcd;
 

@@ -34,7 +34,7 @@ pub struct ContainerCompound<E: Element> {
 pub fn rc_to_cc<E: Element>(rc: ReactionCompound<E>) -> ContainerCompound<E> {
     ContainerCompound {
         element: rc.element,
-        moles: Moles::from(rc.amount as Moles_type),
+        moles: Moles::from(Moles_type::from(rc.amount)),
     }
 }
 
