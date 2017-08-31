@@ -12,7 +12,14 @@ if [ "$RUSTUP_NIGHTLY" = "yes" ]; then
   CARGO="rustup run nightly cargo"
 fi
 
+
 if [ "$mode" = "install" ]; then
+  # Test if clippy is already installed (cache)
+  $CARGO clippy &> /dev/null
+  if [ $? -ne 101 ]; then
+    exit 0
+  fi
+
   $CARGO install clippy --verbose
   exit $?
 elif [ "$mode" = "test" ]; then
