@@ -142,11 +142,7 @@ impl<E: Element> ElemReaction<E> {
 
     #[cfg(feature = "no_utf")]
     pub fn reaction_sign(&self) -> &str {
-        if self.is_equilibrium {
-            " <> "
-        } else {
-            " -> "
-        }
+        if self.is_equilibrium { " <> " } else { " -> " }
     }
 
 
@@ -188,9 +184,7 @@ impl<E: Element> ReactionSide<E> {
 
 
         if !compounds.is_empty() {
-            Some(ReactionSide {
-                compounds: compounds,
-            })
+            Some(ReactionSide { compounds: compounds })
         } else {
             None
         }
@@ -226,9 +220,7 @@ impl<E: Element> ReactionSide<E> {
 
 
         if !compounds.is_empty() {
-            Some(ReactionSide {
-                compounds: compounds,
-            })
+            Some(ReactionSide { compounds: compounds })
         } else {
             None
         }
@@ -447,9 +439,7 @@ impl<E: Element> Add for ReactionSide<E> {
         let mut compounds = self.compounds.clone();
         compounds.append(&mut rhs.compounds);
 
-        ReactionSide {
-            compounds: compounds,
-        }
+        ReactionSide { compounds: compounds }
     }
 }
 
@@ -466,9 +456,7 @@ impl<E: Element> Mul<u16> for ReactionSide<E> {
             compound.amount *= rhs;
         }
 
-        ReactionSide {
-            compounds: compounds,
-        }
+        ReactionSide { compounds: compounds }
     }
 }
 

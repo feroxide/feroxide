@@ -238,6 +238,7 @@
 <span id="193">193</span>
 <span id="194">194</span>
 <span id="195">195</span>
+<span id="196">196</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">electron</span>::<span class="ident">ELECTRON</span>;
 <span class="kw">use</span> <span class="ident">namings</span>::<span class="kw-2">*</span>;
@@ -339,9 +340,9 @@
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">molecule</span>) <span class="op">=</span> <span class="ident">molecule</span> {
             <span class="prelude-val">Some</span>(<span class="ident">Ion</span> {
-                     <span class="ident">molecule</span>: <span class="ident">molecule</span>,
-                     <span class="ident">charge</span>: <span class="ident">charge_option</span>,
-                 })
+                <span class="ident">molecule</span>: <span class="ident">molecule</span>,
+                <span class="ident">charge</span>: <span class="ident">charge_option</span>,
+            })
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -365,7 +366,8 @@
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">atom_charge</span>) <span class="op">=</span> <span class="ident">molecule_compound</span>.<span class="ident">atom</span>.<span class="ident">charge_by_group</span>() {
                 <span class="kw">let</span> <span class="ident">mol_charge</span> <span class="op">=</span> <span class="ident">AtomCharge</span>::<span class="ident">from</span>(
                     <span class="comment">// NOTE: Can&#39;t multiply u8 and i8, so they need to be casted first</span>
-                    (<span class="ident">molecule_compound</span>.<span class="ident">amount</span> <span class="kw">as</span> <span class="ident">AtomCharge_type</span>) <span class="op">*</span> (<span class="ident">atom_charge</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">AtomCharge_type</span>)
+                    (<span class="ident">molecule_compound</span>.<span class="ident">amount</span> <span class="kw">as</span> <span class="ident">AtomCharge_type</span>) <span class="op">*</span>
+                        (<span class="ident">atom_charge</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">AtomCharge_type</span>),
                 );
 
                 <span class="ident">charge</span> <span class="op">+=</span> <span class="ident">mol_charge</span>;

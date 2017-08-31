@@ -56,9 +56,7 @@ impl Molecule {
 
 
         if !compounds.is_empty() {
-            Some(Molecule {
-                compounds: compounds,
-            })
+            Some(Molecule { compounds: compounds })
         } else {
             None
         }
