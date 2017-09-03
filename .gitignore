@@ -2,19 +2,13 @@
 *.bak
 *.bk
 
-# Ignore log and temp files
+# Ignore log and temporary files
 *.log
 *.tmp
 
-# Ignore unnecessary Cargo files
+# Ignore unnecessary cargo/rust files
 Cargo.lock
 target
 
-# Ignore LaTeX build files
-*.aux
-
-# Ignore build output
-docs/build
-
 # Ignore racer files
-._*
+._*.racertmp*
