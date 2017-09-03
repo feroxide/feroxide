@@ -239,7 +239,7 @@
 
 
         <span class="comment">// Make sure that 4/2 or 2/4 gets converted to 2/1 or 1/2 first</span>
-        <span class="kw">let</span> <span class="ident">gcd</span> <span class="op">=</span> <span class="ident">gcd</span>(<span class="ident">red_charge</span> <span class="kw">as</span> <span class="ident">i32</span>, <span class="ident">oxi_charge</span> <span class="kw">as</span> <span class="ident">i32</span>) <span class="kw">as</span> <span class="ident">u16</span>;
+        <span class="kw">let</span> <span class="ident">gcd</span> <span class="op">=</span> <span class="ident">gcd</span>(<span class="ident">i32</span>::<span class="ident">from</span>(<span class="ident">red_charge</span>), <span class="ident">i32</span>::<span class="ident">from</span>(<span class="ident">oxi_charge</span>)) <span class="kw">as</span> <span class="ident">u16</span>;
         <span class="kw">let</span> <span class="ident">red_mult</span> <span class="op">=</span> <span class="ident">oxi_charge</span> <span class="op">/</span> <span class="ident">gcd</span>;
         <span class="kw">let</span> <span class="ident">oxi_mult</span> <span class="op">=</span> <span class="ident">red_charge</span> <span class="op">/</span> <span class="ident">gcd</span>;
 

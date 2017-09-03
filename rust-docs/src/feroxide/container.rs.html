@@ -325,7 +325,7 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rc_to_cc</span><span class="op">&lt;</span><span class="ident">E</span>: <span class="ident">Element</span><span class="op">&gt;</span>(<span class="ident">rc</span>: <span class="ident">ReactionCompound</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ContainerCompound</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
     <span class="ident">ContainerCompound</span> {
         <span class="ident">element</span>: <span class="ident">rc</span>.<span class="ident">element</span>,
-        <span class="ident">moles</span>: <span class="ident">Moles</span>::<span class="ident">from</span>(<span class="ident">rc</span>.<span class="ident">amount</span> <span class="kw">as</span> <span class="ident">Moles_type</span>),
+        <span class="ident">moles</span>: <span class="ident">Moles</span>::<span class="ident">from</span>(<span class="ident">Moles_type</span>::<span class="ident">from</span>(<span class="ident">rc</span>.<span class="ident">amount</span>)),
     }
 }
 

@@ -166,7 +166,7 @@ pub fn subscript(n: u8) -> String {
 
 #[cfg(feature = "no_utf")]
 pub fn subscript(n: u8) -> String {
-    format!("_{}", n)
+    format!("_{{{}}}", n)
 }
 
 
@@ -203,7 +203,7 @@ pub fn superscript(n: u8) -> String {
 
 #[cfg(feature = "no_utf")]
 pub fn superscript(n: u8) -> String {
-    format!("^{}", n)
+    format!("{}", n)
 }
 
 
@@ -235,16 +235,12 @@ pub fn ion_superscript(ac: &AtomCharge) -> String {
 pub fn ion_superscript(ac: &AtomCharge) -> String {
     let n = ac.0;
 
-    if n == -1 {
-        "-".to_owned()
-    } else if n == 1 {
-        "+".to_owned()
-    } else if n < 0 {
-        superscript((-n) as u8) + &ion_superscript(&AtomCharge::from(-1))
+    if n < 0 {
+        format!("^{{{}-}}", superscript((-n) as u8))
     } else if n > 0 {
-        superscript(n as u8) + &ion_superscript(&AtomCharge::from(1))
+        format!("^{{{}+}}", superscript(n as u8))
     } else {
         // n == 0
-        superscript(n as u8)
+        "^{0}".to_owned()
     }
 }

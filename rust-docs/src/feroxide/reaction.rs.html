@@ -915,7 +915,7 @@
                         <span class="ident">amount</span> <span class="op">=</span> <span class="number">0</span>;
                     }
 
-                    <span class="ident">amount</span> <span class="op">+=</span> (<span class="ident">molecule_compound</span>.<span class="ident">amount</span> <span class="kw">as</span> <span class="ident">u16</span>) <span class="op">*</span> <span class="ident">reaction_compound</span>.<span class="ident">amount</span>;
+                    <span class="ident">amount</span> <span class="op">+=</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="ident">molecule_compound</span>.<span class="ident">amount</span>) <span class="op">*</span> <span class="ident">reaction_compound</span>.<span class="ident">amount</span>;
 
                     <span class="ident">atoms</span>.<span class="ident">insert</span>(<span class="ident">atom_number</span>, <span class="ident">amount</span>);
                 }
@@ -939,7 +939,7 @@
         <span class="kw">for</span> <span class="ident">c</span> <span class="kw">in</span> <span class="ident">symbol</span>.<span class="ident">chars</span>() {
             <span class="kw">if</span> <span class="ident">set_amount</span> <span class="op">&amp;&amp;</span> <span class="macro">is_number</span><span class="macro">!</span>(<span class="ident">c</span>) {
                 <span class="ident">amount</span> <span class="op">*=</span> <span class="number">10</span>;
-                <span class="ident">amount</span> <span class="op">+=</span> <span class="macro">to_number</span><span class="macro">!</span>(<span class="ident">c</span>) <span class="kw">as</span> <span class="ident">u16</span>;
+                <span class="ident">amount</span> <span class="op">+=</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="macro">to_number</span><span class="macro">!</span>(<span class="ident">c</span>));
                 <span class="kw">continue</span>;
             } <span class="kw">else</span> {
                 <span class="ident">set_amount</span> <span class="op">=</span> <span class="bool-val">false</span>;
@@ -978,7 +978,7 @@
         <span class="kw">for</span> <span class="ident">c</span> <span class="kw">in</span> <span class="ident">symbol</span>.<span class="ident">chars</span>() {
             <span class="kw">if</span> <span class="ident">set_amount</span> <span class="op">&amp;&amp;</span> <span class="macro">is_number</span><span class="macro">!</span>(<span class="ident">c</span>) {
                 <span class="ident">amount</span> <span class="op">*=</span> <span class="number">10</span>;
-                <span class="ident">amount</span> <span class="op">+=</span> <span class="macro">to_number</span><span class="macro">!</span>(<span class="ident">c</span>) <span class="kw">as</span> <span class="ident">u16</span>;
+                <span class="ident">amount</span> <span class="op">+=</span> <span class="ident">u16</span>::<span class="ident">from</span>(<span class="macro">to_number</span><span class="macro">!</span>(<span class="ident">c</span>));
                 <span class="kw">continue</span>;
             } <span class="kw">else</span> {
                 <span class="ident">set_amount</span> <span class="op">=</span> <span class="bool-val">false</span>;
@@ -1227,7 +1227,7 @@
 
 
     <span class="kw">fn</span> <span class="ident">mass</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">AtomMass</span> {
-        <span class="self">self</span>.<span class="ident">element</span>.<span class="ident">mass</span>() <span class="op">*</span> (<span class="self">self</span>.<span class="ident">amount</span> <span class="kw">as</span> <span class="ident">AtomMass_type</span>)
+        <span class="self">self</span>.<span class="ident">element</span>.<span class="ident">mass</span>() <span class="op">*</span> (<span class="ident">AtomMass_type</span>::<span class="ident">from</span>(<span class="self">self</span>.<span class="ident">amount</span>))
     }
 }
 
