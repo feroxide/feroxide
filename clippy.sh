@@ -15,12 +15,12 @@ fi
 
 if [ "$mode" = "install" ]; then
   # Test if clippy is already installed (cache)
-  $CARGO clippy &> /dev/null
-  if [ $? -ne 101 ]; then
+  if $CARGO clippy -V; then
     exit 0
   fi
 
-  $CARGO install clippy --verbose
+  # Clippy could be installed, but failed on the version check, added --force for that case
+  $CARGO install clippy --force --verbose
   exit $?
 elif [ "$mode" = "test" ]; then
   $CARGO clippy --verbose -- -D warnings
