@@ -13,6 +13,12 @@ macro_rules! allow_conversion {
                 $class(x)
             }
         }
+
+        impl From<$class> for $type {
+            fn from(x: $class) -> Self {
+                x.0
+            }
+        }
     )
 }
 
@@ -191,8 +197,18 @@ allow_display!(Moles);
 /// should fit -5.0 to 5.0, with normal precision [ volt ]
 // pub type SEP = f32;
 pub type SEP_type = f32;
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Copy)]
 pub struct SEP(pub SEP_type);
 allow_conversion!(SEP, SEP_type);
 overload_operators!(SEP, SEP_type);
 allow_display!(SEP);
+
+
+/// should fit -4000.0 to 2000.0, with normal precision [ kJ/mol ]
+// pub type SEP = f32;
+pub type SEF_type = f32;
+#[derive(Debug, Clone, PartialEq, PartialOrd, Copy)]
+pub struct SEF(pub SEF_type);
+allow_conversion!(SEF, SEF_type);
+overload_operators!(SEF, SEF_type);
+allow_display!(SEF);

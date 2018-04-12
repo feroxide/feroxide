@@ -99,4 +99,10 @@ impl Properties for Atom {
     fn mass(&self) -> AtomMass {
         self.mass.clone()
     }
+
+
+    fn is_diatomic(&self) -> bool {
+        // NOTE: Atom's can never have two atoms, so is never a valid diatomic molecule
+        false
+    }
 }

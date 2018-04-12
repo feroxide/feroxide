@@ -1,4 +1,5 @@
 use atom::Atom;
+use ion::Ion;
 use namings::*;
 use trait_element::Element;
 use trait_properties::Properties;
@@ -26,6 +27,7 @@ pub struct MoleculeCompound {
 
 impl Molecule {
     /// Convert a string representation of a molecule into one
+    /// TODO: Parse parentheses, e.g.  Ca3(PO4)2
     pub fn from_string(string: String) -> Option<Molecule> {
         let mut compounds = vec![];
 
@@ -38,7 +40,7 @@ impl Molecule {
             }
 
             if is_upper!(c) && !token.is_empty() {
-                let compound = MoleculeCompound::from_string(token).unwrap();
+                let compound = MoleculeCompound::from_string(token.clone()).unwrap();
 
                 compounds.push(compound);
                 token = String::new();
@@ -75,9 +77,11 @@ impl MoleculeCompound {
         for c in string.chars() {
             if is_letter!(c) {
                 token.push(c);
-            } else {
+            } else if is_number!(c) {
                 amount *= 10;
                 amount += to_number!(c);
+            } else {
+                panic!("Invalid character '{}' in string \"{}\" for MoleculeCompound", c, string);
             }
         }
 
@@ -87,13 +91,13 @@ impl MoleculeCompound {
         }
 
 
-        if let Some(atom) = Atom::from_string(token) {
+        if let Some(atom) = Atom::from_string(token.clone()) {
             Some(MoleculeCompound {
                 atom: atom,
                 amount: amount,
             })
         } else {
-            None
+            panic!("Failed to find Atom for {}", &token);
         }
     }
 
@@ -144,6 +148,11 @@ impl Properties for Molecule {
 
         mass
     }
+
+
+    fn is_diatomic(&self) -> bool {
+        self.compounds.len() == 1 && self.compounds[0].amount == 2 && self.compounds[0].atom.diatomic
+    }
 }
 
 
@@ -177,6 +186,11 @@ impl Properties for MoleculeCompound {
     fn mass(&self) -> AtomMass {
         self.atom.mass.clone() * (AtomMass_type::from(self.amount))
     }
+
+
+    fn is_diatomic(&self) -> bool {
+        false
+    }
 }
 
 
@@ -186,7 +200,12 @@ impl Element for Molecule {
     }
 
 
-    fn get_molecule(&self) -> Option<&Molecule> {
+    fn get_molecule(self) -> Option<Molecule> {
         Some(self)
+    }
+
+
+    fn get_ion(self) -> Option<Ion> {
+        Some(Ion::from_molecule(self.clone()))
     }
 }

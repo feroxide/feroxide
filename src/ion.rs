@@ -6,7 +6,7 @@ use trait_properties::Properties;
 use types::*;
 
 
-#[derive(Debug, Eq, PartialEq, Clone, Hash)]
+#[derive(Debug, Eq, Clone, Hash)]
 /// An `Ion`
 pub struct Ion {
     /// The molecule of this ion
@@ -23,7 +23,7 @@ impl Ion {
         let mut molecule = None;
         let mut charge = 0;
         let mut is_negative = false;
-        let mut is_positive = true;
+        let mut is_positive = false;
 
         let mut token = String::new();
         let mut set_charge = false;
@@ -42,7 +42,6 @@ impl Ion {
 
                 if !is_number!(c) {
                     panic!("Expected charge, but got {}", c);
-                    // return None;
                 }
 
                 charge *= 10;
@@ -54,7 +53,7 @@ impl Ion {
             if c == ';' {
                 // Electron
                 if token == "e" {
-                    return Some(ELECTRON.clone());
+                    break;
                 }
 
                 molecule = Molecule::from_string(token);
@@ -120,6 +119,11 @@ impl Ion {
     pub fn calculate_charge(&self) -> Option<AtomCharge> {
         let mut charge = AtomCharge::from(0);
 
+        // If a molecule is diatomic, charge is 0
+        if self.molecule.is_diatomic() {
+            return Some(charge);
+        }
+
         for molecule_compound in &self.molecule.compounds {
             if let Some(atom_charge) = molecule_compound.atom.charge_by_group() {
                 let mol_charge = AtomCharge::from(
@@ -143,16 +147,21 @@ impl Ion {
 impl Element for Ion {
     // Make sure that the charge is calculated when required
     fn get_charge(&self) -> Option<AtomCharge> {
-        if let Some(charge) = self.charge.clone() {
-            Some(charge)
+        if let Some(ref charge) = self.charge {
+            Some(charge.clone())
         } else {
             self.calculate_charge()
         }
     }
 
 
-    fn get_molecule(&self) -> Option<&Molecule> {
-        Some(&self.molecule)
+    fn get_molecule(self) -> Option<Molecule> {
+        Some(self.molecule)
+    }
+
+
+    fn get_ion(self) -> Option<Ion> {
+        Some(self)
     }
 }
 
@@ -192,5 +201,17 @@ impl Properties for Ion {
 
     fn mass(&self) -> AtomMass {
         self.molecule.mass()
+    }
+
+
+    fn is_diatomic(&self) -> bool {
+        self.molecule.is_diatomic()
+    }
+}
+
+
+impl PartialEq for Ion {
+    fn eq(&self, rhs: &Self) -> bool {
+        self.molecule == rhs.molecule && self.get_charge() == rhs.get_charge()
     }
 }

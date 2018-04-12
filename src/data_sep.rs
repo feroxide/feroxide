@@ -1,32 +1,21 @@
 use ion::Ion;
 use reaction::ElemReaction;
-use trait_element::Element;
 use trait_reaction::Reaction;
 use types::*;
 
-use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
-use std::hash::*;
 
 
 // Reference: https://en.wikipedia.org/wiki/Standard_electrode_potential_(data_page)
 // In doubt: Reference: Binas 6th edition, table 49
 
 
-/// Get the hash of a reaction
-pub fn reaction_to_hash<E: Element>(reaction: &ElemReaction<E>) -> u64 {
-    let mut s = DefaultHasher::new();
-    reaction.hash(&mut s);
-    s.finish()
-}
-
-
-/// Get the Standerd Electrode Potential (SEP) of a reaction
-pub fn get_sep<E: Element>(elem_reaction: &ElemReaction<E>) -> Option<SEP> {
-    if let Some(sep) = SEPMAP.get(&reaction_to_hash(elem_reaction)) {
-        Some((*sep).clone())
-    } else if let Some(sep) = SEPMAP.get(&reaction_to_hash(&elem_reaction.clone().swap())) {
-        Some((*sep).clone())
+/// Get the Standard Electrode Potential (SEP) of a reaction
+pub fn get_sep(elem_reaction: &ElemReaction<Ion>) -> Option<SEP> {
+    if let Some(&sep) = SEPMAP.get(&elem_reaction) {
+        Some(sep.clone())
+    } else if let Some(&sep) = SEPMAP.get(&elem_reaction.clone().swap()) {
+        Some(sep.clone())
     } else {
         None
     }
@@ -34,16 +23,14 @@ pub fn get_sep<E: Element>(elem_reaction: &ElemReaction<E>) -> Option<SEP> {
 
 
 // This is mainly used for debugging purposes, to make sure no invalid reaction are added
-macro_rules! react_str_hash {
+macro_rules! str_to_reaction {
     ($s:expr) => {
-        reaction_to_hash(
-            & valid_or_panic(
-                safe_unwrap_reaction(
-                    ElemReaction::<Ion>::ion_from_string(
-                        $s.to_owned()
-                    ),
-                    $s
-                )
+        valid_or_panic(
+            safe_unwrap_reaction(
+                ElemReaction::<Ion>::ion_from_string(
+                    $s.to_owned()
+                ),
+                $s
             )
         )
     }
@@ -51,13 +38,13 @@ macro_rules! react_str_hash {
 
 macro_rules! add_str_reaction {
     ($map:expr, $r:expr, $sep:expr) => {
-        $map.insert(react_str_hash!($r), SEP::from($sep))
+        $map.insert(str_to_reaction!($r), SEP::from($sep))
     }
 }
 
 
 /// Make sure the reaction is valid, panic otherwise
-fn valid_or_panic<E: Element>(reaction: ElemReaction<E>) -> ElemReaction<E> {
+fn valid_or_panic(reaction: ElemReaction<Ion>) -> ElemReaction<Ion> {
     if !reaction.is_valid() {
         panic!("Invalid reaction: {}", reaction);
     }
@@ -67,7 +54,7 @@ fn valid_or_panic<E: Element>(reaction: ElemReaction<E>) -> ElemReaction<E> {
 
 
 /// Check if the reaction is defined, then unwrap. Otherwise: panic!
-fn safe_unwrap_reaction<E: Element>(reaction: Option<ElemReaction<E>>, s: &str) -> ElemReaction<E> {
+fn safe_unwrap_reaction(reaction: Option<ElemReaction<Ion>>, s: &str) -> ElemReaction<Ion> {
     if reaction == None {
         panic!("Reaction failed to create: {}", s);
     }
@@ -76,8 +63,29 @@ fn safe_unwrap_reaction<E: Element>(reaction: Option<ElemReaction<E>>, s: &str) 
 }
 
 
+pub fn get_reactions_with_element(elem: &Ion) -> Vec<(ElemReaction<Ion>, SEP)> {
+    let mut reactions = vec! {};
+
+    println!("Searching for reactions with element {}", elem);
+
+    for (reaction, &sep) in SEPMAP.iter() {
+        let lhs_elements = reaction.lhs.compounds.iter().map(|x| &x.element).collect::<Vec<&Ion>>();
+        let rhs_elements = reaction.rhs.compounds.iter().map(|x| &x.element).collect::<Vec<&Ion>>();
+
+        if lhs_elements.contains(&elem) {
+            reactions.push((reaction.clone(), sep));
+        } else if rhs_elements.contains(&elem) {
+            reactions.push((reaction.clone().swap(), sep));
+        }
+    }
+
+
+    reactions
+}
+
+
 lazy_static! {
-    pub static ref SEPMAP: HashMap<u64, SEP> = {
+    pub static ref SEPMAP: HashMap<ElemReaction<Ion>, SEP> = {
         let mut map = HashMap::new();
 
         // NOTE: These are all the common ones
@@ -114,6 +122,7 @@ lazy_static! {
         add_str_reaction!(map, "HSO4;- + 3H;1 + 2e <> SO2 + 2H2O", 0.16);
         add_str_reaction!(map, "SO4;- + 4H;1 + 2e <> SO2 + 2H2O", 0.17);
         add_str_reaction!(map, "Cu;2 + 2e <> Cu", 0.337);
+        add_str_reaction!(map, "O2 + 2H2O + 2e <> 4OH;-", 0.40); // From Binas
         add_str_reaction!(map, "SO2 + 4H;1 + 4e <> S + 2H2O", 0.50);
         add_str_reaction!(map, "Cu;1 + e <> Cu", 0.520);
         add_str_reaction!(map, "I3;- + 2e <> 3I;-", 0.53);

@@ -161,6 +161,14 @@ name = "calcium"
 group = 2
 diatomic = false
 
+[atoms.SCANDIUM]
+number = 21
+mass = 44.955908
+symbol = "Sc"
+name = "scandium"
+group = 3
+diatomic = false
+
 [atoms.TITANIUM]
 number = 22
 mass = 47.867
@@ -249,7 +257,6 @@ name = "germanium"
 group = 14
 diatomic = false
 
-
 [atoms.ARSENIC]
 number = 33
 mass = 74.921595
@@ -290,8 +297,7 @@ name = "rubidium"
 group = 1
 diatomic = false
 
-
-
+# 38 - 46
 
 [atoms.SILVER]
 number = 47
@@ -301,12 +307,44 @@ name = "silver"
 group = 11
 diatomic = false
 
+[atoms.CADMIUM]
+number = 48
+mass = 112.414
+symbol = "Cd"
+name = "cadium"
+group = 12
+diatomic = false
+
+[atoms.INDIUM]
+number = 49
+mass = 114.818
+symbol = "In"
+name = "indium"
+group = 13
+diatomic = false
+
 [atoms.TIN]
 number = 50
 mass = 118.710
 symbol = "Sn"
 name = "tin"
 group = 14
+diatomic = false
+
+[atoms.ANTIMONY]
+number = 51
+mass = 121.760
+symbol = "Sb"
+name = "antimony"
+group = 15
+diatomic = false
+
+[atoms.TELLURIUM]
+number = 52
+mass = 127.60
+symbol = "Te"
+name = "tellurium"
+group = 16
 diatomic = false
 
 [atoms.IODINE]
@@ -341,6 +379,8 @@ name = "barium"
 group = 2
 diatomic = false
 
+# 57 - 77
+
 [atoms.PLATINUM]
 number = 78
 mass = 195.084
@@ -357,12 +397,60 @@ name = "gold"
 group = 11
 diatomic = false
 
+[atoms.MERCURY]
+number = 80
+mass = 200.592
+symbol = "Hg"
+name = "mercury"
+group = 12
+diatomic = false
+
+[atoms.THALLIUM]
+number = 81
+mass = 204.38
+symbol = "Tl"
+name = "thallium"
+group = 13
+diatomic = false
+
 [atoms.LEAD]
 number = 82
 mass = 207.2
 symbol = "Pb"
 name = "lead"
 group = 14
+diatomic = false
+
+[atoms.BISMUTH]
+number = 83
+mass = 208.98040
+symbol = "Bi"
+name = "bismuth"
+group = 15
+diatomic = false
+
+[atoms.POLONIUM]
+number = 84
+mass = 209
+symbol = "Po"
+name = "polonium"
+group = 16
+diatomic = false
+
+[atoms.ASTATINE]
+number = 85
+mass = 210
+symbol = "At"
+name = "astatine"
+group = 17
+diatomic = false
+
+[atoms.RADON]
+number = 86
+mass = 222
+symbol = "Rn"
+name = "radon"
+group = 18
 diatomic = false
 
 [atoms.FRANCIUM]
@@ -372,3 +460,5 @@ symbol = "Fr"
 name = "francium"
 group = 1
 diatomic = false
+
+# 88 -

@@ -27,6 +27,13 @@ macro_rules! ion_from_atom {
     )
 }
 
+#[macro_export]
+macro_rules! ion_from_string {
+    ($string:expr) => (
+        Ion::from_string($string.to_owned()).unwrap()
+    )
+}
+
 
 mod atom;
 mod container;
@@ -60,6 +67,7 @@ pub mod data_atoms;
 pub mod data_ions;
 pub mod data_molecules;
 pub mod data_sep;
+pub mod data_sef;
 
 pub mod display_impls;
 
@@ -175,6 +183,14 @@ fn test_gcd() {
 
 
 #[test]
+fn diatomic_molecules_have_no_charge() {
+    assert_eq!(Ion::from_string("I2".to_owned()).unwrap().get_charge().unwrap(), AtomCharge::from(0));
+    assert_eq!(Ion::from_string("H2".to_owned()).unwrap().get_charge().unwrap(), AtomCharge::from(0));
+    assert_eq!(Ion::from_string("H".to_owned()).unwrap().get_charge().unwrap(), AtomCharge::from(1));
+}
+
+
+#[test]
 fn total_atoms() {
     use data_atoms::*;
     use data_molecules::*;
@@ -193,10 +209,29 @@ fn total_atoms() {
     };
 
     // 16 Hydrogen atoms
-    assert_eq!(16, *side.total_atoms().get(&AtomNumber::from(1)).unwrap());
+    assert_eq!(16, *side.total_atoms(false).get(&AtomNumber::from(1)).unwrap());
 
     // 8 + 10 = 18 Oxygen atoms
-    assert_eq!(18, *side.total_atoms().get(&AtomNumber::from(8)).unwrap());
+    assert_eq!(18, *side.total_atoms(false).get(&AtomNumber::from(8)).unwrap());
+}
+
+
+#[test]
+fn keep_explicit_charges() {
+    assert_eq!(ion_from_string!("Fe;123+").get_charge().unwrap(), AtomCharge::from(123));
+    assert_eq!(ion_from_string!("Fe;123-").get_charge().unwrap(), AtomCharge::from(-123));
+
+    assert_eq!(ion_from_string!("Fe").get_charge().unwrap(), AtomCharge::from(0));
+    assert_eq!(ion_from_string!("Fe;").get_charge().unwrap(), AtomCharge::from(0));
+    assert_eq!(ion_from_string!("Fe;0").get_charge().unwrap(), AtomCharge::from(0));
+    assert_eq!(ion_from_string!("Fe;+").get_charge().unwrap(), AtomCharge::from(1));
+    assert_eq!(ion_from_string!("Fe;-").get_charge().unwrap(), AtomCharge::from(-1));
+
+    assert_eq!(ion_from_string!("H").get_charge().unwrap(), AtomCharge::from(1));
+    assert_eq!(ion_from_string!("H;").get_charge().unwrap(), AtomCharge::from(0));
+    assert_eq!(ion_from_string!("H;0").get_charge().unwrap(), AtomCharge::from(0));
+    assert_eq!(ion_from_string!("H;+").get_charge().unwrap(), AtomCharge::from(1));
+    assert_eq!(ion_from_string!("H;-").get_charge().unwrap(), AtomCharge::from(-1));
 }
 
 
@@ -336,7 +371,6 @@ fn container_reaction_cost() {
     let hydrogen = molecule_from_atom!(HYDROGEN);
     let oxygen = molecule_from_atom!(OXYGEN);
 
-
     let mut container = Container {
         contents: vec![
             ContainerCompound {
@@ -349,7 +383,7 @@ fn container_reaction_cost() {
             },
         ],
 
-        available_energy: Energy::from(1000.0),
+        available_energy: Energy::from(10000.0),
     };
 
 
@@ -380,19 +414,26 @@ fn container_reaction_cost() {
     };
 
 
-    assert_eq!(Energy::from(1000.0), container.available_energy);
-    assert_eq!(Energy::from(-100.0), reaction.energy_cost());
+    macro_rules! energy_range {
+        ($lower: expr, $value: expr, $upper: expr) => (
+            Energy::from($lower) < $value && $value < Energy::from($upper)
+        )
+    }
+
+
+    assert_eq!(Energy::from(10000.0), container.available_energy);
+    assert!(energy_range!(-600.0, reaction.energy_cost(), -500.0));
 
     // Repeadably try this reaction
 
     assert!(container.react(&reaction));
-    assert_eq!(Energy::from(1100.0), container.available_energy);
+    assert!(energy_range!(10500.0, container.available_energy, 10600.0));
 
     assert!(container.react(&reaction));
-    assert_eq!(Energy::from(1200.0), container.available_energy);
+    assert!(energy_range!(11000.0, container.available_energy, 11200.0));
 
     assert!(container.react(&reaction));
-    assert_eq!(Energy::from(1300.0), container.available_energy);
+    assert!(energy_range!(11500.0, container.available_energy, 11800.0));
 }
 
 #[test]

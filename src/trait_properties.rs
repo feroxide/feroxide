@@ -15,6 +15,10 @@ pub trait Properties: Eq + PartialEq + Clone + fmt::Debug {
     fn mass(&self) -> AtomMass;
 
 
+    /// Check if the item is a valid diatomic molecule
+    fn is_diatomic(&self) -> bool;
+
+
     /// Stringify the current item (default: self.symbol())
     fn stringify(&self) -> String {
         self.symbol()

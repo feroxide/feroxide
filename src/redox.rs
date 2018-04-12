@@ -1,6 +1,7 @@
 use data_sep::*;
 use math::gcd;
-use reaction::{ElemReaction, ReactionSide};
+use reaction::{ElemReaction, ReactionSide, ReactionCompound};
+use ion::Ion;
 use trait_element::Element;
 use trait_properties::Properties;
 use trait_reaction::Reaction;
@@ -9,16 +10,16 @@ use types::*;
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 /// A Redox reaction
-pub struct RedoxReaction<E: Element> {
+pub struct RedoxReaction {
     /// The reductor
-    pub reductor: ElemReaction<E>,
+    pub reductor: ElemReaction<Ion>,
 
     /// The oxidator
-    pub oxidator: ElemReaction<E>,
+    pub oxidator: ElemReaction<Ion>,
 }
 
 
-impl<E: Element> Reaction<E> for RedoxReaction<E> {
+impl Reaction<Ion> for RedoxReaction {
     fn equalise(&self) -> bool {
         // NOTE: This edits a clone, so doesn't do much!
         self.elem_reaction().equalise()
@@ -36,7 +37,7 @@ impl<E: Element> Reaction<E> for RedoxReaction<E> {
     }
 
 
-    fn elem_reaction(&self) -> ElemReaction<E> {
+    fn elem_reaction(&self) -> ElemReaction<Ion> {
         // NOTE: Assuming .rhs and .lhs are equalised
 
         let red_charge;
@@ -48,7 +49,7 @@ impl<E: Element> Reaction<E> for RedoxReaction<E> {
             T: Element,
         {
             rs.compounds.iter().position(|x| {
-                x.element.get_molecule().unwrap().compounds[0].atom.number == AtomNumber::from(0)
+                x.element.clone().get_molecule().unwrap().compounds[0].atom.number == AtomNumber::from(0)
             })
         }
 
@@ -79,9 +80,20 @@ impl<E: Element> Reaction<E> for RedoxReaction<E> {
         let oxi_mult = red_charge / gcd;
 
 
+        let mut lhs = self.reductor.lhs.clone() * red_mult + self.oxidator.lhs.clone() * oxi_mult;
+        let mut rhs = self.reductor.rhs.clone() * red_mult + self.oxidator.rhs.clone() * oxi_mult;
+
+        // Remove electrons from both sides
+        let remove_electron = |x: &ReactionCompound<Ion>| -> bool {
+            x.element.molecule.compounds[0].atom.number != AtomNumber::from(0)
+        };
+
+        lhs.compounds.retain(&remove_electron);
+        rhs.compounds.retain(&remove_electron);
+
         ElemReaction {
-            lhs: self.reductor.lhs.clone() * red_mult + self.oxidator.lhs.clone() * oxi_mult,
-            rhs: self.reductor.rhs.clone() * red_mult + self.oxidator.rhs.clone() * oxi_mult,
+            lhs: lhs,
+            rhs: rhs,
 
             is_equilibrium: true,
         }
@@ -89,7 +101,7 @@ impl<E: Element> Reaction<E> for RedoxReaction<E> {
 }
 
 
-impl<E: Element> Properties for RedoxReaction<E> {
+impl Properties for RedoxReaction {
     fn symbol(&self) -> String {
         let mut symbol = String::new();
 
@@ -115,5 +127,11 @@ impl<E: Element> Properties for RedoxReaction<E> {
     fn mass(&self) -> AtomMass {
         // Law of Conservation of Mass
         AtomMass::from(0.0)
+    }
+
+
+    fn is_diatomic(&self) -> bool {
+        // Reactions can't be diatomic
+        false
     }
 }

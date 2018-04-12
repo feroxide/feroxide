@@ -6,6 +6,7 @@ use feroxide::*;
 use feroxide::data_atoms::*;
 use feroxide::data_molecules::*;
 use feroxide::data_sep::*;
+use feroxide::data_sef::*;
 
 
 fn main() {
@@ -133,4 +134,89 @@ fn main() {
     // Print the SEP values
     println!("oxidator: {}", get_sep(&redox.oxidator).unwrap());
     println!("reductor: {}", get_sep(&redox.reductor).unwrap());
+
+
+    // Print the SEF value
+    println!("SEF(AlCl3) = {} kJ/mol", get_sef(&Ion::from_string("AlCl3".to_owned()).unwrap()).unwrap());
+
+
+
+    // Boom
+    println!("\n\n\n");
+
+    let mut water_container = Container::<Ion>::ion_from_string("2000 H2; + 1000 O2; [10000 J]".to_owned()).unwrap();
+    println!("pre: {}", water_container);
+
+    let redox_boom = get_redox_reaction(&water_container).unwrap();
+    println!("reaction: {}", redox_boom.elem_reaction().symbol());
+
+    for _ in 0..100 {
+        water_container.react(&redox_boom);
+    }
+
+    println!("post: {}", water_container);
+    println!("\n\n\n");
+
+
+    // Automatic redox reactions
+    println!("\n\n\n");
+
+    // Get the possible redox reactions from a container
+    let mut redox_container = Container {
+        contents: vec![
+            ContainerCompound {
+                element: ion_from_string!("Fe"),
+                moles: Moles::from(100.0),
+            },
+            ContainerCompound {
+                element: ion_from_string!("O2"),
+                moles: Moles::from(100.0),
+            },
+            ContainerCompound {
+                element: ion_from_string!("H2O"),
+                moles: Moles::from(200.0),
+            },
+        ],
+
+        available_energy: Energy::from(100_000f64),
+    };
+
+
+    let redox_reaction = get_redox_reaction(&redox_container);
+
+    if let Some(redox) = redox_reaction {
+        println!("\n\n");
+        println!("Container: {}", redox_container);
+        println!("\tcan have the following reaction:");
+        println!("Redox reaction: \n{}", redox.symbol());
+        println!("Total reaction: {}", redox.elem_reaction().symbol());
+
+        for _ in 0..100 {
+            redox_container.react(&redox);
+        }
+
+        println!("\n");
+        println!("After 100 times:");
+        println!("Container: {}", redox_container);
+
+
+        let rust = ElemReaction::<Ion>::ion_from_string("Fe;2+ + 2OH;-  >  FeO2H2;0".to_owned()).unwrap();
+
+        println!("\n");
+        println!("Container: {}", &redox_container);
+        println!("\tcan have the following reaction:");
+        println!("Salt reaction: \n{}", rust.symbol());
+
+        let fe2 = ContainerCompound::<Ion>::ion_from_string("Fe;2+".to_owned()).unwrap();
+
+        while redox_container.contains(&fe2) {
+            redox_container.react(&rust);
+        }
+
+        println!("\n");
+        println!("After all {} is gone:", fe2.symbol());
+        println!("Container: {}", redox_container);
+
+        println!("\n\n\n");
+    }
 }
