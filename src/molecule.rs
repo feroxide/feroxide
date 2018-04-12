@@ -28,7 +28,7 @@ pub struct MoleculeCompound {
 impl Molecule {
     /// Convert a string representation of a molecule into one
     /// TODO: Parse parentheses, e.g.  Ca3(PO4)2
-    pub fn from_string(string: String) -> Option<Molecule> {
+    pub fn from_string(string: &str) -> Option<Molecule> {
         let mut compounds = vec![];
 
         let mut token = String::new();
@@ -40,7 +40,7 @@ impl Molecule {
             }
 
             if is_upper!(c) && !token.is_empty() {
-                let compound = MoleculeCompound::from_string(token.clone()).unwrap();
+                let compound = MoleculeCompound::from_string(&token).unwrap();
 
                 compounds.push(compound);
                 token = String::new();
@@ -51,14 +51,14 @@ impl Molecule {
 
         // If some tokens remain, convert it into a compound
         if !token.is_empty() {
-            if let Some(compound) = MoleculeCompound::from_string(token) {
+            if let Some(compound) = MoleculeCompound::from_string(&token) {
                 compounds.push(compound);
             }
         }
 
 
         if !compounds.is_empty() {
-            Some(Molecule { compounds: compounds })
+            Some(Molecule { compounds })
         } else {
             None
         }
@@ -69,7 +69,7 @@ impl Molecule {
 
 impl MoleculeCompound {
     /// Takes a symbol string representing a MoleculeCompound, and turns it into one
-    pub fn from_string(string: String) -> Option<MoleculeCompound> {
+    pub fn from_string(string: &str) -> Option<MoleculeCompound> {
         let mut amount = 0;
 
         let mut token = String::new();
@@ -81,7 +81,11 @@ impl MoleculeCompound {
                 amount *= 10;
                 amount += to_number!(c);
             } else {
-                panic!("Invalid character '{}' in string \"{}\" for MoleculeCompound", c, string);
+                panic!(
+                    "Invalid character '{}' in string \"{}\" for MoleculeCompound",
+                    c,
+                    string
+                );
             }
         }
 
@@ -91,11 +95,8 @@ impl MoleculeCompound {
         }
 
 
-        if let Some(atom) = Atom::from_string(token.clone()) {
-            Some(MoleculeCompound {
-                atom: atom,
-                amount: amount,
-            })
+        if let Some(atom) = Atom::from_string(&token) {
+            Some(MoleculeCompound { atom, amount })
         } else {
             panic!("Failed to find Atom for {}", &token);
         }
@@ -106,10 +107,7 @@ impl MoleculeCompound {
     pub fn from_atom(atom: Atom) -> MoleculeCompound {
         let amount = if atom.diatomic { 2 } else { 1 };
 
-        MoleculeCompound {
-            atom: atom,
-            amount: amount,
-        }
+        MoleculeCompound { atom, amount }
     }
 }
 
@@ -143,7 +141,7 @@ impl Properties for Molecule {
         let mut mass = AtomMass::from(0.0);
 
         for compound in &self.compounds {
-            mass += AtomMass::from(compound.mass());
+            mass += compound.mass();
         }
 
         mass
@@ -151,7 +149,8 @@ impl Properties for Molecule {
 
 
     fn is_diatomic(&self) -> bool {
-        self.compounds.len() == 1 && self.compounds[0].amount == 2 && self.compounds[0].atom.diatomic
+        self.compounds.len() == 1 && self.compounds[0].amount == 2 &&
+            self.compounds[0].atom.diatomic
     }
 }
 

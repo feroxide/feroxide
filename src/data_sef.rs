@@ -13,7 +13,7 @@ use std::collections::HashMap;
 /// Get the Standard Enthalpy of Formation (SEF) of a ion
 pub fn get_sef(ion: &Ion) -> Option<SEF> {
     if let Some(&sef) = SEFMAP.get(&ion) {
-        Some(sef.clone())
+        Some(sef)
     } else {
         None
     }
@@ -24,9 +24,7 @@ pub fn get_sef(ion: &Ion) -> Option<SEF> {
 macro_rules! str_to_ion {
     ($s:expr) => {
         safe_unwrap_ion(
-            Ion::from_string(
-                $s.to_owned()
-            ),
+            Ion::from_string($s),
             $s
         )
     }
@@ -124,7 +122,7 @@ lazy_static! {
         add_str_ion!(map, "CuO", -155.2);
         add_str_ion!(map, "CuSO4", -769.98);
 
-        add_str_ion!(map, "H", 218.0);
+        // add_str_ion!(map, "H", 218.0); // (g)
         add_str_ion!(map, "H2O", -241.818);
         add_str_ion!(map, "H2O", -285.8);
         add_str_ion!(map, "H;+", 0.0); // (aq)

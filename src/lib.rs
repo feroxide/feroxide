@@ -30,7 +30,21 @@ macro_rules! ion_from_atom {
 #[macro_export]
 macro_rules! ion_from_string {
     ($string:expr) => (
-        Ion::from_string($string.to_owned()).unwrap()
+        Ion::from_string($string).unwrap()
+    )
+}
+
+#[macro_export]
+macro_rules! molecule_from_string {
+    ($string:expr) => (
+        Molecule::from_string($string).unwrap()
+    )
+}
+
+#[macro_export]
+macro_rules! atom_from_string {
+    ($string:expr) => (
+        Atom::from_string($string).unwrap()
     )
 }
 
@@ -89,10 +103,7 @@ fn ion_calculate_charge_from_string() {
 
     assert_eq!(
         AtomCharge::from(-1),
-        Ion::from_string("OH".to_owned())
-            .unwrap()
-            .get_charge()
-            .unwrap()
+        ion_from_string!("OH").get_charge().unwrap()
     );
 }
 
@@ -129,14 +140,12 @@ fn reaction_from_string() {
         is_equilibrium: true,
     };
 
-    let reaction_from_string = ElemReaction::<Ion>::ion_from_string("2H2 + O2 <> 2H2O".to_owned())
-        .unwrap();
+    let reaction_from_string = ElemReaction::<Ion>::ion_from_string("2H2 + O2 <> 2H2O").unwrap();
 
     assert_eq!(reaction, reaction_from_string);
 
 
-    let reaction_from_string =
-        ElemReaction::<Ion>::ion_from_string("2 H2 + O2 ⇌ 2 H2O".to_owned()).unwrap();
+    let reaction_from_string = ElemReaction::<Ion>::ion_from_string("2 H2 + O2 ⇌ 2 H2O").unwrap();
 
     assert_eq!(reaction, reaction_from_string);
 }
@@ -146,11 +155,11 @@ fn reaction_from_string() {
 fn atom_from_string() {
     use data_atoms::*;
 
-    assert_eq!(HYDROGEN, Atom::from_string("H".to_owned()).unwrap());
-    assert_eq!(CARBON, Atom::from_string("C".to_owned()).unwrap());
-    assert_eq!(COBALT, Atom::from_string("Co".to_owned()).unwrap());
-    assert_eq!(FLUORINE, Atom::from_string("F".to_owned()).unwrap());
-    assert_eq!(IRON, Atom::from_string("Fe".to_owned()).unwrap());
+    assert_eq!(HYDROGEN, atom_from_string!("H"));
+    assert_eq!(CARBON, atom_from_string!("C"));
+    assert_eq!(COBALT, atom_from_string!("Co"));
+    assert_eq!(FLUORINE, atom_from_string!("F"));
+    assert_eq!(IRON, atom_from_string!("Fe"));
 }
 
 
@@ -158,18 +167,9 @@ fn atom_from_string() {
 fn molecule_from_string() {
     use data_molecules::*;
 
-    assert_eq!(
-        WATER.clone(),
-        Molecule::from_string("H2O".to_owned()).unwrap()
-    );
-    assert_eq!(
-        CO2.clone(),
-        Molecule::from_string("CO2".to_owned()).unwrap()
-    );
-    assert_eq!(
-        SUGAR.clone(),
-        Molecule::from_string("C12H22O11".to_owned()).unwrap()
-    );
+    assert_eq!(WATER.clone(), molecule_from_string!("H2O"));
+    assert_eq!(CO2.clone(), molecule_from_string!("CO2"));
+    assert_eq!(SUGAR.clone(), molecule_from_string!("C12H22O11"));
 }
 
 
@@ -184,9 +184,18 @@ fn test_gcd() {
 
 #[test]
 fn diatomic_molecules_have_no_charge() {
-    assert_eq!(Ion::from_string("I2".to_owned()).unwrap().get_charge().unwrap(), AtomCharge::from(0));
-    assert_eq!(Ion::from_string("H2".to_owned()).unwrap().get_charge().unwrap(), AtomCharge::from(0));
-    assert_eq!(Ion::from_string("H".to_owned()).unwrap().get_charge().unwrap(), AtomCharge::from(1));
+    assert_eq!(
+        ion_from_string!("I2").get_charge().unwrap(),
+        AtomCharge::from(0)
+    );
+    assert_eq!(
+        ion_from_string!("H2").get_charge().unwrap(),
+        AtomCharge::from(0)
+    );
+    assert_eq!(
+        ion_from_string!("H").get_charge().unwrap(),
+        AtomCharge::from(1)
+    );
 }
 
 
@@ -209,29 +218,71 @@ fn total_atoms() {
     };
 
     // 16 Hydrogen atoms
-    assert_eq!(16, *side.total_atoms(false).get(&AtomNumber::from(1)).unwrap());
+    assert_eq!(
+        16,
+        *side.total_atoms(false).get(&AtomNumber::from(1)).unwrap()
+    );
 
     // 8 + 10 = 18 Oxygen atoms
-    assert_eq!(18, *side.total_atoms(false).get(&AtomNumber::from(8)).unwrap());
+    assert_eq!(
+        18,
+        *side.total_atoms(false).get(&AtomNumber::from(8)).unwrap()
+    );
 }
 
 
 #[test]
 fn keep_explicit_charges() {
-    assert_eq!(ion_from_string!("Fe;123+").get_charge().unwrap(), AtomCharge::from(123));
-    assert_eq!(ion_from_string!("Fe;123-").get_charge().unwrap(), AtomCharge::from(-123));
+    assert_eq!(
+        ion_from_string!("Fe;123+").get_charge().unwrap(),
+        AtomCharge::from(123)
+    );
+    assert_eq!(
+        ion_from_string!("Fe;123-").get_charge().unwrap(),
+        AtomCharge::from(-123)
+    );
 
-    assert_eq!(ion_from_string!("Fe").get_charge().unwrap(), AtomCharge::from(0));
-    assert_eq!(ion_from_string!("Fe;").get_charge().unwrap(), AtomCharge::from(0));
-    assert_eq!(ion_from_string!("Fe;0").get_charge().unwrap(), AtomCharge::from(0));
-    assert_eq!(ion_from_string!("Fe;+").get_charge().unwrap(), AtomCharge::from(1));
-    assert_eq!(ion_from_string!("Fe;-").get_charge().unwrap(), AtomCharge::from(-1));
+    assert_eq!(
+        ion_from_string!("Fe").get_charge().unwrap(),
+        AtomCharge::from(0)
+    );
+    assert_eq!(
+        ion_from_string!("Fe;").get_charge().unwrap(),
+        AtomCharge::from(0)
+    );
+    assert_eq!(
+        ion_from_string!("Fe;0").get_charge().unwrap(),
+        AtomCharge::from(0)
+    );
+    assert_eq!(
+        ion_from_string!("Fe;+").get_charge().unwrap(),
+        AtomCharge::from(1)
+    );
+    assert_eq!(
+        ion_from_string!("Fe;-").get_charge().unwrap(),
+        AtomCharge::from(-1)
+    );
 
-    assert_eq!(ion_from_string!("H").get_charge().unwrap(), AtomCharge::from(1));
-    assert_eq!(ion_from_string!("H;").get_charge().unwrap(), AtomCharge::from(0));
-    assert_eq!(ion_from_string!("H;0").get_charge().unwrap(), AtomCharge::from(0));
-    assert_eq!(ion_from_string!("H;+").get_charge().unwrap(), AtomCharge::from(1));
-    assert_eq!(ion_from_string!("H;-").get_charge().unwrap(), AtomCharge::from(-1));
+    assert_eq!(
+        ion_from_string!("H").get_charge().unwrap(),
+        AtomCharge::from(1)
+    );
+    assert_eq!(
+        ion_from_string!("H;").get_charge().unwrap(),
+        AtomCharge::from(0)
+    );
+    assert_eq!(
+        ion_from_string!("H;0").get_charge().unwrap(),
+        AtomCharge::from(0)
+    );
+    assert_eq!(
+        ion_from_string!("H;+").get_charge().unwrap(),
+        AtomCharge::from(1)
+    );
+    assert_eq!(
+        ion_from_string!("H;-").get_charge().unwrap(),
+        AtomCharge::from(-1)
+    );
 }
 
 
@@ -678,8 +729,14 @@ fn reaction_check() {
 
 
     // Test display
-    assert_eq!("C + O₂ → CO₂", format!("{}", good_reaction));
-    assert_eq!("H₂ ⇌ 2H", format!("{}", equilibrium_reaction));
+    assert_eq!(
+        "C + O₂ → CO₂    [-1135.930 J]",
+        format!("{}", good_reaction)
+    );
+    assert_eq!(
+        "H₂ ⇌ 2H    [0.000 J]",
+        format!("{}", equilibrium_reaction)
+    );
 }
 
 

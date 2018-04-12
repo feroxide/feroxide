@@ -48,7 +48,7 @@ pub struct ReactionCompound<E: Element> {
 
 impl<E: Element> ElemReaction<E> {
     /// Convert a string representation of an elementary reaction into one
-    pub fn ion_from_string(string: String) -> Option<ElemReaction<Ion>> {
+    pub fn ion_from_string(string: &str) -> Option<ElemReaction<Ion>> {
         let mut token = String::new();
 
         let mut lhs = None;
@@ -58,7 +58,7 @@ impl<E: Element> ElemReaction<E> {
         for c in string.chars() {
             if c == '<' || c == '>' || c == '⇌' || c == '→' {
                 if lhs == None {
-                    lhs = ReactionSide::<Ion>::ion_from_string(token.clone());
+                    lhs = ReactionSide::<Ion>::ion_from_string(&token);
                     token = String::new();
                 }
 
@@ -74,15 +74,15 @@ impl<E: Element> ElemReaction<E> {
         }
 
         if !token.is_empty() {
-            rhs = ReactionSide::<Ion>::ion_from_string(token.clone());
+            rhs = ReactionSide::<Ion>::ion_from_string(&token);
         }
 
 
         if let (Some(lhs), Some(rhs)) = (lhs, rhs) {
             Some(ElemReaction {
-                lhs: lhs,
-                rhs: rhs,
-                is_equilibrium: is_equilibrium,
+                lhs,
+                rhs,
+                is_equilibrium,
             })
         } else {
             None
@@ -91,7 +91,7 @@ impl<E: Element> ElemReaction<E> {
 
 
     /// Convert a string representation of a reaction into one
-    pub fn molecule_from_string(string: String) -> Option<ElemReaction<Molecule>> {
+    pub fn molecule_from_string(string: &str) -> Option<ElemReaction<Molecule>> {
         let mut token = String::new();
 
         let mut lhs = None;
@@ -101,7 +101,7 @@ impl<E: Element> ElemReaction<E> {
         for c in string.chars() {
             if c == '<' || c == '>' || c == '⇌' || c == '→' {
                 if lhs == None {
-                    lhs = ReactionSide::<Molecule>::molecule_from_string(token.clone());
+                    lhs = ReactionSide::<Molecule>::molecule_from_string(&token);
                     token = String::new();
                 }
 
@@ -116,15 +116,15 @@ impl<E: Element> ElemReaction<E> {
         }
 
         if !token.is_empty() {
-            rhs = ReactionSide::<Molecule>::molecule_from_string(token.clone());
+            rhs = ReactionSide::<Molecule>::molecule_from_string(&token);
         }
 
 
         if let (Some(lhs), Some(rhs)) = (lhs, rhs) {
             Some(ElemReaction {
-                lhs: lhs,
-                rhs: rhs,
-                is_equilibrium: is_equilibrium,
+                lhs,
+                rhs,
+                is_equilibrium,
             })
         } else {
             None
@@ -158,8 +158,8 @@ impl<E: Element> ElemReaction<E> {
 
 impl<E: Element> ReactionSide<E> {
     /// Convert a string representation of a reactionside into one
-    pub fn ion_from_string(symbol: String) -> Option<ReactionSide<Ion>> {
-        let mut compounds = vec! {};
+    pub fn ion_from_string(symbol: &str) -> Option<ReactionSide<Ion>> {
+        let mut compounds = vec![];
         let mut token = String::new();
         let mut was_whitespace = false;
 
@@ -170,7 +170,7 @@ impl<E: Element> ReactionSide<E> {
             }
 
             if c == '+' && was_whitespace {
-                if let Some(compound) = ReactionCompound::<Ion>::ion_from_string(token.clone()) {
+                if let Some(compound) = ReactionCompound::<Ion>::ion_from_string(&token) {
                     compounds.push(compound);
                 } else {
                     println!("Failed to parse ion '{}'", &token);
@@ -185,7 +185,7 @@ impl<E: Element> ReactionSide<E> {
         }
 
         if !token.is_empty() {
-            if let Some(compound) = ReactionCompound::<Ion>::ion_from_string(token.clone()) {
+            if let Some(compound) = ReactionCompound::<Ion>::ion_from_string(&token) {
                 compounds.push(compound);
             } else {
                 println!("Failed to parse ion '{}'", &token);
@@ -194,7 +194,7 @@ impl<E: Element> ReactionSide<E> {
 
 
         if !compounds.is_empty() {
-            Some(ReactionSide { compounds: compounds })
+            Some(ReactionSide { compounds })
         } else {
             None
         }
@@ -202,7 +202,7 @@ impl<E: Element> ReactionSide<E> {
 
 
     /// Convert a string representation of a reactionside into one
-    pub fn molecule_from_string(symbol: String) -> Option<ReactionSide<Molecule>> {
+    pub fn molecule_from_string(symbol: &str) -> Option<ReactionSide<Molecule>> {
         let mut compounds = vec![];
 
         let mut token = String::new();
@@ -212,7 +212,7 @@ impl<E: Element> ReactionSide<E> {
             }
 
             if c == '+' {
-                if let Some(compound) = ReactionCompound::<Molecule>::molecule_from_string(token) {
+                if let Some(compound) = ReactionCompound::<Molecule>::molecule_from_string(&token) {
                     compounds.push(compound);
                 }
                 token = String::new();
@@ -223,14 +223,14 @@ impl<E: Element> ReactionSide<E> {
         }
 
         if !token.is_empty() {
-            if let Some(compound) = ReactionCompound::<Molecule>::molecule_from_string(token) {
+            if let Some(compound) = ReactionCompound::<Molecule>::molecule_from_string(&token) {
                 compounds.push(compound);
             }
         }
 
 
         if !compounds.is_empty() {
-            Some(ReactionSide { compounds: compounds })
+            Some(ReactionSide { compounds })
         } else {
             None
         }
@@ -259,14 +259,18 @@ impl<E: Element> ReactionSide<E> {
             let sef = get_sef(&compound.element.clone().get_ion().unwrap());
 
             if sef.is_some() {
-                energy += Energy_type::from(SEF_type::from(sef.unwrap())) * Energy_type::from(compound.amount);
+                energy += Energy_type::from(SEF_type::from(sef.unwrap())) *
+                    Energy_type::from(compound.amount);
             } else {
                 let mol = compound.element.clone().get_molecule().unwrap();
                 let is_diatomic = mol.is_diatomic();
                 let is_monoatomic = mol.compounds.len() == 1 && mol.compounds[0].amount == 1;
 
                 if !is_diatomic && !is_monoatomic {
-                    println!("Failed to get SEF for compound {}, assuming 0", compound.symbol());
+                    println!(
+                        "Failed to get SEF for compound {}, assuming 0",
+                        compound.symbol()
+                    );
                 }
             }
         }
@@ -312,7 +316,7 @@ impl<E: Element> ReactionSide<E> {
 
 impl<E: Element> ReactionCompound<E> {
     /// Convert a string representation of a reaction compound into one
-    pub fn ion_from_string(symbol: String) -> Option<ReactionCompound<Ion>> {
+    pub fn ion_from_string(symbol: &str) -> Option<ReactionCompound<Ion>> {
         let mut amount: u16 = 0;
         let mut element = None;
 
@@ -332,7 +336,7 @@ impl<E: Element> ReactionCompound<E> {
         }
 
         if !token.is_empty() {
-            element = Ion::from_string(token);
+            element = Ion::from_string(&token);
         }
 
         if amount == 0 {
@@ -340,10 +344,7 @@ impl<E: Element> ReactionCompound<E> {
         }
 
         if let Some(element) = element {
-            Some(ReactionCompound {
-                amount: amount,
-                element: element,
-            })
+            Some(ReactionCompound { amount, element })
         } else {
             None
         }
@@ -351,7 +352,7 @@ impl<E: Element> ReactionCompound<E> {
 
 
     /// Convert a string representation of a reaction compound into one
-    pub fn molecule_from_string(symbol: String) -> Option<ReactionCompound<Molecule>> {
+    pub fn molecule_from_string(symbol: &str) -> Option<ReactionCompound<Molecule>> {
         let mut amount: u16 = 0;
         let mut element = None;
 
@@ -371,7 +372,7 @@ impl<E: Element> ReactionCompound<E> {
         }
 
         if !token.is_empty() {
-            element = Molecule::from_string(token);
+            element = Molecule::from_string(&token);
         }
 
         if amount == 0 {
@@ -379,10 +380,7 @@ impl<E: Element> ReactionCompound<E> {
         }
 
         if let Some(element) = element {
-            Some(ReactionCompound {
-                amount: amount,
-                element: element,
-            })
+            Some(ReactionCompound { amount, element })
         } else {
             None
         }
@@ -429,10 +427,10 @@ impl<E: Element> Reaction<E> for ElemReaction<E> {
 
                 if difference > 0 {
                     // Increase right side
-                    println!("We know what to do, but it's just not implemented yet.");
+                    println!("[right] We know what to do, but it's just not implemented yet.");
                 } else {
                     // Increase left side
-                    println!("We know what to do, but it's just not implemented yet.");
+                    println!("[left] We know what to do, but it's just not implemented yet.");
                 }
             }
         }
@@ -467,7 +465,7 @@ impl<E: Element> Add for ReactionSide<E> {
         let mut compounds = self.compounds.clone();
         compounds.append(&mut rhs.compounds);
 
-        ReactionSide { compounds: compounds }
+        ReactionSide { compounds }
     }
 }
 
@@ -484,7 +482,7 @@ impl<E: Element> Mul<u16> for ReactionSide<E> {
             compound.amount *= rhs;
         }
 
-        ReactionSide { compounds: compounds }
+        ReactionSide { compounds }
     }
 }
 

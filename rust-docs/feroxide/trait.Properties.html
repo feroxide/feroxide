@@ -10,8 +10,11 @@
     <title>feroxide::Properties - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../main.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle">
+    
+    <link rel="stylesheet" type="text/css" href="../dark.css">
+    <link rel="stylesheet" type="text/css" href="../main.css" id="themeStyle">
+    <script src="../storage.js"></script>
     
 
     
@@ -28,10 +31,18 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Trait Properties</p><div class="block items"><ul><li><a href="#required-methods">Required Methods</a></li><li><a href="#provided-methods">Provided Methods</a></li><li><a href="#implementors">Implementors</a></li></ul></div><p class='location'><a href='index.html'>feroxide</a></p><script>window.sidebarCurrent = {name: 'Properties', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Properties</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.symbol">symbol</a><a href="#tymethod.name">name</a><a href="#tymethod.mass">mass</a><a href="#tymethod.is_diatomic">is_diatomic</a></div><a class="sidebar-title" href="#provided-methods">Provided Methods</a><div class="sidebar-links"><a href="#method.stringify">stringify</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='index.html'>feroxide</a></p><script>window.sidebarCurrent = {name: 'Properties', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
+    <div class="theme-picker">
+        <button id="theme-picker" aria-label="Pick another theme!">
+            <img src="../brush.svg" width="18" alt="Pick another theme!">
+        </button>
+        <div id="theme-choices"></div>
+    </div>
+    <script src="../theme.js"></script>
     <nav class="sub">
         <form class="search-form js-only">
             <div class="search-container">
@@ -48,35 +59,43 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/feroxide/trait_properties.rs.html#5-22' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/feroxide/trait_properties.rs.html#5-26' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Properties: <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> {
     fn <a href='#tymethod.symbol' class='fnname'>symbol</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>;
 <div class='item-spacer'></div>    fn <a href='#tymethod.name' class='fnname'>name</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>;
 <div class='item-spacer'></div>    fn <a href='#tymethod.mass' class='fnname'>mass</a>(&amp;self) -&gt; <a class="struct" href="../feroxide/struct.AtomMass.html" title="struct feroxide::AtomMass">AtomMass</a>;
+<div class='item-spacer'></div>    fn <a href='#tymethod.is_diatomic' class='fnname'>is_diatomic</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>;
 
     fn <a href='#method.stringify' class='fnname'>stringify</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a> { ... }
 }</pre>
-            <h2 id='required-methods'>Required Methods</h2>
+            <h2 id='required-methods' class='small-section-header'>
+              Required Methods<a href='#required-methods' class='anchor'></a>
+            </h2>
             <div class='methods'>
         <h3 id='tymethod.symbol' class='method'><span id='symbol.v' class='invisible'><code>fn <a href='#tymethod.symbol' class='fnname'>symbol</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a></code></span></h3><div class='docblock'><p>Get the symbol of the current item</p>
 </div><h3 id='tymethod.name' class='method'><span id='name.v' class='invisible'><code>fn <a href='#tymethod.name' class='fnname'>name</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a></code></span></h3><div class='docblock'><p>Get the name of the current item</p>
 </div><h3 id='tymethod.mass' class='method'><span id='mass.v' class='invisible'><code>fn <a href='#tymethod.mass' class='fnname'>mass</a>(&amp;self) -&gt; <a class="struct" href="../feroxide/struct.AtomMass.html" title="struct feroxide::AtomMass">AtomMass</a></code></span></h3><div class='docblock'><p>Get the mass of the current item</p>
+</div><h3 id='tymethod.is_diatomic' class='method'><span id='is_diatomic.v' class='invisible'><code>fn <a href='#tymethod.is_diatomic' class='fnname'>is_diatomic</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h3><div class='docblock'><p>Check if the item is a valid diatomic molecule</p>
 </div></div>
-            <h2 id='provided-methods'>Provided Methods</h2>
+            <h2 id='provided-methods' class='small-section-header'>
+              Provided Methods<a href='#provided-methods' class='anchor'></a>
+            </h2>
             <div class='methods'>
         <h3 id='method.stringify' class='method'><span id='stringify.v' class='invisible'><code>fn <a href='#method.stringify' class='fnname'>stringify</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a></code></span></h3><div class='docblock'><p>Stringify the current item (default: self.symbol())</p>
 </div></div>
-        <h2 id='implementors'>Implementors</h2>
+        <h2 id='implementors' class='small-section-header'>
+          Implementors<a href='#implementors' class='anchor'></a>
+        </h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl Properties for <a class="struct" href="../feroxide/struct.Atom.html" title="struct feroxide::Atom">Atom</a></code></li>
-<li><code>impl&lt;E:&nbsp;<a class="trait" href="../feroxide/trait.Element.html" title="trait feroxide::Element">Element</a>&gt; Properties for <a class="struct" href="../feroxide/struct.ContainerCompound.html" title="struct feroxide::ContainerCompound">ContainerCompound</a>&lt;E&gt;</code></li>
-<li><code>impl Properties for <a class="struct" href="../feroxide/struct.Ion.html" title="struct feroxide::Ion">Ion</a></code></li>
-<li><code>impl Properties for <a class="struct" href="../feroxide/struct.Molecule.html" title="struct feroxide::Molecule">Molecule</a></code></li>
-<li><code>impl Properties for <a class="struct" href="../feroxide/struct.MoleculeCompound.html" title="struct feroxide::MoleculeCompound">MoleculeCompound</a></code></li>
-<li><code>impl&lt;E:&nbsp;<a class="trait" href="../feroxide/trait.Element.html" title="trait feroxide::Element">Element</a>&gt; Properties for <a class="struct" href="../feroxide/struct.ElemReaction.html" title="struct feroxide::ElemReaction">ElemReaction</a>&lt;E&gt;</code></li>
-<li><code>impl&lt;E:&nbsp;<a class="trait" href="../feroxide/trait.Element.html" title="trait feroxide::Element">Element</a>&gt; Properties for <a class="struct" href="../feroxide/struct.ReactionSide.html" title="struct feroxide::ReactionSide">ReactionSide</a>&lt;E&gt;</code></li>
-<li><code>impl&lt;E:&nbsp;<a class="trait" href="../feroxide/trait.Element.html" title="trait feroxide::Element">Element</a>&gt; Properties for <a class="struct" href="../feroxide/struct.ReactionCompound.html" title="struct feroxide::ReactionCompound">ReactionCompound</a>&lt;E&gt;</code></li>
-<li><code>impl&lt;E:&nbsp;<a class="trait" href="../feroxide/trait.Element.html" title="trait feroxide::Element">Element</a>&gt; Properties for <a class="struct" href="../feroxide/struct.RedoxReaction.html" title="struct feroxide::RedoxReaction">RedoxReaction</a>&lt;E&gt;</code></li>
+    <li><div class='out-of-band'><a class='srclink' href='../src/feroxide/atom.rs.html#88-108' title='goto source code'>[src]</a></div><code>impl Properties for <a class="struct" href="../feroxide/struct.Atom.html" title="struct feroxide::Atom">Atom</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../src/feroxide/container.rs.html#447-484' title='goto source code'>[src]</a></div><code>impl&lt;E:&nbsp;<a class="trait" href="../feroxide/trait.Element.html" title="trait feroxide::Element">Element</a>&gt; Properties for <a class="struct" href="../feroxide/struct.ContainerCompound.html" title="struct feroxide::ContainerCompound">ContainerCompound</a>&lt;E&gt;</code></li>
+<li><div class='out-of-band'><a class='srclink' href='../src/feroxide/ion.rs.html#169-210' title='goto source code'>[src]</a></div><code>impl Properties for <a class="struct" href="../feroxide/struct.Ion.html" title="struct feroxide::Ion">Ion</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../src/feroxide/molecule.rs.html#115-155' title='goto source code'>[src]</a></div><code>impl Properties for <a class="struct" href="../feroxide/struct.Molecule.html" title="struct feroxide::Molecule">Molecule</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../src/feroxide/molecule.rs.html#158-193' title='goto source code'>[src]</a></div><code>impl Properties for <a class="struct" href="../feroxide/struct.MoleculeCompound.html" title="struct feroxide::MoleculeCompound">MoleculeCompound</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../src/feroxide/reaction.rs.html#505-544' title='goto source code'>[src]</a></div><code>impl&lt;E:&nbsp;<a class="trait" href="../feroxide/trait.Element.html" title="trait feroxide::Element">Element</a>&gt; Properties for <a class="struct" href="../feroxide/struct.ElemReaction.html" title="struct feroxide::ElemReaction">ElemReaction</a>&lt;E&gt;</code></li>
+<li><div class='out-of-band'><a class='srclink' href='../src/feroxide/reaction.rs.html#547-597' title='goto source code'>[src]</a></div><code>impl&lt;E:&nbsp;<a class="trait" href="../feroxide/trait.Element.html" title="trait feroxide::Element">Element</a>&gt; Properties for <a class="struct" href="../feroxide/struct.ReactionSide.html" title="struct feroxide::ReactionSide">ReactionSide</a>&lt;E&gt;</code></li>
+<li><div class='out-of-band'><a class='srclink' href='../src/feroxide/reaction.rs.html#600-636' title='goto source code'>[src]</a></div><code>impl&lt;E:&nbsp;<a class="trait" href="../feroxide/trait.Element.html" title="trait feroxide::Element">Element</a>&gt; Properties for <a class="struct" href="../feroxide/struct.ReactionCompound.html" title="struct feroxide::ReactionCompound">ReactionCompound</a>&lt;E&gt;</code></li>
+<li><div class='out-of-band'><a class='srclink' href='../src/feroxide/redox.rs.html#106-139' title='goto source code'>[src]</a></div><code>impl Properties for <a class="struct" href="../feroxide/struct.RedoxReaction.html" title="struct feroxide::RedoxReaction">RedoxReaction</a></code></li>
 </ul><script type="text/javascript" async
                          src="../implementors/feroxide/trait.Properties.js">
                  </script></section>
@@ -92,18 +111,22 @@
                 <h2>Keyboard Shortcuts</h2>
 
                 <dl>
-                    <dt>?</dt>
+                    <dt><kbd>?</kbd></dt>
                     <dd>Show this help dialog</dd>
-                    <dt>S</dt>
+                    <dt><kbd>S</kbd></dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt><kbd>↑</kbd></dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt><kbd>↓</kbd></dt>
                     <dd>Move down in search results</dd>
-                    <dt>&#9166;</dt>
+                    <dt><kbd>↹</kbd></dt>
+                    <dd>Switch tab</dd>
+                    <dt><kbd>&#9166;</kbd></dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
-                    <dd>Collapse/expand all sections</dd>
+                    <dt><kbd>+</kbd></dt>
+                    <dd>Expand all sections</dd>
+                    <dt><kbd>-</kbd></dt>
+                    <dd>Collapse all sections</dd>
                 </dl>
             </div>
 

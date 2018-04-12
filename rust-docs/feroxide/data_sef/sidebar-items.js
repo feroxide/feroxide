@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["get_sef","Get the Standard Enthalpy of Formation (SEF) of a ion"]],"struct":[["SEFMAP",""]]});

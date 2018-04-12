@@ -49,7 +49,9 @@ impl Reaction<Ion> for RedoxReaction {
             T: Element,
         {
             rs.compounds.iter().position(|x| {
-                x.element.clone().get_molecule().unwrap().compounds[0].atom.number == AtomNumber::from(0)
+                x.element.clone().get_molecule().unwrap().compounds[0]
+                    .atom
+                    .number == AtomNumber::from(0)
             })
         }
 
@@ -92,8 +94,8 @@ impl Reaction<Ion> for RedoxReaction {
         rhs.compounds.retain(&remove_electron);
 
         ElemReaction {
-            lhs: lhs,
-            rhs: rhs,
+            lhs,
+            rhs,
 
             is_equilibrium: true,
         }

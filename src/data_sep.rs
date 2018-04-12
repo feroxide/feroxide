@@ -13,9 +13,9 @@ use std::collections::HashMap;
 /// Get the Standard Electrode Potential (SEP) of a reaction
 pub fn get_sep(elem_reaction: &ElemReaction<Ion>) -> Option<SEP> {
     if let Some(&sep) = SEPMAP.get(&elem_reaction) {
-        Some(sep.clone())
+        Some(sep)
     } else if let Some(&sep) = SEPMAP.get(&elem_reaction.clone().swap()) {
-        Some(sep.clone())
+        Some(sep)
     } else {
         None
     }
@@ -27,9 +27,7 @@ macro_rules! str_to_reaction {
     ($s:expr) => {
         valid_or_panic(
             safe_unwrap_reaction(
-                ElemReaction::<Ion>::ion_from_string(
-                    $s.to_owned()
-                ),
+                ElemReaction::<Ion>::ion_from_string($s),
                 $s
             )
         )
@@ -64,13 +62,23 @@ fn safe_unwrap_reaction(reaction: Option<ElemReaction<Ion>>, s: &str) -> ElemRea
 
 
 pub fn get_reactions_with_element(elem: &Ion) -> Vec<(ElemReaction<Ion>, SEP)> {
-    let mut reactions = vec! {};
+    let mut reactions = vec![];
 
     println!("Searching for reactions with element {}", elem);
 
     for (reaction, &sep) in SEPMAP.iter() {
-        let lhs_elements = reaction.lhs.compounds.iter().map(|x| &x.element).collect::<Vec<&Ion>>();
-        let rhs_elements = reaction.rhs.compounds.iter().map(|x| &x.element).collect::<Vec<&Ion>>();
+        let lhs_elements = reaction
+            .lhs
+            .compounds
+            .iter()
+            .map(|x| &x.element)
+            .collect::<Vec<&Ion>>();
+        let rhs_elements = reaction
+            .rhs
+            .compounds
+            .iter()
+            .map(|x| &x.element)
+            .collect::<Vec<&Ion>>();
 
         if lhs_elements.contains(&elem) {
             reactions.push((reaction.clone(), sep));

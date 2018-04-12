@@ -57,7 +57,10 @@ pub fn get_redox_reaction(container: &Container<Ion>) -> Option<RedoxReaction> {
         print!("{}           \twith SEP {}  ", reaction.0, reaction.1);
 
         // Find electrons
-        if reaction.0.lhs.total_atoms(true).contains_key(&AtomNumber::from(0)) {
+        if reaction.0.lhs.total_atoms(true).contains_key(
+            &AtomNumber::from(0),
+        )
+        {
             println!("[oxi]");
 
             if let Some(oxi) = oxidator.clone() {
@@ -89,8 +92,7 @@ pub fn get_redox_reaction(container: &Container<Ion>) -> Option<RedoxReaction> {
 
     if let Some(ref red) = reductor {
         println!("reductor: {}  \twith SEP {}", red.0, red.1);
-    }
-    else {
+    } else {
         println!("failed to find reductor");
     }
 
@@ -177,14 +179,14 @@ impl<E: Element> Container<E> {
         }
 
         // Element is not available
-        return false;
+        false
     }
 
 
     /// Check if the container has all given elements
     pub fn has_elements(&self, elements: &[ContainerCompound<E>]) -> bool {
         for element in elements {
-            if ! self.contains(element) {
+            if !self.contains(element) {
                 return false;
             }
         }
@@ -196,13 +198,17 @@ impl<E: Element> Container<E> {
     /// Check if the container has all required elements for a reaction to occur
     /// NOTE: Ignores electrons
     pub fn has_enough_compounds_for_reaction(&self, reaction: &ElemReaction<E>) -> bool {
-        self.has_elements(
-            &reaction.lhs.compounds
-                .iter()
-                .filter(|x| x.element.clone().get_molecule().unwrap().compounds[0].atom.number != AtomNumber::from(0))
-                .map(|x| rc_to_cc(x.clone()))
-                .collect::<Vec<ContainerCompound<E>>>()
-        )
+        self.has_elements(&reaction
+            .lhs
+            .compounds
+            .iter()
+            .filter(|x| {
+                x.element.clone().get_molecule().unwrap().compounds[0]
+                    .atom
+                    .number != AtomNumber::from(0)
+            })
+            .map(|x| rc_to_cc(x.clone()))
+            .collect::<Vec<ContainerCompound<E>>>())
     }
 
 
@@ -258,10 +264,12 @@ impl<E: Element> Container<E> {
 
     /// Get all possible redox reactions and their SEP's
     pub fn get_redox_reactions(&self) -> Vec<(ElemReaction<Ion>, SEP)> {
-        let mut redox_reactions = vec! {};
+        let mut redox_reactions = vec![];
 
         for container_element in &self.contents {
-            redox_reactions.append(&mut get_reactions_with_element(&container_element.clone().get_ion().unwrap()));
+            redox_reactions.append(&mut get_reactions_with_element(
+                &container_element.clone().get_ion().unwrap(),
+            ));
         }
 
         redox_reactions
@@ -292,21 +300,15 @@ impl<E: Element> Container<E> {
     }
 
 
-    pub fn ion_from_string(string: String) -> Option<Container<Ion>> {
+    pub fn ion_from_string(string: &str) -> Option<Container<Ion>> {
         let mut token = String::new();
         let mut contents = None;
         let mut energy = None;
 
         for c in string.chars() {
             if c == '[' {
-                let rs = ReactionSide::<Ion>::ion_from_string(token);
-                let mut _contents = vec! {};
-
-                if ! rs.is_some() {
-                    return None;
-                }
-
-                let rs = rs.unwrap();
+                let rs = ReactionSide::<Ion>::ion_from_string(&token)?;
+                let mut _contents = vec![];
 
                 for rc in rs.compounds {
                     _contents.push(rc_to_cc(rc));
@@ -344,21 +346,15 @@ impl<E: Element> Container<E> {
     }
 
 
-    pub fn molecule_from_string(string: String) -> Option<Container<Molecule>> {
+    pub fn molecule_from_string(string: &str) -> Option<Container<Molecule>> {
         let mut token = String::new();
         let mut contents = None;
         let mut energy = None;
 
         for c in string.chars() {
             if c == '[' {
-                let rs = ReactionSide::<Molecule>::molecule_from_string(token);
-                let mut _contents = vec! {};
-
-                if ! rs.is_some() {
-                    return None;
-                }
-
-                let rs = rs.unwrap();
+                let rs = ReactionSide::<Molecule>::molecule_from_string(&token)?;
+                let mut _contents = vec![];
 
                 for rc in rs.compounds {
                     _contents.push(rc_to_cc(rc));
@@ -385,7 +381,7 @@ impl<E: Element> Container<E> {
 
         if contents.is_some() && energy.is_some() {
             Some(Container {
-                contents: vec! {},
+                contents: contents.unwrap(),
 
                 available_energy: energy.unwrap(),
             })
@@ -397,25 +393,17 @@ impl<E: Element> Container<E> {
 
 
 impl<E: Element> ContainerCompound<E> {
-    pub fn ion_from_string(string: String) -> Option<ContainerCompound<Ion>> {
-        let rc = ReactionCompound::<Ion>::ion_from_string(string);
+    pub fn ion_from_string(string: &str) -> Option<ContainerCompound<Ion>> {
+        let rc = ReactionCompound::<Ion>::ion_from_string(string)?;
 
-        if ! rc.is_some() {
-            return None;
-        }
-
-        Some(rc_to_cc(rc.unwrap()))
+        Some(rc_to_cc(rc))
     }
 
 
-    pub fn molecule_from_string(string: String) -> Option<ContainerCompound<Molecule>> {
-        let rc = ReactionCompound::<Molecule>::molecule_from_string(string);
+    pub fn molecule_from_string(string: &str) -> Option<ContainerCompound<Molecule>> {
+        let rc = ReactionCompound::<Molecule>::molecule_from_string(string)?;
 
-        if ! rc.is_some() {
-            return None;
-        }
-
-        Some(rc_to_cc(rc.unwrap()))
+        Some(rc_to_cc(rc))
     }
 }
 

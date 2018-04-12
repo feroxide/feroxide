@@ -110,7 +110,7 @@ pub const {capsname}: Atom = Atom {{
 
 
     atoms_rs_file
-        .write_all(b"\npub const ALL_ATOMS: &'static[Atom] = &[")
+        .write_all(b"\npub const ALL_ATOMS: &[Atom] = &[")
         .ok();
 
     for (i, (capsname, _)) in config.atoms.iter().enumerate() {

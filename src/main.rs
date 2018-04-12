@@ -12,7 +12,7 @@ use feroxide::data_sef::*;
 fn main() {
     // You can create digital molecules with ease on two ways:
     // ... the easy way
-    let carbondioxide = Molecule::from_string("CO2".to_owned()).unwrap();
+    let carbondioxide = Molecule::from_string("CO2").unwrap();
 
     // ... and the fast way
     let carbonmonoxide = Molecule {
@@ -119,8 +119,8 @@ fn main() {
 
     // Redox reactions are also possible
     let redox = RedoxReaction {
-        oxidator: ElemReaction::<Ion>::ion_from_string("F2 + 2e <> 2F;1-".to_owned()).unwrap(),
-        reductor: ElemReaction::<Ion>::ion_from_string("Fe <> Fe;3 + 3e".to_owned()).unwrap(),
+        oxidator: ElemReaction::<Ion>::ion_from_string("F2 + 2e <> 2F;1-").unwrap(),
+        reductor: ElemReaction::<Ion>::ion_from_string("Fe <> Fe;3 + 3e").unwrap(),
     };
 
 
@@ -137,14 +137,18 @@ fn main() {
 
 
     // Print the SEF value
-    println!("SEF(AlCl3) = {} kJ/mol", get_sef(&Ion::from_string("AlCl3".to_owned()).unwrap()).unwrap());
+    println!(
+        "SEF(AlCl3) = {} kJ/mol",
+        get_sef(&ion_from_string!("AlCl3")).unwrap()
+    );
 
 
 
     // Boom
     println!("\n\n\n");
 
-    let mut water_container = Container::<Ion>::ion_from_string("2000 H2; + 1000 O2; [10000 J]".to_owned()).unwrap();
+    let mut water_container = Container::<Ion>::ion_from_string("2000 H2; + 1000 O2; [10000 J]")
+        .unwrap();
     println!("pre: {}", water_container);
 
     let redox_boom = get_redox_reaction(&water_container).unwrap();
@@ -200,14 +204,14 @@ fn main() {
         println!("Container: {}", redox_container);
 
 
-        let rust = ElemReaction::<Ion>::ion_from_string("Fe;2+ + 2OH;-  >  FeO2H2;0".to_owned()).unwrap();
+        let rust = ElemReaction::<Ion>::ion_from_string("Fe;2+ + 2OH;-  >  FeO2H2;0").unwrap();
 
         println!("\n");
         println!("Container: {}", &redox_container);
         println!("\tcan have the following reaction:");
         println!("Salt reaction: \n{}", rust.symbol());
 
-        let fe2 = ContainerCompound::<Ion>::ion_from_string("Fe;2+".to_owned()).unwrap();
+        let fe2 = ContainerCompound::<Ion>::ion_from_string("Fe;2+").unwrap();
 
         while redox_container.contains(&fe2) {
             redox_container.react(&rust);

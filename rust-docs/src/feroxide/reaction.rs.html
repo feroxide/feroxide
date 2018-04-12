@@ -10,8 +10,11 @@
     <title>reaction.rs.html -- source</title>
 
     <link rel="stylesheet" type="text/css" href="../../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../../main.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle">
+    
+    <link rel="stylesheet" type="text/css" href="../../dark.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css" id="themeStyle">
+    <script src="../../storage.js"></script>
     
 
     
@@ -28,10 +31,18 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
 
+    <div class="theme-picker">
+        <button id="theme-picker" aria-label="Pick another theme!">
+            <img src="../../brush.svg" width="18" alt="Pick another theme!">
+        </button>
+        <div id="theme-choices"></div>
+    </div>
+    <script src="../../theme.js"></script>
     <nav class="sub">
         <form class="search-form js-only">
             <div class="search-container">
@@ -642,7 +653,62 @@
 <span id="597">597</span>
 <span id="598">598</span>
 <span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
 </pre><pre class="rust ">
+<span class="kw">use</span> <span class="ident">data_sef</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">ion</span>::<span class="ident">Ion</span>;
 <span class="kw">use</span> <span class="ident">molecule</span>::<span class="ident">Molecule</span>;
 <span class="kw">use</span> <span class="ident">trait_element</span>::<span class="ident">Element</span>;
@@ -692,7 +758,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">E</span>: <span class="ident">Element</span><span class="op">&gt;</span> <span class="ident">ElemReaction</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Convert a string representation of an elementary reaction into one</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ion_from_string</span>(<span class="ident">string</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ElemReaction</span><span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ion_from_string</span>(<span class="ident">string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ElemReaction</span><span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">token</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lhs</span> <span class="op">=</span> <span class="prelude-val">None</span>;
@@ -702,10 +768,11 @@
         <span class="kw">for</span> <span class="ident">c</span> <span class="kw">in</span> <span class="ident">string</span>.<span class="ident">chars</span>() {
             <span class="kw">if</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;&lt;&#39;</span> <span class="op">||</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;&gt;&#39;</span> <span class="op">||</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;⇌&#39;</span> <span class="op">||</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;→&#39;</span> {
                 <span class="kw">if</span> <span class="ident">lhs</span> <span class="op">==</span> <span class="prelude-val">None</span> {
-                    <span class="ident">lhs</span> <span class="op">=</span> <span class="ident">ReactionSide</span>::<span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;</span>::<span class="ident">ion_from_string</span>(<span class="ident">token</span>.<span class="ident">clone</span>());
+                    <span class="ident">lhs</span> <span class="op">=</span> <span class="ident">ReactionSide</span>::<span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;</span>::<span class="ident">ion_from_string</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>);
                     <span class="ident">token</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
                 }
 
+                <span class="comment">// NOTE: No support for backwards-only reactions</span>
                 <span class="kw">if</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;&lt;&#39;</span> <span class="op">||</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;⇌&#39;</span> {
                     <span class="ident">is_equilibrium</span> <span class="op">=</span> <span class="bool-val">true</span>;
                 }
@@ -717,15 +784,15 @@
         }
 
         <span class="kw">if</span> <span class="op">!</span><span class="ident">token</span>.<span class="ident">is_empty</span>() {
-            <span class="ident">rhs</span> <span class="op">=</span> <span class="ident">ReactionSide</span>::<span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;</span>::<span class="ident">ion_from_string</span>(<span class="ident">token</span>.<span class="ident">clone</span>());
+            <span class="ident">rhs</span> <span class="op">=</span> <span class="ident">ReactionSide</span>::<span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;</span>::<span class="ident">ion_from_string</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>);
         }
 
 
         <span class="kw">if</span> <span class="kw">let</span> (<span class="prelude-val">Some</span>(<span class="ident">lhs</span>), <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)) <span class="op">=</span> (<span class="ident">lhs</span>, <span class="ident">rhs</span>) {
             <span class="prelude-val">Some</span>(<span class="ident">ElemReaction</span> {
-                <span class="ident">lhs</span>: <span class="ident">lhs</span>,
-                <span class="ident">rhs</span>: <span class="ident">rhs</span>,
-                <span class="ident">is_equilibrium</span>: <span class="ident">is_equilibrium</span>,
+                <span class="ident">lhs</span>,
+                <span class="ident">rhs</span>,
+                <span class="ident">is_equilibrium</span>,
             })
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
@@ -734,7 +801,7 @@
 
 
     <span class="doccomment">/// Convert a string representation of a reaction into one</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">molecule_from_string</span>(<span class="ident">string</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ElemReaction</span><span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">molecule_from_string</span>(<span class="ident">string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ElemReaction</span><span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">token</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lhs</span> <span class="op">=</span> <span class="prelude-val">None</span>;
@@ -744,7 +811,7 @@
         <span class="kw">for</span> <span class="ident">c</span> <span class="kw">in</span> <span class="ident">string</span>.<span class="ident">chars</span>() {
             <span class="kw">if</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;&lt;&#39;</span> <span class="op">||</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;&gt;&#39;</span> <span class="op">||</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;⇌&#39;</span> <span class="op">||</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;→&#39;</span> {
                 <span class="kw">if</span> <span class="ident">lhs</span> <span class="op">==</span> <span class="prelude-val">None</span> {
-                    <span class="ident">lhs</span> <span class="op">=</span> <span class="ident">ReactionSide</span>::<span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;</span>::<span class="ident">molecule_from_string</span>(<span class="ident">token</span>.<span class="ident">clone</span>());
+                    <span class="ident">lhs</span> <span class="op">=</span> <span class="ident">ReactionSide</span>::<span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;</span>::<span class="ident">molecule_from_string</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>);
                     <span class="ident">token</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
                 }
 
@@ -759,15 +826,15 @@
         }
 
         <span class="kw">if</span> <span class="op">!</span><span class="ident">token</span>.<span class="ident">is_empty</span>() {
-            <span class="ident">rhs</span> <span class="op">=</span> <span class="ident">ReactionSide</span>::<span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;</span>::<span class="ident">molecule_from_string</span>(<span class="ident">token</span>.<span class="ident">clone</span>());
+            <span class="ident">rhs</span> <span class="op">=</span> <span class="ident">ReactionSide</span>::<span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;</span>::<span class="ident">molecule_from_string</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>);
         }
 
 
         <span class="kw">if</span> <span class="kw">let</span> (<span class="prelude-val">Some</span>(<span class="ident">lhs</span>), <span class="prelude-val">Some</span>(<span class="ident">rhs</span>)) <span class="op">=</span> (<span class="ident">lhs</span>, <span class="ident">rhs</span>) {
             <span class="prelude-val">Some</span>(<span class="ident">ElemReaction</span> {
-                <span class="ident">lhs</span>: <span class="ident">lhs</span>,
-                <span class="ident">rhs</span>: <span class="ident">rhs</span>,
-                <span class="ident">is_equilibrium</span>: <span class="ident">is_equilibrium</span>,
+                <span class="ident">lhs</span>,
+                <span class="ident">rhs</span>,
+                <span class="ident">is_equilibrium</span>,
             })
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
@@ -801,35 +868,43 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">E</span>: <span class="ident">Element</span><span class="op">&gt;</span> <span class="ident">ReactionSide</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Convert a string representation of a reactionside into one</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ion_from_string</span>(<span class="ident">symbol</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReactionSide</span><span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ion_from_string</span>(<span class="ident">symbol</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReactionSide</span><span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">compounds</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
-
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">token</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">was_whitespace</span> <span class="op">=</span> <span class="bool-val">false</span>;
+
         <span class="kw">for</span> <span class="ident">c</span> <span class="kw">in</span> <span class="ident">symbol</span>.<span class="ident">chars</span>() {
             <span class="kw">if</span> <span class="macro">is_whitespace</span><span class="macro">!</span>(<span class="ident">c</span>) {
+                <span class="ident">was_whitespace</span> <span class="op">=</span> <span class="bool-val">true</span>;
                 <span class="kw">continue</span>;
             }
 
-            <span class="kw">if</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;+&#39;</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">compound</span>) <span class="op">=</span> <span class="ident">ReactionCompound</span>::<span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;</span>::<span class="ident">ion_from_string</span>(<span class="ident">token</span>) {
+            <span class="kw">if</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;+&#39;</span> <span class="op">&amp;&amp;</span> <span class="ident">was_whitespace</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">compound</span>) <span class="op">=</span> <span class="ident">ReactionCompound</span>::<span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;</span>::<span class="ident">ion_from_string</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>) {
                     <span class="ident">compounds</span>.<span class="ident">push</span>(<span class="ident">compound</span>);
+                } <span class="kw">else</span> {
+                    <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Failed to parse ion &#39;{}&#39;&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">token</span>);
                 }
+
                 <span class="ident">token</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
-                <span class="kw">continue</span>;
+            } <span class="kw">else</span> {
+                <span class="ident">token</span>.<span class="ident">push</span>(<span class="ident">c</span>);
             }
 
-            <span class="ident">token</span>.<span class="ident">push</span>(<span class="ident">c</span>);
+            <span class="ident">was_whitespace</span> <span class="op">=</span> <span class="bool-val">false</span>;
         }
 
         <span class="kw">if</span> <span class="op">!</span><span class="ident">token</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">compound</span>) <span class="op">=</span> <span class="ident">ReactionCompound</span>::<span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;</span>::<span class="ident">ion_from_string</span>(<span class="ident">token</span>) {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">compound</span>) <span class="op">=</span> <span class="ident">ReactionCompound</span>::<span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;</span>::<span class="ident">ion_from_string</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>) {
                 <span class="ident">compounds</span>.<span class="ident">push</span>(<span class="ident">compound</span>);
+            } <span class="kw">else</span> {
+                <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Failed to parse ion &#39;{}&#39;&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">token</span>);
             }
         }
 
 
         <span class="kw">if</span> <span class="op">!</span><span class="ident">compounds</span>.<span class="ident">is_empty</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">ReactionSide</span> { <span class="ident">compounds</span>: <span class="ident">compounds</span> })
+            <span class="prelude-val">Some</span>(<span class="ident">ReactionSide</span> { <span class="ident">compounds</span> })
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -837,7 +912,7 @@
 
 
     <span class="doccomment">/// Convert a string representation of a reactionside into one</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">molecule_from_string</span>(<span class="ident">symbol</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReactionSide</span><span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">molecule_from_string</span>(<span class="ident">symbol</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReactionSide</span><span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">compounds</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">token</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
@@ -847,7 +922,7 @@
             }
 
             <span class="kw">if</span> <span class="ident">c</span> <span class="op">==</span> <span class="string">&#39;+&#39;</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">compound</span>) <span class="op">=</span> <span class="ident">ReactionCompound</span>::<span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;</span>::<span class="ident">molecule_from_string</span>(<span class="ident">token</span>) {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">compound</span>) <span class="op">=</span> <span class="ident">ReactionCompound</span>::<span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;</span>::<span class="ident">molecule_from_string</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>) {
                     <span class="ident">compounds</span>.<span class="ident">push</span>(<span class="ident">compound</span>);
                 }
                 <span class="ident">token</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
@@ -858,14 +933,14 @@
         }
 
         <span class="kw">if</span> <span class="op">!</span><span class="ident">token</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">compound</span>) <span class="op">=</span> <span class="ident">ReactionCompound</span>::<span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;</span>::<span class="ident">molecule_from_string</span>(<span class="ident">token</span>) {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">compound</span>) <span class="op">=</span> <span class="ident">ReactionCompound</span>::<span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;</span>::<span class="ident">molecule_from_string</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>) {
                 <span class="ident">compounds</span>.<span class="ident">push</span>(<span class="ident">compound</span>);
             }
         }
 
 
         <span class="kw">if</span> <span class="op">!</span><span class="ident">compounds</span>.<span class="ident">is_empty</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">ReactionSide</span> { <span class="ident">compounds</span>: <span class="ident">compounds</span> })
+            <span class="prelude-val">Some</span>(<span class="ident">ReactionSide</span> { <span class="ident">compounds</span> })
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -888,22 +963,44 @@
 
     <span class="doccomment">/// Calculate the energy this side has</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">energy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Energy</span> {
-        <span class="comment">// FIXME: Calculate actual energy</span>
-        <span class="ident">Energy</span>::<span class="ident">from</span>(<span class="number">100.0</span>) <span class="op">*</span> (<span class="self">self</span>.<span class="ident">compounds</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">Energy_type</span>)
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">energy</span> <span class="op">=</span> <span class="number">0.0</span>;
+
+        <span class="kw">for</span> <span class="ident">compound</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">compounds</span> {
+            <span class="kw">let</span> <span class="ident">sef</span> <span class="op">=</span> <span class="ident">get_sef</span>(<span class="kw-2">&amp;</span><span class="ident">compound</span>.<span class="ident">element</span>.<span class="ident">clone</span>().<span class="ident">get_ion</span>().<span class="ident">unwrap</span>());
+
+            <span class="kw">if</span> <span class="ident">sef</span>.<span class="ident">is_some</span>() {
+                <span class="ident">energy</span> <span class="op">+=</span> <span class="ident">Energy_type</span>::<span class="ident">from</span>(<span class="ident">SEF_type</span>::<span class="ident">from</span>(<span class="ident">sef</span>.<span class="ident">unwrap</span>())) <span class="op">*</span>
+                    <span class="ident">Energy_type</span>::<span class="ident">from</span>(<span class="ident">compound</span>.<span class="ident">amount</span>);
+            } <span class="kw">else</span> {
+                <span class="kw">let</span> <span class="ident">mol</span> <span class="op">=</span> <span class="ident">compound</span>.<span class="ident">element</span>.<span class="ident">clone</span>().<span class="ident">get_molecule</span>().<span class="ident">unwrap</span>();
+                <span class="kw">let</span> <span class="ident">is_diatomic</span> <span class="op">=</span> <span class="ident">mol</span>.<span class="ident">is_diatomic</span>();
+                <span class="kw">let</span> <span class="ident">is_monoatomic</span> <span class="op">=</span> <span class="ident">mol</span>.<span class="ident">compounds</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="ident">mol</span>.<span class="ident">compounds</span>[<span class="number">0</span>].<span class="ident">amount</span> <span class="op">==</span> <span class="number">1</span>;
+
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">is_diatomic</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">is_monoatomic</span> {
+                    <span class="macro">println</span><span class="macro">!</span>(
+                        <span class="string">&quot;Failed to get SEF for compound {}, assuming 0&quot;</span>,
+                        <span class="ident">compound</span>.<span class="ident">symbol</span>()
+                    );
+                }
+            }
+        }
+
+
+        <span class="ident">Energy</span>::<span class="ident">from</span>(<span class="ident">energy</span>)
     }
 
 
     <span class="doccomment">/// Calculate the total amount of atoms this side contains</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">total_atoms</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">AtomNumber</span>, <span class="ident">u16</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">total_atoms</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">include_electrons</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">AtomNumber</span>, <span class="ident">u16</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">atoms</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">AtomNumber</span>, <span class="ident">u16</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">HashMap</span>::<span class="ident">new</span>();
 
         <span class="comment">// for molecule_compound in self.compounds:</span>
         <span class="kw">for</span> <span class="ident">reaction_compound</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">compounds</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">molecule</span>) <span class="op">=</span> <span class="ident">reaction_compound</span>.<span class="ident">element</span>.<span class="ident">get_molecule</span>() {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">molecule</span>) <span class="op">=</span> <span class="ident">reaction_compound</span>.<span class="ident">element</span>.<span class="ident">clone</span>().<span class="ident">get_molecule</span>() {
                 <span class="kw">for</span> <span class="ident">molecule_compound</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">molecule</span>.<span class="ident">compounds</span> {
                     <span class="kw">let</span> <span class="ident">atom_number</span> <span class="op">=</span> <span class="ident">molecule_compound</span>.<span class="ident">atom</span>.<span class="ident">number</span>.<span class="ident">clone</span>();
 
-                    <span class="kw">if</span> <span class="ident">atom_number</span> <span class="op">==</span> <span class="ident">AtomNumber</span>::<span class="ident">from</span>(<span class="number">0</span>) {
+                    <span class="kw">if</span> <span class="op">!</span><span class="ident">include_electrons</span> <span class="op">&amp;&amp;</span> <span class="ident">atom_number</span> <span class="op">==</span> <span class="ident">AtomNumber</span>::<span class="ident">from</span>(<span class="number">0</span>) {
                         <span class="comment">// Ignore electrons in the atom count</span>
                         <span class="kw">continue</span>;
                     }
@@ -929,7 +1026,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">E</span>: <span class="ident">Element</span><span class="op">&gt;</span> <span class="ident">ReactionCompound</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Convert a string representation of a reaction compound into one</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ion_from_string</span>(<span class="ident">symbol</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReactionCompound</span><span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ion_from_string</span>(<span class="ident">symbol</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReactionCompound</span><span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">amount</span>: <span class="ident">u16</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">element</span> <span class="op">=</span> <span class="prelude-val">None</span>;
 
@@ -949,7 +1046,7 @@
         }
 
         <span class="kw">if</span> <span class="op">!</span><span class="ident">token</span>.<span class="ident">is_empty</span>() {
-            <span class="ident">element</span> <span class="op">=</span> <span class="ident">Ion</span>::<span class="ident">from_string</span>(<span class="ident">token</span>);
+            <span class="ident">element</span> <span class="op">=</span> <span class="ident">Ion</span>::<span class="ident">from_string</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>);
         }
 
         <span class="kw">if</span> <span class="ident">amount</span> <span class="op">==</span> <span class="number">0</span> {
@@ -957,10 +1054,7 @@
         }
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">element</span>) <span class="op">=</span> <span class="ident">element</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">ReactionCompound</span> {
-                <span class="ident">amount</span>: <span class="ident">amount</span>,
-                <span class="ident">element</span>: <span class="ident">element</span>,
-            })
+            <span class="prelude-val">Some</span>(<span class="ident">ReactionCompound</span> { <span class="ident">amount</span>, <span class="ident">element</span> })
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -968,7 +1062,7 @@
 
 
     <span class="doccomment">/// Convert a string representation of a reaction compound into one</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">molecule_from_string</span>(<span class="ident">symbol</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReactionCompound</span><span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">molecule_from_string</span>(<span class="ident">symbol</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReactionCompound</span><span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">amount</span>: <span class="ident">u16</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">element</span> <span class="op">=</span> <span class="prelude-val">None</span>;
 
@@ -988,7 +1082,7 @@
         }
 
         <span class="kw">if</span> <span class="op">!</span><span class="ident">token</span>.<span class="ident">is_empty</span>() {
-            <span class="ident">element</span> <span class="op">=</span> <span class="ident">Molecule</span>::<span class="ident">from_string</span>(<span class="ident">token</span>);
+            <span class="ident">element</span> <span class="op">=</span> <span class="ident">Molecule</span>::<span class="ident">from_string</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>);
         }
 
         <span class="kw">if</span> <span class="ident">amount</span> <span class="op">==</span> <span class="number">0</span> {
@@ -996,10 +1090,7 @@
         }
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">element</span>) <span class="op">=</span> <span class="ident">element</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">ReactionCompound</span> {
-                <span class="ident">amount</span>: <span class="ident">amount</span>,
-                <span class="ident">element</span>: <span class="ident">element</span>,
-            })
+            <span class="prelude-val">Some</span>(<span class="ident">ReactionCompound</span> { <span class="ident">amount</span>, <span class="ident">element</span> })
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
@@ -1013,8 +1104,8 @@
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;####    The equalise function is not yet ready.&quot;</span>);
 
 
-        <span class="kw">let</span> <span class="ident">total_left</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lhs</span>.<span class="ident">total_atoms</span>();
-        <span class="kw">let</span> <span class="ident">total_right</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">rhs</span>.<span class="ident">total_atoms</span>();
+        <span class="kw">let</span> <span class="ident">total_left</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lhs</span>.<span class="ident">total_atoms</span>(<span class="bool-val">false</span>);
+        <span class="kw">let</span> <span class="ident">total_right</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">rhs</span>.<span class="ident">total_atoms</span>(<span class="bool-val">false</span>);
 
 
         <span class="comment">// If both sides are already equal, do nothing</span>
@@ -1046,10 +1137,10 @@
 
                 <span class="kw">if</span> <span class="ident">difference</span> <span class="op">&gt;</span> <span class="number">0</span> {
                     <span class="comment">// Increase right side</span>
-                    <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;We know what to do, but it&#39;s just not implemented yet.&quot;</span>);
+                    <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;[right] We know what to do, but it&#39;s just not implemented yet.&quot;</span>);
                 } <span class="kw">else</span> {
                     <span class="comment">// Increase left side</span>
-                    <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;We know what to do, but it&#39;s just not implemented yet.&quot;</span>);
+                    <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;[left] We know what to do, but it&#39;s just not implemented yet.&quot;</span>);
                 }
             }
         }
@@ -1060,7 +1151,7 @@
 
 
     <span class="kw">fn</span> <span class="ident">is_valid</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">lhs</span>.<span class="ident">total_atoms</span>() <span class="op">==</span> <span class="self">self</span>.<span class="ident">rhs</span>.<span class="ident">total_atoms</span>() <span class="op">&amp;&amp;</span>
+        <span class="self">self</span>.<span class="ident">lhs</span>.<span class="ident">total_atoms</span>(<span class="bool-val">false</span>) <span class="op">==</span> <span class="self">self</span>.<span class="ident">rhs</span>.<span class="ident">total_atoms</span>(<span class="bool-val">false</span>) <span class="op">&amp;&amp;</span>
             <span class="self">self</span>.<span class="ident">lhs</span>.<span class="ident">total_charge</span>() <span class="op">==</span> <span class="self">self</span>.<span class="ident">lhs</span>.<span class="ident">total_charge</span>()
     }
 
@@ -1084,7 +1175,7 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">compounds</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">compounds</span>.<span class="ident">clone</span>();
         <span class="ident">compounds</span>.<span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rhs</span>.<span class="ident">compounds</span>);
 
-        <span class="ident">ReactionSide</span> { <span class="ident">compounds</span>: <span class="ident">compounds</span> }
+        <span class="ident">ReactionSide</span> { <span class="ident">compounds</span> }
     }
 }
 
@@ -1101,7 +1192,7 @@
             <span class="ident">compound</span>.<span class="ident">amount</span> <span class="op">*=</span> <span class="ident">rhs</span>;
         }
 
-        <span class="ident">ReactionSide</span> { <span class="ident">compounds</span>: <span class="ident">compounds</span> }
+        <span class="ident">ReactionSide</span> { <span class="ident">compounds</span> }
     }
 }
 
@@ -1128,6 +1219,9 @@
         <span class="ident">symbol</span> <span class="op">+=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">lhs</span>.<span class="ident">symbol</span>();
         <span class="ident">symbol</span> <span class="op">+=</span> <span class="self">self</span>.<span class="ident">reaction_sign</span>();
         <span class="ident">symbol</span> <span class="op">+=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">rhs</span>.<span class="ident">symbol</span>();
+        <span class="ident">symbol</span> <span class="op">+=</span> <span class="string">&quot;    [&quot;</span>;
+        <span class="ident">symbol</span> <span class="op">+=</span> <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:.3}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">energy_cost</span>());
+        <span class="ident">symbol</span> <span class="op">+=</span> <span class="string">&quot; J]&quot;</span>;
 
         <span class="ident">symbol</span>
     }
@@ -1139,6 +1233,9 @@
         <span class="ident">name</span> <span class="op">+=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">lhs</span>.<span class="ident">name</span>();
         <span class="ident">name</span> <span class="op">+=</span> <span class="self">self</span>.<span class="ident">reaction_sign</span>();
         <span class="ident">name</span> <span class="op">+=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">rhs</span>.<span class="ident">name</span>();
+        <span class="ident">name</span> <span class="op">+=</span> <span class="string">&quot;    [&quot;</span>;
+        <span class="ident">name</span> <span class="op">+=</span> <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:.3}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">energy_cost</span>());
+        <span class="ident">name</span> <span class="op">+=</span> <span class="string">&quot; J]&quot;</span>;
 
         <span class="ident">name</span>
     }
@@ -1147,6 +1244,12 @@
     <span class="kw">fn</span> <span class="ident">mass</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">AtomMass</span> {
         <span class="comment">// Law of Conservation of Mass</span>
         <span class="ident">AtomMass</span>::<span class="ident">from</span>(<span class="number">0.0</span>)
+    }
+
+
+    <span class="kw">fn</span> <span class="ident">is_diatomic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="comment">// Reactions can&#39;t be diatomic</span>
+        <span class="bool-val">false</span>
     }
 }
 
@@ -1195,6 +1298,12 @@
 
         <span class="ident">mass</span>
     }
+
+
+    <span class="kw">fn</span> <span class="ident">is_diatomic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="comment">// Reactions can&#39;t be diatomic</span>
+        <span class="bool-val">false</span>
+    }
 }
 
 
@@ -1229,6 +1338,11 @@
     <span class="kw">fn</span> <span class="ident">mass</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">AtomMass</span> {
         <span class="self">self</span>.<span class="ident">element</span>.<span class="ident">mass</span>() <span class="op">*</span> (<span class="ident">AtomMass_type</span>::<span class="ident">from</span>(<span class="self">self</span>.<span class="ident">amount</span>))
     }
+
+
+    <span class="kw">fn</span> <span class="ident">is_diatomic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">element</span>.<span class="ident">is_diatomic</span>()
+    }
 }
 
 
@@ -1238,8 +1352,13 @@
     }
 
 
-    <span class="kw">fn</span> <span class="ident">get_molecule</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Molecule</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">get_molecule</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Molecule</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">element</span>.<span class="ident">get_molecule</span>()
+    }
+
+
+    <span class="kw">fn</span> <span class="ident">get_ion</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ion</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">element</span>.<span class="ident">get_ion</span>()
     }
 }
 </pre>
@@ -1256,18 +1375,22 @@
                 <h2>Keyboard Shortcuts</h2>
 
                 <dl>
-                    <dt>?</dt>
+                    <dt><kbd>?</kbd></dt>
                     <dd>Show this help dialog</dd>
-                    <dt>S</dt>
+                    <dt><kbd>S</kbd></dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt><kbd>↑</kbd></dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt><kbd>↓</kbd></dt>
                     <dd>Move down in search results</dd>
-                    <dt>&#9166;</dt>
+                    <dt><kbd>↹</kbd></dt>
+                    <dd>Switch tab</dd>
+                    <dt><kbd>&#9166;</kbd></dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
-                    <dd>Collapse/expand all sections</dd>
+                    <dt><kbd>+</kbd></dt>
+                    <dd>Expand all sections</dd>
+                    <dt><kbd>-</kbd></dt>
+                    <dd>Collapse all sections</dd>
                 </dl>
             </div>
 

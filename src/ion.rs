@@ -6,7 +6,7 @@ use trait_properties::Properties;
 use types::*;
 
 
-#[derive(Debug, Eq, Clone, Hash)]
+#[derive(Debug, Eq, Clone)]
 /// An `Ion`
 pub struct Ion {
     /// The molecule of this ion
@@ -19,7 +19,7 @@ pub struct Ion {
 
 impl Ion {
     /// Convert a string representation of an `Ion` into one
-    pub fn from_string(symbol: String) -> Option<Ion> {
+    pub fn from_string(symbol: &str) -> Option<Ion> {
         let mut molecule = None;
         let mut charge = 0;
         let mut is_negative = false;
@@ -56,7 +56,7 @@ impl Ion {
                     break;
                 }
 
-                molecule = Molecule::from_string(token);
+                molecule = Molecule::from_string(&token);
                 token = String::new();
                 set_charge = true;
                 continue;
@@ -72,7 +72,7 @@ impl Ion {
                 return Some(ELECTRON.clone());
             }
 
-            molecule = Molecule::from_string(token);
+            molecule = Molecule::from_string(&token);
         }
 
         if is_negative {
@@ -97,7 +97,7 @@ impl Ion {
 
         if let Some(molecule) = molecule {
             Some(Ion {
-                molecule: molecule,
+                molecule,
                 charge: charge_option,
             })
         } else {
@@ -109,7 +109,7 @@ impl Ion {
     /// Convert a `Molecule` into an `Ion`
     pub fn from_molecule(molecule: Molecule) -> Ion {
         Ion {
-            molecule: molecule,
+            molecule,
             charge: None, // Will be calculated later
         }
     }
@@ -213,5 +213,15 @@ impl Properties for Ion {
 impl PartialEq for Ion {
     fn eq(&self, rhs: &Self) -> bool {
         self.molecule == rhs.molecule && self.get_charge() == rhs.get_charge()
+    }
+}
+
+
+use std::hash::*;
+
+impl Hash for Ion {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.molecule.hash(state);
+        self.get_charge().hash(state);
     }
 }
