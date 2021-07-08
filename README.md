@@ -5,6 +5,10 @@
 
 A basic chemistry simulator.
 
+
+# NO MAINTENANCE MODE
+While I am still interested in continuing this project, I have decided not to spend much effort into producing new features. Feel free to reach out to me through github Issues if you want to take over this codebase and help improve it.
+
 ## Currently includes
 
 * Basic functionality
