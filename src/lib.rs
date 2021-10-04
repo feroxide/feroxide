@@ -1,6 +1,3 @@
-// Ignore clippy warnings about data like 12.01100
-#![allow(excessive_precision)]
-
 // macros \\
 
 #[macro_use]
@@ -677,10 +674,7 @@ fn reaction_check() {
         "C + O₂ → CO₂    [-1135.930 J]",
         format!("{}", good_reaction)
     );
-    assert_eq!(
-        "H₂ ⇌ 2H    [0.000 J]",
-        format!("{}", equilibrium_reaction)
-    );
+    assert_eq!("H₂ ⇌ 2H    [0.000 J]", format!("{}", equilibrium_reaction));
 }
 
 #[test]

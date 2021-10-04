@@ -80,7 +80,7 @@ pub fn number_to_greek(n: u8) -> String {
                 + "conta"
         }
     } else {
-        panic!(n.to_string().to_owned() + " uncalculatable");
+        panic!("{} uncalculatable", n.to_string().to_owned());
     }
 }
 
@@ -124,7 +124,7 @@ pub fn number_to_roman(n: i8) -> String {
     } else if n == 16 {
         "XVI".to_owned()
     } else {
-        panic!(n.to_string() + " uncalculatable");
+        panic!("{} uncalculatable", n.to_string());
     }
 }
 
@@ -154,7 +154,7 @@ pub fn subscript(n: u8) -> String {
     } else if n == 9 {
         "₉".to_owned()
     } else {
-        panic!(n.to_string() + " can't be converted to subscript.");
+        panic!("{} can't be converted to subscript.", n.to_string());
     }
 }
 
@@ -190,7 +190,7 @@ pub fn superscript(n: u8) -> String {
     } else if n >= 10 {
         superscript(n / 10) + &superscript(n % 10)
     } else {
-        panic!(n.to_string() + " can't be converted to superscript.");
+        panic!("{} can't be converted to superscript.", n.to_string());
     }
 }
 
