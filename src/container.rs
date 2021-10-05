@@ -35,7 +35,7 @@ pub struct ContainerCompound<E: Element> {
 pub fn rc_to_cc<E: Element>(rc: ReactionCompound<E>) -> ContainerCompound<E> {
     ContainerCompound {
         element: rc.element,
-        moles: Moles::from(Moles_type::from(rc.amount)),
+        moles: Moles::from(MolesType::from(rc.amount)),
     }
 }
 
@@ -448,7 +448,7 @@ impl<E: Element> Properties for ContainerCompound<E> {
     }
 
     fn mass(&self) -> AtomMass {
-        self.element.mass() * (self.moles.0 as AtomMass_type)
+        self.element.mass() * (self.moles.0 as AtomMassType)
     }
 
     fn is_diatomic(&self) -> bool {

@@ -247,8 +247,8 @@ impl<E: Element> ReactionSide<E> {
             let sef = get_sef(&compound.element.clone().get_ion().unwrap());
 
             if sef.is_some() {
-                energy += Energy_type::from(SEF_type::from(sef.unwrap()))
-                    * Energy_type::from(compound.amount);
+                energy += EnergyType::from(SEFType::from(sef.unwrap()))
+                    * EnergyType::from(compound.amount);
             } else {
                 let mol = compound.element.clone().get_molecule().unwrap();
                 let is_diatomic = mol.is_diatomic();
@@ -589,7 +589,7 @@ impl<E: Element> Properties for ReactionCompound<E> {
     }
 
     fn mass(&self) -> AtomMass {
-        self.element.mass() * (AtomMass_type::from(self.amount))
+        self.element.mass() * (AtomMassType::from(self.amount))
     }
 
     fn is_diatomic(&self) -> bool {
