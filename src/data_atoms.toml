@@ -1,6 +1,5 @@
 # Reference: https://en.wikipedia.org/wiki/Periodic_table_(large_cells)
 
-
 [atoms.HYDROGEN]
 number = 1
 mass = 1.008

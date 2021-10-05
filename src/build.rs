@@ -24,7 +24,6 @@ struct Atom {
     pub diatomic: bool,
 }
 
-#[allow(dead_code)]
 /// Write an example TOML file to the data_atoms.rs file
 fn write(mut atoms_rs_file: &File) {
     let mut atoms: HashMap<String, Atom> = HashMap::new();
@@ -52,7 +51,6 @@ fn write(mut atoms_rs_file: &File) {
     atoms_rs_file.write_all(config_string.as_bytes()).ok();
 }
 
-#[allow(dead_code)]
 /// Reads the data_atoms.toml file, converts it to the appropriate format
 /// and writes it to the atoms.rs file
 fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {
