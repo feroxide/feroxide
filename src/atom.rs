@@ -44,20 +44,14 @@ impl Atom {
         let group = self.group.0;
         let number = self.number.0;
 
-        if group == 1 {
-            Some(AtomCharge::from(1))
-        } else if group == 2 {
-            Some(AtomCharge::from(2))
-        } else if group == 15 && number <= 15 {
-            Some(AtomCharge::from(-3))
-        } else if group == 16 && number <= 34 {
-            Some(AtomCharge::from(-2))
-        } else if group == 17 && number <= 53 {
-            Some(AtomCharge::from(-1))
-        } else if group == 18 {
-            Some(AtomCharge::from(0))
-        } else {
-            None
+        match group {
+            1 => Some(AtomCharge::from(1)),
+            2 => Some(AtomCharge::from(2)),
+            15 if number <= 15 => Some(AtomCharge::from(-3)),
+            16 if number <= 34 => Some(AtomCharge::from(-2)),
+            17 if number <= 53 => Some(AtomCharge::from(-1)),
+            18 => Some(AtomCharge::from(0)),
+            _ => None,
         }
     }
 }
