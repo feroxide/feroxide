@@ -3,7 +3,7 @@ extern crate serde_derive;
 extern crate toml;
 
 mod types;
-use types::{AtomGroup_type, AtomMass_type, AtomNumber_type};
+use types::{AtomGroupType, AtomMassType, AtomNumberType};
 
 use std::collections::HashMap;
 use std::fs::File;
@@ -16,11 +16,11 @@ struct Config {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct Atom {
-    pub number: AtomNumber_type,
-    pub group: AtomGroup_type,
+    pub number: AtomNumberType,
+    pub group: AtomGroupType,
     pub symbol: String,
     pub name: String,
-    pub mass: AtomMass_type,
+    pub mass: AtomMassType,
     pub diatomic: bool,
 }
 
