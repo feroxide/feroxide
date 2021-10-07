@@ -1,4 +1,5 @@
 {
+  "_source": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/periodictable/JSON/?response_type=save&response_basename=PubChemElements_all",
   "Table": {
     "Columns": {
       "Column": [
