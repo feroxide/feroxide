@@ -113,30 +113,19 @@ pub fn number_to_roman(n: i8) -> String {
 /// Convert a number to subscript notation
 #[cfg(not(feature = "no_utf"))]
 pub fn subscript(n: u8) -> String {
-    if n >= 10 {
-        subscript(n / 10) + &subscript(n % 10)
-    } else if n == 0 {
-        "₀".to_owned()
-    } else if n == 1 {
-        "₁".to_owned()
-    } else if n == 2 {
-        "₂".to_owned()
-    } else if n == 3 {
-        "₃".to_owned()
-    } else if n == 4 {
-        "₄".to_owned()
-    } else if n == 5 {
-        "₅".to_owned()
-    } else if n == 6 {
-        "₆".to_owned()
-    } else if n == 7 {
-        "₇".to_owned()
-    } else if n == 8 {
-        "₈".to_owned()
-    } else if n == 9 {
-        "₉".to_owned()
-    } else {
-        panic!("{} can't be converted to subscript.", n.to_string());
+    match n {
+        0 => String::from("₀"),
+        1 => String::from("₁"),
+        2 => String::from("₂"),
+        3 => String::from("₃"),
+        4 => String::from("₄"),
+        5 => String::from("₅"),
+        6 => String::from("₆"),
+        7 => String::from("₇"),
+        8 => String::from("₈"),
+        9 => String::from("₉"),
+        n if n >= 10 => subscript(n / 10) + &subscript(n % 10),
+        _ => panic!("{} can't be converted to subscript.", n.to_string()),
     }
 }
 
@@ -149,30 +138,19 @@ pub fn subscript(n: u8) -> String {
 /// See also `ion_superscript`
 #[cfg(not(feature = "no_utf"))]
 pub fn superscript(n: u8) -> String {
-    if n == 0 {
-        "⁰".to_owned()
-    } else if n == 1 {
-        "¹".to_owned()
-    } else if n == 2 {
-        "²".to_owned()
-    } else if n == 3 {
-        "³".to_owned()
-    } else if n == 4 {
-        "⁴".to_owned()
-    } else if n == 5 {
-        "⁵".to_owned()
-    } else if n == 6 {
-        "⁶".to_owned()
-    } else if n == 7 {
-        "⁷".to_owned()
-    } else if n == 8 {
-        "⁸".to_owned()
-    } else if n == 9 {
-        "⁹".to_owned()
-    } else if n >= 10 {
-        superscript(n / 10) + &superscript(n % 10)
-    } else {
-        panic!("{} can't be converted to superscript.", n.to_string());
+    match n {
+        0 => String::from("⁰"),
+        1 => String::from("¹"),
+        2 => String::from("²"),
+        3 => String::from("³"),
+        4 => String::from("⁴"),
+        5 => String::from("⁵"),
+        6 => String::from("⁶"),
+        7 => String::from("⁷"),
+        8 => String::from("⁸"),
+        9 => String::from("⁹"),
+        n if n >= 10 => superscript(n / 10) + &superscript(n % 10),
+        _ => panic!("{} can't be converted to superscript.", n.to_string()),
     }
 }
 
