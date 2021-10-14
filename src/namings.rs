@@ -6,44 +6,26 @@ use types::*;
 /// The basic function which converts a number to greek
 /// This function should only be called by the public `number_to_greek` function
 fn basic_number_to_greek(n: u8, tenplus: bool) -> String {
-    if n == 0 {
-        panic!("0 can't be converted to greek");
-    } else if n == 1 && !tenplus {
-        "mono".to_owned()
-    } else if n == 1 && tenplus {
-        "hen".to_owned()
-    } else if n == 2 && !tenplus {
-        "di".to_owned()
-    } else if n == 2 && tenplus {
-        "do".to_owned()
-    } else if n == 20 && !tenplus {
-        "icosa".to_owned()
-    } else if n == 20 && tenplus {
-        "cosa".to_owned()
-    } else if n == 3 {
-        "tri".to_owned()
-    } else if n == 4 {
-        "tetra".to_owned()
-    } else if n == 5 {
-        "penta".to_owned()
-    } else if n == 6 {
-        "hexa".to_owned()
-    } else if n == 7 {
-        "hepta".to_owned()
-    } else if n == 8 {
-        "octa".to_owned()
-    } else if n == 9 {
-        "nona".to_owned()
-    } else if n == 10 {
-        "deca".to_owned()
-    } else if n == 11 {
-        "undeca".to_owned()
-    } else if n == 12 {
-        "dodeca".to_owned()
-    } else if n == 30 {
-        "triaconta".to_owned()
-    } else {
-        panic!("{} uncalculatable", n.to_string());
+    match n {
+        0 => panic!("0 can't be converted to greek"),
+        1 if !tenplus => String::from("mono"),
+        1 if tenplus => String::from("hen"),
+        2 if !tenplus => String::from("di"),
+        2 if tenplus => String::from("do"),
+        3 => String::from("tri"),
+        4 => String::from("tetra"),
+        5 => String::from("penta"),
+        6 => String::from("hexa"),
+        7 => String::from("hepta"),
+        8 => String::from("octa"),
+        9 => String::from("nona"),
+        10 => String::from("deca"),
+        11 => String::from("undeca"),
+        12 => String::from("dodeca"),
+        20 if !tenplus => String::from("icosa"),
+        20 if tenplus => String::from("cosa"),
+        30 => String::from("triaconta"),
+        _ => panic!("{} uncalculatable", n),
     }
 }
 
@@ -80,7 +62,7 @@ pub fn number_to_greek(n: u8) -> String {
                 + "conta"
         }
     } else {
-        panic!("{} uncalculatable", n.to_string().to_owned());
+        panic!("{} uncalculatable", n.to_string());
     }
 }
 
@@ -208,17 +190,12 @@ pub fn superscript(n: u8) -> String {
 pub fn ion_superscript(ac: &AtomCharge) -> String {
     let n = ac.0;
 
-    if n == -1 {
-        "⁻".to_owned()
-    } else if n == 1 {
-        "⁺".to_owned()
-    } else if n < 0 {
-        superscript((-n) as u8) + &ion_superscript(&AtomCharge::from(-1))
-    } else if n > 0 {
-        superscript(n as u8) + &ion_superscript(&AtomCharge::from(1))
-    } else {
-        // n == 0
-        superscript(n as u8)
+    match n {
+        -1 => String::from("⁻"),
+        1 => String::from("⁺"),
+        n if n < 0 => superscript((-n) as u8) + &ion_superscript(&AtomCharge::from(-1)),
+        n if n > 0 => superscript(n as u8) + &ion_superscript(&AtomCharge::from(1)),
+        _ => superscript(n as u8),
     }
 }
 
@@ -226,12 +203,9 @@ pub fn ion_superscript(ac: &AtomCharge) -> String {
 pub fn ion_superscript(ac: &AtomCharge) -> String {
     let n = ac.0;
 
-    if n < 0 {
-        format!("^{{{}-}}", superscript((-n) as u8))
-    } else if n > 0 {
-        format!("^{{{}+}}", superscript(n as u8))
-    } else {
-        // n == 0
-        "^{0}".to_owned()
+    match n {
+        n if n < 0 => format!("^{{{}-}}", superscript(-n) as u8),
+        n if n > 0 => format!("^{{{}+}}", superscript(n as u8)),
+        _ => String::from("^{0}"),
     }
 }
