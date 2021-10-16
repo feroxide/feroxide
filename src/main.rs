@@ -45,15 +45,15 @@ fn main() {
         contents: vec![
             ContainerCompound {
                 element: ion_from_molecule!(carbonmonoxide.clone()),
-                moles: Moles::from(1000.0),
+                moles: Moles::from(10000000000.0),
             },
             ContainerCompound {
                 element: ion_from_molecule!(WATER.clone()),
-                moles: Moles::from(1000.0),
+                moles: Moles::from(10000000000.0),
             },
             ContainerCompound {
                 element: ion_from_atom!(OXYGEN.clone()),
-                moles: Moles::from(1000.0),
+                moles: Moles::from(10000000000.0),
             },
         ],
 

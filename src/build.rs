@@ -3,7 +3,7 @@ extern crate serde_derive;
 extern crate toml;
 
 mod types;
-use types::{AtomGroup_type, AtomMass_type, AtomNumber_type};
+use types::{AtomGroupType, AtomMassType, AtomNumberType};
 
 use std::collections::HashMap;
 use std::fs::File;
@@ -16,15 +16,14 @@ struct Config {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct Atom {
-    pub number: AtomNumber_type,
-    pub group: AtomGroup_type,
+    pub number: AtomNumberType,
+    pub group: AtomGroupType,
     pub symbol: String,
     pub name: String,
-    pub mass: AtomMass_type,
+    pub mass: AtomMassType,
     pub diatomic: bool,
 }
 
-#[allow(dead_code)]
 /// Write an example TOML file to the data_atoms.rs file
 fn write(mut atoms_rs_file: &File) {
     let mut atoms: HashMap<String, Atom> = HashMap::new();
@@ -52,7 +51,6 @@ fn write(mut atoms_rs_file: &File) {
     atoms_rs_file.write_all(config_string.as_bytes()).ok();
 }
 
-#[allow(dead_code)]
 /// Reads the data_atoms.toml file, converts it to the appropriate format
 /// and writes it to the atoms.rs file
 fn read_and_write(mut atoms_toml_file: &File, mut atoms_rs_file: &File) {

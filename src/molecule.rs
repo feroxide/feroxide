@@ -168,7 +168,7 @@ impl Properties for MoleculeCompound {
     }
 
     fn mass(&self) -> AtomMass {
-        self.atom.mass.clone() * (AtomMass_type::from(self.amount))
+        self.atom.mass.clone() * (AtomMassType::from(self.amount))
     }
 
     fn is_diatomic(&self) -> bool {

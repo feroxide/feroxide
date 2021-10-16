@@ -1,6 +1,3 @@
-#![allow(dead_code)]
-#![allow(non_camel_case_types)]
-
 use std::cmp;
 use std::fmt;
 use std::ops;
@@ -121,81 +118,81 @@ macro_rules! allow_display {
 
 /// should fit 1 to 18 [  ]
 // pub type AtomGroup = u8;
-pub type AtomGroup_type = u8;
+pub type AtomGroupType = u8;
 #[derive(Debug, Clone, PartialEq, PartialOrd, Hash)]
-pub struct AtomGroup(pub AtomGroup_type);
-allow_conversion!(AtomGroup, AtomGroup_type);
-overload_operators!(AtomGroup, AtomGroup_type);
+pub struct AtomGroup(pub AtomGroupType);
+allow_conversion!(AtomGroup, AtomGroupType);
+overload_operators!(AtomGroup, AtomGroupType);
 allow_display!(AtomGroup);
 
 /// should fit 0.0 to 294.0+, with normal precision [ gram / mol ]
 // pub type AtomMass = f32;
-pub type AtomMass_type = f32;
+pub type AtomMassType = f32;
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct AtomMass(pub AtomMass_type);
-allow_conversion!(AtomMass, AtomMass_type);
-overload_operators!(AtomMass, AtomMass_type);
+pub struct AtomMass(pub AtomMassType);
+allow_conversion!(AtomMass, AtomMassType);
+overload_operators!(AtomMass, AtomMassType);
 allow_display!(AtomMass);
 
 /// should fit 0 to 118+ [  ]
 // pub type AtomNumber = u8;
-pub type AtomNumber_type = u8;
+pub type AtomNumberType = u8;
 #[derive(Debug, Clone, PartialEq, PartialOrd, Hash)]
-pub struct AtomNumber(pub AtomNumber_type);
-allow_conversion!(AtomNumber, AtomNumber_type);
-overload_operators!(AtomNumber, AtomNumber_type);
+pub struct AtomNumber(pub AtomNumberType);
+allow_conversion!(AtomNumber, AtomNumberType);
+overload_operators!(AtomNumber, AtomNumberType);
 allow_display!(AtomNumber);
 
 /// should fit 0.0 to 1e5+, with high precision [ Joule ]
 // pub type Energy = f64;
-pub type Energy_type = f64;
+pub type EnergyType = f64;
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
-pub struct Energy(pub Energy_type);
-allow_conversion!(Energy, Energy_type);
-overload_operators!(Energy, Energy_type);
+pub struct Energy(pub EnergyType);
+allow_conversion!(Energy, EnergyType);
+overload_operators!(Energy, EnergyType);
 allow_display!(Energy);
 
 /// should fit -7 to 7 [  ]
 // pub type AtomCharge = i8;
-pub type AtomCharge_type = i8;
+pub type AtomChargeType = i8;
 #[derive(Debug, Clone, PartialEq, PartialOrd, Hash)]
-pub struct AtomCharge(pub AtomCharge_type);
-allow_conversion!(AtomCharge, AtomCharge_type);
-overload_operators!(AtomCharge, AtomCharge_type);
+pub struct AtomCharge(pub AtomChargeType);
+allow_conversion!(AtomCharge, AtomChargeType);
+overload_operators!(AtomCharge, AtomChargeType);
 allow_display!(AtomCharge);
 
 /// should fit 0.0 to 1e5+, with high precision [ gram ]
 // pub type Mass = f64;
-pub type Mass_type = f64;
+pub type MassType = f64;
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct Mass(pub Mass_type);
-allow_conversion!(Mass, Mass_type);
-overload_operators!(Mass, Mass_type);
+pub struct Mass(pub MassType);
+allow_conversion!(Mass, MassType);
+overload_operators!(Mass, MassType);
 allow_display!(Mass);
 
 /// should fit 0.0 to 1e5+, with high precision [ mol ]
 // pub type Moles = f64;
-pub type Moles_type = f64;
+pub type MolesType = f64;
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct Moles(pub Moles_type);
-allow_conversion!(Moles, Moles_type);
-overload_operators!(Moles, Moles_type);
+pub struct Moles(pub MolesType);
+allow_conversion!(Moles, MolesType);
+overload_operators!(Moles, MolesType);
 allow_display!(Moles);
 
 /// should fit -5.0 to 5.0, with normal precision [ volt ]
 // pub type SEP = f32;
-pub type SEP_type = f32;
+pub type SEPType = f32;
 #[derive(Debug, Clone, PartialEq, PartialOrd, Copy)]
-pub struct SEP(pub SEP_type);
-allow_conversion!(SEP, SEP_type);
-overload_operators!(SEP, SEP_type);
+pub struct SEP(pub SEPType);
+allow_conversion!(SEP, SEPType);
+overload_operators!(SEP, SEPType);
 allow_display!(SEP);
 
 /// should fit -4000.0 to 2000.0, with normal precision [ kJ/mol ]
 // pub type SEP = f32;
-pub type SEF_type = f32;
+pub type SEFType = f32;
 #[derive(Debug, Clone, PartialEq, PartialOrd, Copy)]
-pub struct SEF(pub SEF_type);
-allow_conversion!(SEF, SEF_type);
-overload_operators!(SEF, SEF_type);
+pub struct SEF(pub SEFType);
+allow_conversion!(SEF, SEFType);
+overload_operators!(SEF, SEFType);
 allow_display!(SEF);

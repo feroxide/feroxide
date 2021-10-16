@@ -123,8 +123,8 @@ impl Ion {
             if let Some(atom_charge) = molecule_compound.atom.charge_by_group() {
                 let mol_charge = AtomCharge::from(
                     // NOTE: Can't multiply u8 and i8, so they need to be casted first
-                    (molecule_compound.amount as AtomCharge_type)
-                        * (atom_charge.0 as AtomCharge_type),
+                    (molecule_compound.amount as AtomChargeType)
+                        * (atom_charge.0 as AtomChargeType),
                 );
 
                 charge += mol_charge;
